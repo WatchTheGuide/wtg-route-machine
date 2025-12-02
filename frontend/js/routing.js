@@ -372,32 +372,56 @@ function getManeuverIcon(maneuver) {
   const modifier = maneuver.modifier;
 
   // Map maneuver types and modifiers to Lucide icons
-  if (type === 'depart') return 'move-right';
-  if (type === 'arrive') return 'flag';
+  if (type === 'depart') return 'circle-arrow-out-up-right';
+  if (type === 'arrive') return 'circle-check';
 
   if (type === 'roundabout' || type === 'rotary') {
-    return 'circle-arrow-right';
+    return 'corner-right-up';
   }
 
   if (type === 'turn') {
-    if (modifier === 'left') return 'arrow-left';
-    if (modifier === 'right') return 'arrow-right';
-    if (modifier === 'sharp left') return 'corner-up-left';
-    if (modifier === 'sharp right') return 'corner-up-right';
-    if (modifier === 'slight left') return 'move-up-left';
-    if (modifier === 'slight right') return 'move-up-right';
-    if (modifier === 'uturn') return 'move-down';
+    if (modifier === 'left') return 'corner-up-left';
+    if (modifier === 'right') return 'corner-up-right';
+    if (modifier === 'sharp left') return 'move-up-left';
+    if (modifier === 'sharp right') return 'move-up-right';
+    if (modifier === 'slight left') return 'arrow-big-up-dash';
+    if (modifier === 'slight right') return 'arrow-big-up-dash';
+    if (modifier === 'uturn') return 'arrow-big-down';
+  }
+
+  if (type === 'end of road') {
+    if (modifier === 'left') return 'corner-up-left';
+    if (modifier === 'right') return 'corner-up-right';
+    return 'arrow-big-up';
+  }
+
+  if (type === 'fork') {
+    if (modifier === 'left') return 'arrow-up-from-line';
+    if (modifier === 'right') return 'arrow-up-from-line';
+    return 'split';
+  }
+
+  if (type === 'merge') {
+    return 'arrow-down-to-line';
+  }
+
+  if (type === 'on ramp') {
+    return 'arrow-up-right-from-circle';
+  }
+
+  if (type === 'off ramp') {
+    return 'arrow-down-right-from-circle';
   }
 
   if (type === 'new name' || type === 'continue') {
-    if (modifier === 'straight') return 'arrow-up';
-    if (modifier === 'slight left') return 'move-up-left';
-    if (modifier === 'slight right') return 'move-up-right';
-    return 'arrow-up';
+    if (modifier === 'straight') return 'arrow-big-up';
+    if (modifier === 'slight left') return 'arrow-big-up-dash';
+    if (modifier === 'slight right') return 'arrow-big-up-dash';
+    return 'arrow-big-up';
   }
 
   // Default icon
-  return 'navigation';
+  return 'circle-arrow-up';
 }
 
 /**
@@ -420,6 +444,12 @@ function formatInstruction(step) {
     arrive: 'Dotarłeś do celu',
     roundabout: 'Na rondzie',
     rotary: 'Na rondzie',
+    'end of road': 'Na końcu drogi',
+    fork: 'Na rozwidleniu',
+    merge: 'Włącz się',
+    'on ramp': 'Wjazd na',
+    'off ramp': 'Zjazd z',
+    notification: 'Uwaga',
   };
 
   // Modifier translations
