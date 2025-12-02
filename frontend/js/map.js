@@ -88,6 +88,13 @@ function initMap() {
   // Set up city selector event listener
   setupCitySelector();
 
+  // Initialize UI module (markers and interactions)
+  // US 2.1: Dodawanie Punktów
+  if (window.wtgUI && window.wtgUI.initUI) {
+    window.wtgUI.initUI(map);
+    console.log('UI module initialized');
+  }
+
   return map;
 }
 
@@ -143,9 +150,11 @@ function switchCity(cityKey) {
     duration: 1000,
   });
 
-  // Clear existing route and markers (will be implemented in later US)
-  // TODO: Clear route when routing is implemented
-  // TODO: Clear markers when markers are implemented
+  // Clear existing route and markers
+  // US 2.1: Dodawanie Punktów
+  if (window.wtgUI && window.wtgUI.clearWaypoints) {
+    window.wtgUI.clearWaypoints();
+  }
 
   console.log('Switched to:', cityConfig.name);
   console.log('New OSRM port:', currentOsrmPort);
