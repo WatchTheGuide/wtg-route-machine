@@ -2,6 +2,9 @@
 osrm-data/*.osm.pbf
 osrm-data/*.osrm*
 osrm-data/*.stxxl
+backend/osrm-data/*.osm.pbf
+backend/osrm-data/*.osrm*
+backend/osrm-data/*.stxxl
 
 # Docker volumes
 .docker-volumes/

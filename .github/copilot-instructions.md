@@ -14,18 +14,20 @@ You are working on **WTG Route Machine** - a lightweight OSRM (Open Source Routi
 ### Branch Strategy
 
 1. **Main Branch Protection**
+
    - Never commit directly to `main`
    - All changes must go through feature branches
    - Branch naming convention: `feature/description`, `fix/issue-name`, `refactor/component`
 
 2. **Feature Branch Workflow**
+
    ```bash
    # Create feature branch
    git checkout -b feature/new-city-support
-   
+
    # Work on changes
    # ... make changes ...
-   
+
    # Before committing: test, lint, validate
    # Commit and push
    git add -A
@@ -45,6 +47,7 @@ You are working on **WTG Route Machine** - a lightweight OSRM (Open Source Routi
 Before committing ANY changes, ensure:
 
 #### 1. Code Testing
+
 ```bash
 # Test shell scripts syntax
 bash -n scripts/*.sh
@@ -64,6 +67,7 @@ docker logs osrm-krakow
 ```
 
 #### 2. Linting & Style
+
 ```bash
 # Shell script linting (if shellcheck is available)
 shellcheck scripts/*.sh
@@ -76,6 +80,7 @@ shellcheck scripts/*.sh
 ```
 
 #### 3. Build Validation
+
 ```bash
 # Ensure Docker images build successfully
 docker pull ghcr.io/project-osrm/osrm-backend:latest
@@ -88,6 +93,7 @@ find . -type l -! -exec test -e {} \; -print
 ```
 
 #### 4. Documentation
+
 - Update README.md if adding new features
 - Update REQUIREMENTS.md if changing architecture
 - Add inline comments for complex logic
@@ -106,6 +112,7 @@ Use descriptive commit messages following this pattern:
 ```
 
 **Types:**
+
 - `feat:` - New feature
 - `fix:` - Bug fix
 - `refactor:` - Code refactoring
@@ -114,6 +121,7 @@ Use descriptive commit messages following this pattern:
 - `chore:` - Maintenance tasks
 
 **Examples:**
+
 ```
 feat: Add Poznań city support with bbox extraction
 
@@ -137,28 +145,32 @@ shell compatibility (zsh/bash differences)
 ### Shell Scripts
 
 1. **Always use proper shebang**
+
    ```bash
    #!/usr/bin/env bash
    ```
 
 2. **Enable strict mode**
+
    ```bash
    set -e  # Exit on error
    set -u  # Exit on undefined variable (when appropriate)
    ```
 
 3. **Quote variables**
+
    ```bash
    # Good
    echo "Processing: $CITY"
    docker run -v "$(pwd)/osrm-data:/data" ...
-   
+
    # Bad
    echo "Processing: $CITY"
    docker run -v $(pwd)/osrm-data:/data ...
    ```
 
 4. **Validate inputs**
+
    ```bash
    if [ -z "$CITY" ]; then
        echo "Error: City parameter required"
@@ -208,10 +220,12 @@ If modifying Lua profiles (future):
 For each feature/fix, test:
 
 1. **Happy Path**
+
    - Basic functionality works as expected
    - Script completes successfully
 
 2. **Edge Cases**
+
    - Missing files/directories
    - Invalid parameters
    - Network failures (for downloads)
@@ -243,18 +257,22 @@ docker rm osrm-krakow
 ## Common Pitfalls to Avoid
 
 1. **Don't commit large data files**
+
    - `.osm.pbf` files should be in `.gitignore`
    - `.osrm.*` files should be in `.gitignore`
 
 2. **Don't hardcode paths**
+
    - Use relative paths with `$(pwd)`
    - Make paths configurable via variables
 
 3. **Don't assume shell type**
+
    - Test scripts in both bash and zsh
    - Avoid bash-specific features when possible
 
 4. **Don't leave containers running**
+
    - Stop test containers after validation
    - Document cleanup steps
 
@@ -272,6 +290,7 @@ Keep in mind the AWS deployment target:
 - **Container startup**: Should be under 30 seconds
 
 When making changes, consider impact on:
+
 - Memory consumption
 - Processing time
 - Disk space usage
@@ -287,6 +306,7 @@ When making changes, consider impact on:
 ## Summary
 
 **Remember**: Quality > Speed
+
 - Always test before committing
 - Use feature branches
 - Write descriptive commits

@@ -2,7 +2,39 @@
 
 Lekka i wydajna instancja OpenSourceRoutingMachine (OSRM) dedykowana do **pieszych wycieczek po mieście**. System zoptymalizowany pod kątem wdrożenia w chmurze AWS poprzez pracę na wycinkach map (miasta) zamiast pełnych map krajów.
 
+## Architektura Projektu
+
+Projekt składa się z dwóch głównych części:
+
+### 🖥️ Backend (`backend/`)
+
+Serwer OSRM z infrastrukturą Docker, skryptami automatyzacji i danymi map.
+
+**Główne komponenty:**
+
+- Docker/Docker Compose dla OSRM
+- Skrypty bash do zarządzania mapami i serwerami
+- Profile routingu (foot, car, bike)
+- Dane map OSM i przetworzone pliki OSRM
+
+**Zobacz:** [`backend/README.md`](backend/README.md)
+
+### 🌐 Frontend (`frontend/`)
+
+Interfejs webowy do testowania i demonstracji routingu.
+
+**Główne komponenty:**
+
+- OpenLayers 9.x - interaktywna mapa
+- Tailwind CSS - stylowanie
+- Vanilla JS - routing i UI
+- OpenStreetMap tiles
+
+**Zobacz:** [`frontend/README.md`](frontend/README.md)
+
 ## Wymagania
+
+### Backend
 
 - Docker i Docker Compose
 - wget (do pobierania map)
@@ -12,29 +44,38 @@ Lekka i wydajna instancja OpenSourceRoutingMachine (OSRM) dedykowana do **pieszy
 - Min. 2GB RAM (dla pojedynczego miasta)
 - Min. 5GB wolnego miejsca na dysku
 
-## Szybki Start - Praca z Miastami
+### Frontend
 
-### 1. Pobierz mapę województwa
+- Nowoczesna przeglądarka (Chrome 90+, Firefox 88+, Safari 14+)
+- Python 3 (opcjonalnie, dla serwera HTTP)
+
+## Szybki Start
+
+### Backend - Uruchomienie Serwera OSRM
+
+#### 1. Pobierz mapę województwa
 
 ```bash
+cd backend
 ./scripts/download-map.sh malopolskie
 ```
 
-Dostępne regiony: `poland`, `malopolskie`, `europe`
+Dostępne regiony: `poland`, `malopolskie`, `mazowieckie`, `pomorskie`, `dolnoslaskie`, `europe`
 
-### 2. Wytnij mapę miasta
+#### 2. Wytnij mapę miasta
 
 ```bash
 ./scripts/extract-city.sh malopolskie krakow
 ```
 
 Dostępne miasta:
+
 - `krakow` (z małopolskiego)
 - `warszawa` (z mazowieckiego)
 - `trojmiasto` (z pomorskiego)
 - `wroclaw` (z dolnośląskiego)
 
-### 3. Przetwórz dane dla OSRM
+#### 3. Przetwórz dane dla OSRM
 
 ```bash
 ./scripts/prepare-city-osrm.sh krakow foot
@@ -42,7 +83,7 @@ Dostępne miasta:
 
 Profile: `foot` (domyślny), `bicycle`, `car`
 
-### 4. Uruchom serwer dla miasta
+#### 4. Uruchom serwer dla miasta
 
 ```bash
 ./scripts/run-city-server.sh krakow 5001
@@ -50,60 +91,100 @@ Profile: `foot` (domyślny), `bicycle`, `car`
 
 Serwer będzie dostępny pod adresem: `http://localhost:5001`
 
-### 5. Testowanie API
+#### 5. Testowanie API
 
 **Przykład: Najbliższy punkt (Rynek Główny w Krakowie)**
+
 ```bash
 curl "http://localhost:5001/nearest/v1/foot/19.9385,50.0647"
 ```
 
 **Przykład: Trasa piesza (Rynek → Wawel)**
+
 ```bash
 curl "http://localhost:5001/route/v1/foot/19.9385,50.0647;19.9353,50.0540?overview=full&steps=true"
 ```
 
-**Przykład: Macierz odległości (Rynek, Wawel, AGH)**
+### Frontend - Uruchomienie Interfejsu Webowego
+
+#### 1. Upewnij się, że backend działa
+
 ```bash
-curl "http://localhost:5001/table/v1/foot/19.9385,50.0647;19.9353,50.0540;19.9133,50.0664"
+# Sprawdź czy serwer OSRM jest uruchomiony
+docker ps | grep osrm-krakow
 ```
+
+#### 2. Otwórz interfejs webowy
+
+**Metoda A: Bezpośrednio w przeglądarce**
+
+```bash
+open frontend/index.html
+```
+
+**Metoda B: Prosty serwer HTTP (zalecane)**
+
+```bash
+cd frontend
+python3 -m http.server 8000
+# Otwórz: http://localhost:8000
+```
+
+#### 3. Testuj funkcjonalności
+
+- Klikaj na mapę, aby dodać punkty trasy
+- Przeciągaj markery, aby zmienić lokalizacje
+- Wybierz różne miasta z dropdown
+- Eksportuj trasę do GeoJSON
 
 ## Struktura Projektu
 
 ```
 wtg-route-machine/
-├── docker-compose.yml          # Konfiguracja Docker Compose (legacy)
-├── osrm-data/                  # Dane map OSM i przetworzone pliki OSRM
-│   ├── map.osm.pbf            # Pełna mapa województwa
-│   ├── krakow.osm.pbf         # Wycięta mapa miasta
-│   └── krakow.osrm.*          # Przetworzone dane OSRM
-├── osrm-profiles/              # Własne profile routingowe (opcjonalnie)
-├── scripts/
-│   ├── download-map.sh         # Pobieranie map województw
-│   ├── extract-city.sh         # Wycinanie map miast
-│   ├── prepare-city-osrm.sh    # Przetwarzanie danych miasta
-│   └── run-city-server.sh      # Uruchamianie serwera dla miasta
-└── project_documentation/
-    └── REQUIREMENTS.md         # Wymagania projektu
+├── backend/                    # Backend OSRM
+│   ├── docker/                # Niestandardowe Dockerfile
+│   ├── docker-compose.yml     # Konfiguracja Docker
+│   ├── osrm-data/            # Dane map i pliki OSRM
+│   ├── osrm-profiles/        # Profile routingu
+│   ├── scripts/              # Skrypty automatyzacji
+│   └── README.md             # Dokumentacja backend
+├── frontend/                  # Interfejs webowy
+│   ├── css/                  # Style
+│   ├── js/                   # JavaScript (map, routing, ui)
+│   ├── assets/               # Zasoby (markery, ikony)
+│   ├── index.html            # Główna strona
+│   └── README.md             # Dokumentacja frontend
+├── project_documentation/     # Dokumentacja projektu
+│   ├── REQUIREMENTS.md       # Wymagania projektu
+│   └── WEB_REQUIREMENTS.md   # Wymagania frontend
+├── user_stories/             # User stories
+│   └── web_interface.md      # Stories dla interfejsu web
+└── .github/
+    └── copilot-instructions.md  # Wytyczne dla developerów
 ```
 
 ## Zarządzanie Serwerami Miast
 
 **Sprawdzenie działających serwerów:**
+
 ```bash
 docker ps | grep osrm
 ```
 
 **Logi serwera:**
+
 ```bash
 docker logs -f osrm-krakow
 ```
 
 **Zatrzymanie serwera:**
+
 ```bash
 docker stop osrm-krakow
 ```
 
 **Usunięcie kontenera:**
+
 ```bash
 docker rm osrm-krakow
 ```
@@ -112,7 +193,11 @@ docker rm osrm-krakow
 
 Możesz uruchomić wiele serwerów jednocześnie dla różnych miast:
 
+Możesz uruchomić wiele serwerów jednocześnie dla różnych miast:
+
 ```bash
+cd backend
+
 # Kraków na porcie 5001
 ./scripts/run-city-server.sh krakow 5001
 
@@ -127,12 +212,12 @@ Możesz uruchomić wiele serwerów jednocześnie dla różnych miast:
 
 Porównanie rozmiaru danych (przykład: Kraków vs Małopolska):
 
-| Metryka | Całe Województwo | Tylko Kraków | Oszczędność |
-|---------|------------------|--------------|-------------|
-| Plik źródłowy (.pbf) | 193 MB | 36 MB | **-81%** |
-| Przetworzone dane OSRM | ~500 MB | ~180 MB | **-64%** |
-| RAM (peak podczas przetwarzania) | 619 MB | 240 MB | **-61%** |
-| Liczba węzłów | 3,770,974 | 683,281 | **-82%** |
+| Metryka                          | Całe Województwo | Tylko Kraków | Oszczędność |
+| -------------------------------- | ---------------- | ------------ | ----------- |
+| Plik źródłowy (.pbf)             | 193 MB           | 36 MB        | **-81%**    |
+| Przetworzone dane OSRM           | ~500 MB          | ~180 MB      | **-64%**    |
+| RAM (peak podczas przetwarzania) | 619 MB           | 240 MB       | **-61%**    |
+| Liczba węzłów                    | 3,770,974        | 683,281      | **-82%**    |
 
 ## Dokumentacja API
 
@@ -148,26 +233,31 @@ Pełna dokumentacja OSRM API: https://project-osrm.org/docs/v5.24.0/api/
 ## Troubleshooting
 
 **Problem: osmium-tool nie jest zainstalowany**
-- Rozwiązanie: 
+
+- Rozwiązanie:
   - macOS: `brew install osmium-tool`
   - Ubuntu: `sudo apt-get install osmium-tool`
 
 **Problem: Brak pliku map.osm.pbf**
-- Rozwiązanie: `./scripts/download-map.sh [region]`
+
+- Rozwiązanie: `cd backend && ./scripts/download-map.sh [region]`
 
 **Problem: Brak wyciętej mapy miasta**
-- Rozwiązanie: `./scripts/extract-city.sh [region] [city]`
+
+- Rozwiązanie: `cd backend && ./scripts/extract-city.sh [region] [city]`
 
 **Problem: Port już zajęty**
-- Rozwiązanie: Użyj innego portu, np. `./scripts/run-city-server.sh krakow 5002`
+
+- Rozwiązanie: Użyj innego portu, np. `cd backend && ./scripts/run-city-server.sh krakow 5002`
 
 **Problem: Błąd pamięci podczas przetwarzania**
+
 - Zwiększ pamięć dla Docker Desktop (min. 4GB)
 - Użyj mniejszego obszaru miasta (zmodyfikuj bbox w `extract-city.sh`)
 
 ## Dodawanie Nowych Miast
 
-Aby dodać nowe miasto, edytuj plik `scripts/extract-city.sh` i dodaj nowy wpis w sekcji `case`:
+Aby dodać nowe miasto, edytuj plik `backend/scripts/extract-city.sh` i dodaj nowy wpis w sekcji `case`:
 
 ```bash
     poznan)
@@ -176,6 +266,13 @@ Aby dodać nowe miasto, edytuj plik `scripts/extract-city.sh` i dodaj nowy wpis 
 ```
 
 Współrzędne bbox można znaleźć na: https://boundingbox.klokantech.com/
+
+## Więcej Informacji
+
+- **Backend**: Zobacz [`backend/README.md`](backend/README.md) - dokumentacja OSRM, API, deployment
+- **Frontend**: Zobacz [`frontend/README.md`](frontend/README.md) - dokumentacja interfejsu webowego
+- **Wymagania**: Zobacz [`project_documentation/REQUIREMENTS.md`](project_documentation/REQUIREMENTS.md)
+- **User Stories**: Zobacz [`user_stories/web_interface.md`](user_stories/web_interface.md)
 
 ## Licencja
 
