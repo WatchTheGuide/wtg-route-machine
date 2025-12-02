@@ -15,8 +15,8 @@ case $REGION in
   poland)
     MAP_FILE="poland-latest.osm.pbf"
     ;;
-  mazowieckie)
-    MAP_FILE="poland/mazowieckie-latest.osm.pbf"
+  malopolskie)
+    MAP_FILE="poland/malopolskie-latest.osm.pbf"
     GEOFABRIK_URL="https://download.geofabrik.de/europe"
     ;;
   europe)
@@ -25,7 +25,7 @@ case $REGION in
     ;;
   *)
     echo "Nieznany region: $REGION"
-    echo "Dostępne regiony: poland, mazowieckie, europe"
+    echo "Dostępne regiony: poland, malopolskie, europe"
     exit 1
     ;;
 esac

@@ -1,128 +1,181 @@
-# WTG Route Machine
+# WTG Route Machine - City Walking Tours
 
-Własna instancja OpenSourceRoutingMachine (OSRM) z API do wyznaczania tras.
+Lekka i wydajna instancja OpenSourceRoutingMachine (OSRM) dedykowana do **pieszych wycieczek po mieście**. System zoptymalizowany pod kątem wdrożenia w chmurze AWS poprzez pracę na wycinkach map (miasta) zamiast pełnych map krajów.
 
 ## Wymagania
 
 - Docker i Docker Compose
 - wget (do pobierania map)
-- Min. 4GB RAM (zależnie od rozmiaru mapy)
-- Min. 10GB wolnego miejsca na dysku
+- osmium-tool (do wycinania map miast)
+  - macOS: `brew install osmium-tool`
+  - Ubuntu: `sudo apt-get install osmium-tool`
+- Min. 2GB RAM (dla pojedynczego miasta)
+- Min. 5GB wolnego miejsca na dysku
 
-## Szybki Start
+## Szybki Start - Praca z Miastami
 
-### 1. Pobierz dane mapy
+### 1. Pobierz mapę województwa
 
 ```bash
-./scripts/download-map.sh poland
+./scripts/download-map.sh malopolskie
 ```
 
-Dostępne regiony: `poland`, `mazowieckie`, `europe`
+Dostępne regiony: `poland`, `malopolskie`, `europe`
 
-### 2. Przetwórz dane dla OSRM
+### 2. Wytnij mapę miasta
 
 ```bash
-./scripts/prepare-osrm.sh car
+./scripts/extract-city.sh malopolskie krakow
 ```
 
-Dostępne profile: `car`, `bike`, `foot`
+Dostępne miasta:
+- `krakow` (z małopolskiego)
+- `warszawa` (z mazowieckiego)
+- `trojmiasto` (z pomorskiego)
+- `wroclaw` (z dolnośląskiego)
 
-### 3. Uruchom serwer OSRM
+### 3. Przetwórz dane dla OSRM
 
 ```bash
-docker-compose up -d
+./scripts/prepare-city-osrm.sh krakow foot
 ```
 
-Serwer będzie dostępny pod adresem: `http://localhost:5000`
+Profile: `foot` (domyślny), `bicycle`, `car`
 
-### 4. Testowanie API
-
-**Przykład: Wyznaczanie trasy**
+### 4. Uruchom serwer dla miasta
 
 ```bash
-curl "http://localhost:5000/route/v1/driving/21.0122,52.2297;16.9252,52.4064?overview=full&steps=true"
+./scripts/run-city-server.sh krakow 5001
 ```
 
-**Przykład: Macierz odległości**
+Serwer będzie dostępny pod adresem: `http://localhost:5001`
 
+### 5. Testowanie API
+
+**Przykład: Najbliższy punkt (Rynek Główny w Krakowie)**
 ```bash
-curl "http://localhost:5000/table/v1/driving/21.0122,52.2297;16.9252,52.4064;18.6466,54.3520"
+curl "http://localhost:5001/nearest/v1/foot/19.9385,50.0647"
 ```
 
-**Przykład: Najbliższy punkt na drodze**
-
+**Przykład: Trasa piesza (Rynek → Wawel)**
 ```bash
-curl "http://localhost:5000/nearest/v1/driving/21.0122,52.2297"
+curl "http://localhost:5001/route/v1/foot/19.9385,50.0647;19.9353,50.0540?overview=full&steps=true"
+```
+
+**Przykład: Macierz odległości (Rynek, Wawel, AGH)**
+```bash
+curl "http://localhost:5001/table/v1/foot/19.9385,50.0647;19.9353,50.0540;19.9133,50.0664"
 ```
 
 ## Struktura Projektu
 
 ```
 wtg-route-machine/
-├── docker-compose.yml          # Konfiguracja Docker Compose
+├── docker-compose.yml          # Konfiguracja Docker Compose (legacy)
 ├── osrm-data/                  # Dane map OSM i przetworzone pliki OSRM
+│   ├── map.osm.pbf            # Pełna mapa województwa
+│   ├── krakow.osm.pbf         # Wycięta mapa miasta
+│   └── krakow.osrm.*          # Przetworzone dane OSRM
 ├── osrm-profiles/              # Własne profile routingowe (opcjonalnie)
 ├── scripts/
-│   ├── download-map.sh         # Skrypt do pobierania map
-│   └── prepare-osrm.sh         # Skrypt do przetwarzania danych
+│   ├── download-map.sh         # Pobieranie map województw
+│   ├── extract-city.sh         # Wycinanie map miast
+│   ├── prepare-city-osrm.sh    # Przetwarzanie danych miasta
+│   └── run-city-server.sh      # Uruchamianie serwera dla miasta
 └── project_documentation/
     └── REQUIREMENTS.md         # Wymagania projektu
 ```
 
-## Zarządzanie
+## Zarządzanie Serwerami Miast
 
-**Sprawdzenie statusu:**
-
+**Sprawdzenie działających serwerów:**
 ```bash
-docker-compose ps
+docker ps | grep osrm
 ```
 
 **Logi serwera:**
-
 ```bash
-docker-compose logs -f osrm-backend
+docker logs -f osrm-krakow
 ```
 
 **Zatrzymanie serwera:**
-
 ```bash
-docker-compose down
+docker stop osrm-krakow
 ```
 
-**Restart serwera:**
-
+**Usunięcie kontenera:**
 ```bash
-docker-compose restart
+docker rm osrm-krakow
 ```
 
-## Aktualizacja Danych
+## Workflow dla Wielu Miast
 
-Aby zaktualizować dane mapy:
+Możesz uruchomić wiele serwerów jednocześnie dla różnych miast:
 
-1. Zatrzymaj serwer: `docker-compose down`
-2. Pobierz nową mapę: `./scripts/download-map.sh poland`
-3. Przetwórz dane: `./scripts/prepare-osrm.sh car`
-4. Uruchom serwer: `docker-compose up -d`
+```bash
+# Kraków na porcie 5001
+./scripts/run-city-server.sh krakow 5001
+
+# Warszawa na porcie 5002
+./scripts/run-city-server.sh warszawa 5002
+
+# Wrocław na porcie 5003
+./scripts/run-city-server.sh wroclaw 5003
+```
+
+## Oszczędność Zasobów
+
+Porównanie rozmiaru danych (przykład: Kraków vs Małopolska):
+
+| Metryka | Całe Województwo | Tylko Kraków | Oszczędność |
+|---------|------------------|--------------|-------------|
+| Plik źródłowy (.pbf) | 193 MB | 36 MB | **-81%** |
+| Przetworzone dane OSRM | ~500 MB | ~180 MB | **-64%** |
+| RAM (peak podczas przetwarzania) | 619 MB | 240 MB | **-61%** |
+| Liczba węzłów | 3,770,974 | 683,281 | **-82%** |
 
 ## Dokumentacja API
 
 Pełna dokumentacja OSRM API: https://project-osrm.org/docs/v5.24.0/api/
 
+### Główne Endpointy
+
+- `/route/v1/{profile}/{coordinates}` - Wyznaczanie trasy
+- `/table/v1/{profile}/{coordinates}` - Macierz odległości
+- `/match/v1/{profile}/{coordinates}` - Map matching (dopasowanie GPS do drogi)
+- `/nearest/v1/{profile}/{coordinates}` - Najbliższy punkt na sieci drogowej
+
 ## Troubleshooting
 
-**Problem: Brak pliku map.osrm**
+**Problem: osmium-tool nie jest zainstalowany**
+- Rozwiązanie: 
+  - macOS: `brew install osmium-tool`
+  - Ubuntu: `sudo apt-get install osmium-tool`
 
-- Rozwiązanie: Uruchom `./scripts/prepare-osrm.sh car`
+**Problem: Brak pliku map.osm.pbf**
+- Rozwiązanie: `./scripts/download-map.sh [region]`
 
-**Problem: Kontener się nie uruchamia**
+**Problem: Brak wyciętej mapy miasta**
+- Rozwiązanie: `./scripts/extract-city.sh [region] [city]`
 
-- Sprawdź logi: `docker-compose logs osrm-backend`
-- Sprawdź czy dane są przetworzone: `ls -lh osrm-data/`
+**Problem: Port już zajęty**
+- Rozwiązanie: Użyj innego portu, np. `./scripts/run-city-server.sh krakow 5002`
 
 **Problem: Błąd pamięci podczas przetwarzania**
-
 - Zwiększ pamięć dla Docker Desktop (min. 4GB)
-- Użyj mniejszego regionu mapy
+- Użyj mniejszego obszaru miasta (zmodyfikuj bbox w `extract-city.sh`)
+
+## Dodawanie Nowych Miast
+
+Aby dodać nowe miasto, edytuj plik `scripts/extract-city.sh` i dodaj nowy wpis w sekcji `case`:
+
+```bash
+    poznan)
+        BBOX="16.8,52.3,17.0,52.5"  # Poznań z okolicami
+        ;;
+```
+
+Współrzędne bbox można znaleźć na: https://boundingbox.klokantech.com/
 
 ## Licencja
 

@@ -5,7 +5,7 @@ services:
     image: ghcr.io/project-osrm/osrm-backend:latest
     container_name: osrm-backend
     ports:
-      - "5000:5000"
+      - "5001:5000"
     volumes:
       - ./osrm-data:/data
       - ./osrm-profiles:/profiles

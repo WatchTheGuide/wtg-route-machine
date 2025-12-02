@@ -1,49 +1,42 @@
-# Wymagania Projektu: Własna Instancja OpenSourceRoutingMachine (OSRM) z API
+# Wymagania Projektu: WTG Route Machine (City Walking Tours)
 
 ## 1. Cel Projektu
-
-Stworzenie i wdrożenie własnej instancji silnika routingowego OSRM (Open Source Routing Machine) wraz z dedykowanym API, umożliwiającym wyznaczanie tras, obliczanie macierzy odległości oraz dopasowywanie tras do sieci drogowej (map matching).
+Stworzenie lekkiej i wydajnej instancji silnika routingowego OSRM dedykowanej do **pieszych wycieczek po mieście**. System ma być zoptymalizowany pod kątem wdrożenia w chmurze AWS, minimalizując zużycie pamięci RAM poprzez pracę na wycinkach map (miasta/regiony turystyczne) zamiast pełnych map krajów.
 
 ## 2. Wymagania Funkcjonalne
 
 ### 2.1. Silnik Routingowy (OSRM)
+- **Profil główny:** Pieszy (`foot`). Zoptymalizowany pod kątem chodników, ścieżek, przejść dla pieszych i atrakcji turystycznych.
+- **Profile dodatkowe:** Rowerowy (`bicycle`) - opcjonalnie.
+- **Algorytm:** MLD (Multi-Level Dijkstra) - zapewnia dobry balans między wydajnością a czasem pre-processingu.
 
-- **Obsługa profili:** Możliwość konfiguracji profili routingowych (samochód, rower, pieszy). Domyślnie: samochód (`car`).
-- **Dane mapowe:** Obsługa importu danych z OpenStreetMap (pliki `.osm.pbf`).
-- **Algorytm:** Wykorzystanie algorytmu MLD (Multi-Level Dijkstra) lub CH (Contraction Hierarchies) w zależności od potrzeb (szybkość vs elastyczność aktualizacji).
+### 2.2. API
+- Standardowe endpointy OSRM: `/route`, `/table`, `/match`, `/nearest`.
+- Zwracanie szczegółowych instrukcji nawigacyjnych dla pieszych.
 
-### 2.2. API (Interfejs Programistyczny)
-
-- **Endpoint `/route`:** Wyznaczanie trasy między punktami (start, koniec, punkty pośrednie).
-  - Zwracanie geometrii trasy (np. Polyline).
-  - Zwracanie instrukcji nawigacyjnych.
-- **Endpoint `/table`:** Obliczanie macierzy odległości i czasu przejazdu (Distance Matrix) dla zestawu punktów.
-- **Endpoint `/match`:** Dopasowywanie surowych danych GPS do sieci drogowej (Map Matching).
-- **Endpoint `/nearest`:** Znajdowanie najbliższego punktu na sieci drogowej względem podanej lokalizacji.
-- **Format danych:** JSON.
-
-### 2.3. Zarządzanie i Aktualizacja
-
-- Skrypty do automatycznego pobierania i aktualizacji map (np. z Geofabrik).
-- Proces przetwarzania danych (extract, partition, customize) zautomatyzowany (np. via Docker/skrypty shell).
+### 2.3. Zarządzanie Mapami (Podział i Optymalizacja)
+- **Strategia podziału:** Automatyczne wycinanie obszarów miast (Bounding Box lub Polygon) z większych plików regionalnych (np. województw).
+- **Obsługiwane obszary (MVP):**
+  - Kraków (z mapy Małopolski)
+  - Warszawa (z mapy Mazowsza)
+  - Trójmiasto (z mapy Pomorza)
+  - Wrocław (z mapy Dolnego Śląska)
+- **Narzędzia:** Wykorzystanie `osmium-tool` do ekstrakcji danych.
 
 ## 3. Wymagania Niefunkcjonalne
-
-- **Wydajność:** Czas odpowiedzi dla prostych zapytań routingowych poniżej 100ms.
-- **Skalowalność:** Możliwość uruchomienia w kontenerze Docker.
-- **Dostępność:** API dostępne przez HTTP.
+- **Niskie zużycie zasobów:** Instancja dla pojedynczego miasta powinna uruchamiać się na maszynach z **2GB RAM** (np. AWS t3.small).
+- **Szybki start:** Czas uruchomienia kontenera z gotowym grafem poniżej 30 sekund.
+- **Skalowalność:** Architektura bezstanowa, umożliwiająca łatwe skalowanie poziome na AWS (ECS/Fargate).
 
 ## 4. Wymagania Techniczne
+- **Stack:** OSRM Backend (C++), Docker, Bash/Python (skrypty).
+- **Narzędzia GIS:** `osmium-tool` do obróbki plików `.pbf`.
+- **Chmura:** AWS (EC2 lub ECS).
+- **Konteneryzacja:** Obrazy Docker zoptymalizowane pod kątem rozmiaru (multistage build).
 
-- **Język/Technologia:** C++ (OSRM backend), Node.js lub Python (opcjonalny wrapper API/proxy), Docker.
-- **System operacyjny:** Linux (zalecany do produkcji), macOS/Windows (dev).
-- **Konteneryzacja:** Docker i Docker Compose do łatwego wdrażania.
-
-## 5. Etapy Realizacji (Roadmapa)
-
-1.  Konfiguracja środowiska i repozytorium.
-2.  Uruchomienie podstawowej instancji OSRM w Dockerze na przykładowych danych (np. Polska lub wybrane województwo).
-3.  Opracowanie konfiguracji profili (lua).
-4.  Implementacja/Konfiguracja API Gateway (jeśli wymagane dodatkowe zabezpieczenia lub logika).
-5.  Testy wydajnościowe i funkcjonalne.
-6.  Dokumentacja API i instrukcja wdrożenia.
+## 5. Etapy Realizacji
+1.  Konfiguracja środowiska i repozytorium (Zakończone).
+2.  Opracowanie procesu wycinania map miast (sub-regions) przy użyciu `osmium`.
+3.  Dostosowanie profilu `foot.lua` do specyfiki wycieczek miejskich (np. preferowanie parków, unikanie ruchliwych ulic).
+4.  Konfiguracja CI/CD do budowania obrazów Docker z gotowymi danymi dla konkretnych miast.
+5.  Wdrożenie testowe na AWS.
