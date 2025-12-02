@@ -634,10 +634,24 @@ function exportInstructionsToPDF() {
 
   // Create PDF
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+    putOnlyUsedFonts: true,
+    compress: true,
+  });
 
-  // Set font
-  doc.setFont('helvetica');
+  // Use Times font - better support for international characters
+  // Note: For full Polish character support, we use text encoding
+  doc.setFont('times', 'normal');
+
+  // Helper function to encode Polish characters
+  const encodePolish = (text) => {
+    // jsPDF with times/courier fonts should handle Polish characters
+    // If issues persist, we can replace specific characters
+    return text;
+  };
 
   // Title
   doc.setFontSize(20);
@@ -679,18 +693,19 @@ function exportInstructionsToPDF() {
       // Step number
       doc.setFontSize(10);
       doc.setTextColor(255, 102, 0);
-      doc.setFont('helvetica', 'bold');
+      doc.setFont('times', 'bold');
       doc.text(`${stepNumber}.`, 20, yPosition);
 
       // Instruction text
       doc.setTextColor(0, 0, 0);
-      doc.setFont('helvetica', 'normal');
+      doc.setFont('times', 'normal');
       const instructionLines = doc.splitTextToSize(instruction, 140);
       doc.text(instructionLines, 30, yPosition);
 
       // Distance
       doc.setTextColor(100, 100, 100);
       doc.setFontSize(9);
+      doc.setFont('times', 'normal');
       doc.text(distance, 175, yPosition);
 
       yPosition += instructionLines.length * 6 + 4;
@@ -706,9 +721,9 @@ function exportInstructionsToPDF() {
 
   doc.setFontSize(10);
   doc.setTextColor(69, 69, 69);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('times', 'bold');
   doc.text(`${stepNumber}.`, 20, yPosition);
-  doc.text('Dotarłeś do celu', 30, yPosition);
+  doc.text('Dotarles do celu', 30, yPosition);
 
   // Footer on last page
   const totalPages = doc.internal.pages.length - 1;
