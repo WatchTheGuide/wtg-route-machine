@@ -597,11 +597,11 @@ function downloadRouteAsGeoJSON() {
 }
 
 /**
- * Export navigation instructions to PDF
+ * Export navigation instructions to PDF using pdfMake (full UTF-8 support)
  */
 function exportInstructionsToPDF() {
-  // Check if jsPDF is loaded
-  if (typeof window.jspdf === 'undefined') {
+  // Check if pdfMake is loaded
+  if (typeof pdfMake === 'undefined') {
     alert('Biblioteka PDF nie jest załadowana. Odśwież stronę.');
     return;
   }
@@ -632,120 +632,165 @@ function exportInstructionsToPDF() {
   const route = window.wtgCurrentRouteData.routes[0];
   const legs = route.legs;
 
-  // Create PDF
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'a4',
-    putOnlyUsedFonts: true,
-    compress: true,
-  });
-
-  // Use Times font - better support for international characters
-  // Note: For full Polish character support, we use text encoding
-  doc.setFont('times', 'normal');
-
-  // Helper function to encode Polish characters
-  const encodePolish = (text) => {
-    // jsPDF with times/courier fonts should handle Polish characters
-    // If issues persist, we can replace specific characters
-    return text;
-  };
-
-  // Title
-  doc.setFontSize(20);
-  doc.setTextColor(255, 102, 0); // Primary orange
-  doc.text('WTG Route Machine', 20, 20);
-
-  doc.setFontSize(14);
-  doc.setTextColor(69, 69, 69); // Secondary dark gray
-  doc.text('Instrukcje nawigacji', 20, 30);
-
-  // Route summary
-  doc.setFontSize(11);
-  doc.setTextColor(0, 0, 0);
-  doc.text(`Dystans: ${distance}`, 20, 45);
-  doc.text(`Czas: ${duration}`, 20, 52);
-
-  // Line separator
-  doc.setDrawColor(255, 102, 0);
-  doc.setLineWidth(0.5);
-  doc.line(20, 58, 190, 58);
-
-  // Instructions
-  let yPosition = 68;
+  // Build instructions content
+  const instructionsContent = [];
   let stepNumber = 1;
-  const pageHeight = doc.internal.pageSize.height;
-  const marginBottom = 20;
 
   legs.forEach((leg) => {
     leg.steps.forEach((step) => {
-      // Check if we need a new page
-      if (yPosition > pageHeight - marginBottom) {
-        doc.addPage();
-        yPosition = 20;
-      }
-
       const instruction = formatInstruction(step);
-      const distance = formatDistance(step.distance);
+      const stepDistance = formatDistance(step.distance);
 
-      // Step number
-      doc.setFontSize(10);
-      doc.setTextColor(255, 102, 0);
-      doc.setFont('times', 'bold');
-      doc.text(`${stepNumber}.`, 20, yPosition);
+      instructionsContent.push({
+        columns: [
+          {
+            width: 20,
+            text: `${stepNumber}.`,
+            bold: true,
+            color: '#ff6600',
+            fontSize: 10,
+          },
+          {
+            width: '*',
+            text: instruction,
+            fontSize: 10,
+            margin: [0, 0, 10, 0],
+          },
+          {
+            width: 40,
+            text: stepDistance,
+            fontSize: 9,
+            color: '#666666',
+            alignment: 'right',
+          },
+        ],
+        margin: [0, 3, 0, 3],
+      });
 
-      // Instruction text
-      doc.setTextColor(0, 0, 0);
-      doc.setFont('times', 'normal');
-      const instructionLines = doc.splitTextToSize(instruction, 140);
-      doc.text(instructionLines, 30, yPosition);
-
-      // Distance
-      doc.setTextColor(100, 100, 100);
-      doc.setFontSize(9);
-      doc.setFont('times', 'normal');
-      doc.text(distance, 175, yPosition);
-
-      yPosition += instructionLines.length * 6 + 4;
       stepNumber++;
     });
   });
 
   // Add final arrival
-  if (yPosition > pageHeight - marginBottom) {
-    doc.addPage();
-    yPosition = 20;
-  }
+  instructionsContent.push({
+    columns: [
+      {
+        width: 20,
+        text: `${stepNumber}.`,
+        bold: true,
+        color: '#454545',
+        fontSize: 10,
+      },
+      {
+        width: '*',
+        text: 'Dotarłeś do celu',
+        fontSize: 10,
+        bold: true,
+      },
+      {
+        width: 40,
+        text: '',
+      },
+    ],
+    margin: [0, 8, 0, 3],
+  });
 
-  doc.setFontSize(10);
-  doc.setTextColor(69, 69, 69);
-  doc.setFont('times', 'bold');
-  doc.text(`${stepNumber}.`, 20, yPosition);
-  doc.text('Dotarles do celu', 30, yPosition);
-
-  // Footer on last page
-  const totalPages = doc.internal.pages.length - 1;
-  for (let i = 1; i <= totalPages; i++) {
-    doc.setPage(i);
-    doc.setFontSize(8);
-    doc.setTextColor(150, 150, 150);
-    doc.text(
-      `Strona ${i} z ${totalPages} | WTG Route Machine ${new Date().toLocaleDateString(
-        'pl-PL'
-      )}`,
-      20,
-      pageHeight - 10
-    );
-  }
+  // PDF document definition
+  const docDefinition = {
+    pageSize: 'A4',
+    pageMargins: [40, 60, 40, 60],
+    info: {
+      title: 'WTG Route Machine - Instrukcje nawigacji',
+      author: 'WTG Route Machine',
+      subject: 'Instrukcje nawigacji',
+    },
+    header: function (currentPage, pageCount) {
+      return {
+        text: `Strona ${currentPage} z ${pageCount}`,
+        alignment: 'right',
+        fontSize: 8,
+        color: '#999999',
+        margin: [40, 20, 40, 0],
+      };
+    },
+    footer: function (currentPage, pageCount) {
+      return {
+        text: `WTG Route Machine | ${new Date().toLocaleDateString('pl-PL')}`,
+        alignment: 'center',
+        fontSize: 8,
+        color: '#999999',
+        margin: [0, 0, 0, 20],
+      };
+    },
+    content: [
+      {
+        text: 'WTG Route Machine',
+        fontSize: 24,
+        bold: true,
+        color: '#ff6600',
+        margin: [0, 0, 0, 5],
+      },
+      {
+        text: 'Instrukcje nawigacji',
+        fontSize: 16,
+        color: '#454545',
+        margin: [0, 0, 0, 20],
+      },
+      {
+        canvas: [
+          {
+            type: 'line',
+            x1: 0,
+            y1: 0,
+            x2: 515,
+            y2: 0,
+            lineWidth: 1,
+            lineColor: '#ff6600',
+          },
+        ],
+        margin: [0, 0, 0, 15],
+      },
+      {
+        columns: [
+          {
+            width: '*',
+            text: [
+              { text: 'Dystans: ', bold: true },
+              { text: distance, color: '#454545' },
+            ],
+            fontSize: 11,
+          },
+          {
+            width: '*',
+            text: [
+              { text: 'Czas: ', bold: true },
+              { text: duration, color: '#454545' },
+            ],
+            fontSize: 11,
+          },
+        ],
+        margin: [0, 0, 0, 20],
+      },
+      {
+        text: 'Kroki nawigacji',
+        fontSize: 12,
+        bold: true,
+        color: '#454545',
+        margin: [0, 0, 0, 10],
+      },
+      ...instructionsContent,
+    ],
+    defaultStyle: {
+      font: 'Roboto',
+    },
+  };
 
   // Generate filename
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
   const filename = `wtg-instrukcje-${timestamp}.pdf`;
 
-  // Save PDF
-  doc.save(filename);
+  // Create and download PDF
+  pdfMake.createPdf(docDefinition).download(filename);
 
   console.log('PDF file downloaded:', filename);
 }
