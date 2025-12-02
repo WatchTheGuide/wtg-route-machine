@@ -1,0 +1,25 @@
+# OSRM Data Files
+osrm-data/*.osm.pbf
+osrm-data/*.osrm*
+osrm-data/*.stxxl
+
+# Docker volumes
+.docker-volumes/
+
+# Logs
+*.log
+logs/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
