@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WTG Route Machine - City Walking Tours</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- OpenLayers CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v9.0.0/ol.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-blue-600 text-white shadow-lg">
+            <div class="container mx-auto px-4 py-4">
+                <h1 class="text-2xl font-bold">WTG Route Machine</h1>
+                <p class="text-sm text-blue-100">City Walking Tours - Routing System</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 container mx-auto px-4 py-6">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <!-- Map Container -->
+                <div id="map" class="w-full" style="height: 600px;"></div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-gray-300 py-4 mt-8">
+            <div class="container mx-auto px-4 text-center text-sm">
+                <p>Powered by OSRM & OpenStreetMap | &copy; 2025 WTG Route Machine</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- OpenLayers JS -->
+    <script src="https://cdn.jsdelivr.net/npm/ol@v9.0.0/dist/ol.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/map.js"></script>
+</body>
+</html>

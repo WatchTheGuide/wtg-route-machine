@@ -1,0 +1,30 @@
+/* Custom styles for WTG Route Machine */
+
+/* Ensure map takes full container size */
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+/* OpenLayers controls styling */
+.ol-control button {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    color: #1f2937 !important;
+}
+
+.ol-control button:hover {
+    background-color: rgba(255, 255, 255, 1) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #map {
+        height: 500px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    #map {
+        height: 400px !important;
+    }
+}
