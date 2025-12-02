@@ -427,11 +427,11 @@ function updateProfileButtonState(activeProfile) {
     if (profile === activeProfile) {
       // Active state
       button.className =
-        'profile-btn px-3 py-1.5 rounded-md font-medium text-sm transition-all flex items-center gap-1.5 bg-primary text-white shadow-md';
+        'profile-btn p-2 rounded-md transition-all flex items-center justify-center bg-primary text-white shadow-md';
     } else {
       // Inactive state
       button.className =
-        'profile-btn px-3 py-1.5 rounded-md font-medium text-sm transition-all flex items-center gap-1.5 text-gray-600 hover:bg-gray-200';
+        'profile-btn p-2 rounded-md transition-all flex items-center justify-center text-gray-600 hover:bg-gray-200';
     }
   });
 }
