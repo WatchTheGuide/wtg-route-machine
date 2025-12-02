@@ -29,16 +29,16 @@ function initMap() {
     target: 'map',
     layers: [osmLayer],
     view: view,
-    controls: ol.control.defaults({
+    controls: ol.control.defaults.defaults({
       zoom: true,
       rotate: false,
-      attribution: true
+      attribution: true,
     }).extend([
       new ol.control.FullScreen(),
       new ol.control.ScaleLine({
-        units: 'metric'
-      })
-    ])
+        units: 'metric',
+      }),
+    ]),
   });
 
   // Store map instance globally for access from other modules
