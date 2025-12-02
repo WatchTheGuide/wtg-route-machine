@@ -172,6 +172,75 @@ async function addWaypoint(lonLat, coordinate) {
 }
 
 /**
+ * Add GPS position as first waypoint
+ * US 8.1: Automatyczny Punkt Startowy GPS
+ * @param {number} lon - Longitude
+ * @param {number} lat - Latitude
+ */
+async function addWaypointFromGPS(lon, lat) {
+  const lonLat = [lon, lat];
+  const coordinate = ol.proj.fromLonLat(lonLat);
+
+  console.log('Adding GPS waypoint:', lonLat);
+
+  // Add to waypoints array
+  waypoints.push(lonLat);
+
+  // Create marker feature with GPS indicator
+  const marker = new ol.Feature({
+    geometry: new ol.geom.Point(coordinate),
+    waypointIndex: 0, // First waypoint
+    waypointNumber: 1,
+    lonLat: lonLat,
+    isGPS: true, // Mark as GPS waypoint
+  });
+
+  // Fetch address for GPS position
+  // US 8.1: Reverse geocode GPS coordinates
+  if (window.wtgGeocoding && window.wtgGeocoding.reverseGeocode) {
+    try {
+      const addressInfo = await window.wtgGeocoding.reverseGeocode(lat, lon);
+      if (addressInfo) {
+        marker.set('address', addressInfo.displayAddress);
+        marker.set('fullAddress', addressInfo.fullAddress);
+        console.log('GPS address:', addressInfo.displayAddress);
+      } else {
+        marker.set(
+          'address',
+          `Twoja lokalizacja\n${window.wtgGeocoding.formatCoordinates(
+            lat,
+            lon
+          )}`
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching GPS address:', error);
+      marker.set(
+        'address',
+        `Twoja lokalizacja\n${window.wtgGeocoding.formatCoordinates(lat, lon)}`
+      );
+    }
+  } else {
+    marker.set('address', 'Twoja lokalizacja (GPS)');
+  }
+
+  // Style marker with number
+  marker.setStyle(createMarkerStyle(1));
+
+  // Add to layer
+  window.wtgMarkerLayer.getSource().addFeature(marker);
+  markerFeatures.push(marker);
+
+  // Show address tooltip/popup
+  updateMarkerTooltip(marker, coordinate);
+
+  // Update waypoints list
+  updateWaypointsList();
+
+  console.log('GPS waypoint added successfully');
+}
+
+/**
  * Handle right-click event for marker removal
  * @param {MouseEvent} event - Right-click event
  * @param {ol.Map} map - OpenLayers map instance
@@ -1089,6 +1158,7 @@ async function selectSearchResult(result) {
 window.wtgUI = {
   initUI,
   addWaypoint,
+  addWaypointFromGPS,
   removeWaypoint,
   clearWaypoints,
   getWaypoints,
