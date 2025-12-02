@@ -238,3 +238,35 @@
 - [x] Search bar rozciąga się na pozostałą przestrzeń w pasku kontrolek (flex-1).
 - [x] Na małych ekranach przyciski pokazują tylko ikony (hidden sm:inline).
 - [x] Przyciski są odpowiednio rozmieszczone bez nakładania się elementów.
+
+## Epic 7: Zaawansowane Zarządzanie Punktami
+
+### US 7.1: Zmiana Kolejności Punktów
+
+**Jako** użytkownik,
+**Chcę** móc zmieniać kolejność punktów poprzez przesuwanie ich na liście,
+**Aby** dostosować trasę bez usuwania i dodawania punktów od nowa.
+
+**Kryteria Akceptacji:**
+
+- [ ] Każdy punkt na liście ma przyciski "w górę" i "w dół" do zmiany kolejności.
+- [ ] Kliknięcie strzałki "w górę" zamienia punkt z poprzednim.
+- [ ] Kliknięcie strzałki "w dół" zamienia punkt z następnym.
+- [ ] Pierwszy punkt nie ma strzałki "w górę", ostatni nie ma strzałki "w dół".
+- [ ] Po zmianie kolejności trasa jest automatycznie przeliczana.
+- [ ] Numery punktów na mapie i w tooltip'ach są automatycznie aktualizowane.
+
+### US 7.2: Usuwanie Punktów z Listy
+
+**Jako** użytkownik,
+**Chcę** móc usunąć konkretny punkt klikając przycisk na liście,
+**Aby** szybko modyfikować trasę bez szukania punktu na mapie.
+
+**Kryteria Akceptacji:**
+
+- [ ] Każdy punkt na liście ma przycisk "usuń" (ikona kosza).
+- [ ] Kliknięcie przycisku usuwa punkt z mapy i listy.
+- [ ] Pozostałe punkty są automatycznie przenumerowane.
+- [ ] Trasa jest automatycznie przeliczana po usunięciu punktu.
+- [ ] Jeśli zostaje mniej niż 2 punkty, trasa znika.
+- [ ] Tooltip adresu usuniętego punktu jest usuwany z mapy.

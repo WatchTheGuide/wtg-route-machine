@@ -604,26 +604,149 @@ function updateWaypointsList() {
 
     const itemDiv = document.createElement('div');
     itemDiv.className =
-      'flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer';
+      'flex items-start gap-2 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-move';
     itemDiv.dataset.waypointNumber = waypointNumber;
+    itemDiv.dataset.waypointIndex = index;
+    itemDiv.draggable = true;
 
     itemDiv.innerHTML = `
+      <div class="flex-shrink-0 p-1 text-gray-400 cursor-grab active:cursor-grabbing" data-action="drag-handle">
+        <i data-lucide="grip-vertical" class="w-5 h-5"></i>
+      </div>
       <div class="flex-shrink-0 w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center font-semibold text-sm">
         ${waypointNumber}
       </div>
-      <div class="flex-1 min-w-0">
+      <div class="flex-1 min-w-0 cursor-pointer" data-action="highlight">
         <p class="text-gray-900 font-medium truncate">${address}</p>
         <p class="text-xs text-gray-500 mt-1">${coords}</p>
       </div>
+      <button class="flex-shrink-0 p-1 text-gray-500 hover:text-red-600 transition-colors" data-action="delete" title="Usuń punkt">
+        <i data-lucide="trash-2" class="w-4 h-4"></i>
+      </button>
     `;
 
-    // Click handler to highlight marker
-    itemDiv.addEventListener('click', () => {
-      highlightMarker(feature);
+    // Drag & Drop event handlers
+    itemDiv.addEventListener('dragstart', (e) => {
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', index.toString());
+      itemDiv.classList.add('opacity-50');
+      console.log('Drag started for waypoint:', index);
+    });
+
+    itemDiv.addEventListener('dragend', (e) => {
+      itemDiv.classList.remove('opacity-50');
+      // Remove all drag-over styles
+      document.querySelectorAll('.border-blue-500').forEach((el) => {
+        el.classList.remove('border-blue-500', 'border-2');
+      });
+    });
+
+    itemDiv.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      itemDiv.classList.add('border-blue-500', 'border-2');
+    });
+
+    itemDiv.addEventListener('dragleave', (e) => {
+      itemDiv.classList.remove('border-blue-500', 'border-2');
+    });
+
+    itemDiv.addEventListener('drop', (e) => {
+      e.preventDefault();
+      itemDiv.classList.remove('border-blue-500', 'border-2');
+
+      const draggedIndex = parseInt(e.dataTransfer.getData('text/plain'));
+      const dropIndex = index;
+
+      if (draggedIndex !== dropIndex) {
+        console.log(`Swapping waypoint ${draggedIndex} with ${dropIndex}`);
+        swapWaypoints(draggedIndex, dropIndex);
+      }
+    });
+
+    // Click event for highlight and delete actions
+    itemDiv.addEventListener('click', (e) => {
+      const action = e.target.closest('[data-action]')?.dataset.action;
+
+      if (action === 'highlight') {
+        highlightMarker(feature);
+      } else if (action === 'delete') {
+        removeWaypoint(feature);
+      }
     });
 
     list.appendChild(itemDiv);
   });
+
+  // Re-initialize Lucide icons for new buttons
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+}
+
+/**
+ * Swap two waypoints in the list
+ * @param {number} index1 - Index of first waypoint
+ * @param {number} index2 - Index of second waypoint
+ */
+async function swapWaypoints(index1, index2) {
+  if (
+    index1 < 0 ||
+    index2 < 0 ||
+    index1 >= markerFeatures.length ||
+    index2 >= markerFeatures.length
+  ) {
+    console.error('Invalid waypoint indices for swap');
+    return;
+  }
+
+  // Swap in waypoints array
+  [waypoints[index1], waypoints[index2]] = [
+    waypoints[index2],
+    waypoints[index1],
+  ];
+
+  // Swap in markerFeatures array
+  [markerFeatures[index1], markerFeatures[index2]] = [
+    markerFeatures[index2],
+    markerFeatures[index1],
+  ];
+
+  // Renumber all waypoints
+  markerFeatures.forEach((feature, index) => {
+    feature.set('waypointNumber', index + 1);
+    feature.set('waypointIndex', index);
+    feature.setStyle(createMarkerStyle(index + 1));
+  });
+
+  // Update tooltips with new numbers
+  markerFeatures.forEach((feature) => {
+    const coordinate = feature.getGeometry().getCoordinates();
+    updateMarkerTooltip(feature, coordinate);
+  });
+
+  // Update waypoints list
+  updateWaypointsList();
+
+  // Recalculate route if we have at least 2 waypoints
+  if (waypoints.length >= 2 && window.wtgRouting) {
+    try {
+      const routeData = await window.wtgRouting.calculateRoute(
+        waypoints,
+        window.wtgCurrentOsrmPort
+      );
+
+      if (routeData) {
+        window.wtgRouting.displayRoute(routeData, window.wtgMap);
+        updateExportButtonState();
+        console.log('Route recalculated after waypoint swap');
+      }
+    } catch (error) {
+      console.error('Error recalculating route after swap:', error);
+    }
+  }
+
+  console.log(`Swapped waypoints ${index1 + 1} and ${index2 + 1}`);
 }
 
 /**
