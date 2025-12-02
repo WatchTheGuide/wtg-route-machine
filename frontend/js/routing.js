@@ -109,8 +109,10 @@ function displayRoute(routeData, map) {
   // Style for route line
   const routeStyle = new ol.style.Style({
     stroke: new ol.style.Stroke({
-      color: '#2563eb', // Blue-600
-      width: 4,
+      color: '#ff6600', // Primary orange
+      width: 5,
+      lineCap: 'round',
+      lineJoin: 'round',
     }),
   });
 
@@ -321,10 +323,10 @@ function displayNavigationInstructions(routeData) {
       // Create instruction element
       const stepDiv = document.createElement('div');
       stepDiv.className =
-        'flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors';
+        'flex items-start gap-3 p-3 bg-white rounded-lg hover:shadow-md transition-all border border-gray-200';
 
       stepDiv.innerHTML = `
-        <div class="flex-shrink-0 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center">
+        <div class="flex-shrink-0 w-10 h-10 bg-[#ff6600] text-white rounded-full flex items-center justify-center shadow-md">
           <i data-lucide="${icon}" class="w-5 h-5"></i>
         </div>
         <div class="flex-1">
@@ -340,9 +342,10 @@ function displayNavigationInstructions(routeData) {
 
   // Add final arrival instruction
   const arrivalDiv = document.createElement('div');
-  arrivalDiv.className = 'flex items-start gap-3 p-3 bg-green-50 rounded-lg';
+  arrivalDiv.className =
+    'flex items-start gap-3 p-3 bg-orange-50 rounded-lg border border-orange-200';
   arrivalDiv.innerHTML = `
-    <div class="flex-shrink-0 w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center">
+    <div class="flex-shrink-0 w-10 h-10 bg-[#454545] text-white rounded-full flex items-center justify-center shadow-md">
       <i data-lucide="flag" class="w-5 h-5"></i>
     </div>
     <div class="flex-1">

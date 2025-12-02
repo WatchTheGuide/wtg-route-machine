@@ -6,6 +6,8 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Helvetica Neue', Arial, sans-serif;
 }
 
 /* Map container - use flex to fill available space */
@@ -17,12 +19,32 @@ body {
 
 /* OpenLayers controls styling */
 .ol-control button {
-  background-color: rgba(255, 255, 255, 0.9) !important;
-  color: #1f2937 !important;
+  background-color: rgba(255, 102, 0, 0.95) !important;
+  color: #ffffff !important;
+  border-radius: 4px !important;
+  font-weight: 600 !important;
 }
 
 .ol-control button:hover {
-  background-color: rgba(255, 255, 255, 1) !important;
+  background-color: rgba(204, 82, 0, 1) !important;
+}
+
+.ol-zoom .ol-zoom-in,
+.ol-zoom .ol-zoom-out {
+  background-color: #ff6600 !important;
+}
+
+/* Autocomplete results styling */
+#search-results {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Smooth transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke,
+    opacity, box-shadow, transform;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Responsive adjustments */

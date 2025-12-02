@@ -486,9 +486,9 @@ function updateMarkerTooltip(feature, coordinate) {
 function createMarkerStyle(number) {
   return new ol.style.Style({
     image: new ol.style.Circle({
-      radius: 16,
+      radius: 18,
       fill: new ol.style.Fill({
-        color: '#dc2626', // Red-600
+        color: '#ff6600', // Primary orange
       }),
       stroke: new ol.style.Stroke({
         color: '#ffffff',
@@ -500,7 +500,7 @@ function createMarkerStyle(number) {
       fill: new ol.style.Fill({
         color: '#ffffff',
       }),
-      font: 'bold 14px sans-serif',
+      font: 'bold 15px sans-serif',
       offsetY: 0,
     }),
   });
@@ -604,7 +604,7 @@ function updateWaypointsList() {
 
     const itemDiv = document.createElement('div');
     itemDiv.className =
-      'flex items-start gap-2 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-move';
+      'flex items-start gap-3 p-3 bg-gradient-to-r from-white to-orange-50 rounded-lg hover:shadow-md transition-all cursor-move border border-gray-200';
     itemDiv.dataset.waypointNumber = waypointNumber;
     itemDiv.dataset.waypointIndex = index;
     itemDiv.draggable = true;
@@ -613,14 +613,14 @@ function updateWaypointsList() {
       <div class="flex-shrink-0 p-1 text-gray-400 cursor-grab active:cursor-grabbing" data-action="drag-handle">
         <i data-lucide="grip-vertical" class="w-5 h-5"></i>
       </div>
-      <div class="flex-shrink-0 w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center font-semibold text-sm">
+      <div class="flex-shrink-0 w-8 h-8 bg-[#ff6600] text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md">
         ${waypointNumber}
       </div>
       <div class="flex-1 min-w-0 cursor-pointer" data-action="highlight">
         <p class="text-gray-900 font-medium truncate">${address}</p>
         <p class="text-xs text-gray-500 mt-1">${coords}</p>
       </div>
-      <button class="flex-shrink-0 p-1 text-gray-500 hover:text-red-600 transition-colors" data-action="delete" title="Usuń punkt">
+      <button class="flex-shrink-0 p-1 text-gray-500 hover:text-[#ff6600] transition-colors" data-action="delete" title="Usuń punkt">
         <i data-lucide="trash-2" class="w-4 h-4"></i>
       </button>
     `;
