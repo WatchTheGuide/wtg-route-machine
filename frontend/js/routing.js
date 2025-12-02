@@ -58,6 +58,9 @@ async function calculateRoute(waypoints, port) {
     console.log('Distance:', (data.routes[0].distance / 1000).toFixed(2), 'km');
     console.log('Duration:', (data.routes[0].duration / 60).toFixed(0), 'min');
 
+    // Store route data globally for PDF export
+    window.wtgCurrentRouteData = data;
+
     // Update route info panel
     updateRouteInfo(data.routes[0].distance, data.routes[0].duration);
 
@@ -593,6 +596,145 @@ function downloadRouteAsGeoJSON() {
   console.log('GeoJSON file downloaded');
 }
 
+/**
+ * Export navigation instructions to PDF
+ */
+function exportInstructionsToPDF() {
+  // Check if jsPDF is loaded
+  if (typeof window.jspdf === 'undefined') {
+    alert('Biblioteka PDF nie jest załadowana. Odśwież stronę.');
+    return;
+  }
+
+  // Get current route data
+  const routeLayer = window.wtgRouteLayer;
+  if (!routeLayer || routeLayer.getSource().getFeatures().length === 0) {
+    alert('Brak trasy do eksportu. Wyznacz trasę przed eksportem.');
+    return;
+  }
+
+  // Get route info
+  const distanceEl = document.getElementById('route-distance');
+  const durationEl = document.getElementById('route-duration');
+  const distance = distanceEl ? distanceEl.textContent : '-';
+  const duration = durationEl ? durationEl.textContent : '-';
+
+  // Get instructions from stored route data
+  if (
+    !window.wtgCurrentRouteData ||
+    !window.wtgCurrentRouteData.routes ||
+    !window.wtgCurrentRouteData.routes[0]
+  ) {
+    alert('Brak danych trasy. Wygeneruj trasę ponownie.');
+    return;
+  }
+
+  const route = window.wtgCurrentRouteData.routes[0];
+  const legs = route.legs;
+
+  // Create PDF
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Set font
+  doc.setFont('helvetica');
+
+  // Title
+  doc.setFontSize(20);
+  doc.setTextColor(255, 102, 0); // Primary orange
+  doc.text('WTG Route Machine', 20, 20);
+
+  doc.setFontSize(14);
+  doc.setTextColor(69, 69, 69); // Secondary dark gray
+  doc.text('Instrukcje nawigacji', 20, 30);
+
+  // Route summary
+  doc.setFontSize(11);
+  doc.setTextColor(0, 0, 0);
+  doc.text(`Dystans: ${distance}`, 20, 45);
+  doc.text(`Czas: ${duration}`, 20, 52);
+
+  // Line separator
+  doc.setDrawColor(255, 102, 0);
+  doc.setLineWidth(0.5);
+  doc.line(20, 58, 190, 58);
+
+  // Instructions
+  let yPosition = 68;
+  let stepNumber = 1;
+  const pageHeight = doc.internal.pageSize.height;
+  const marginBottom = 20;
+
+  legs.forEach((leg) => {
+    leg.steps.forEach((step) => {
+      // Check if we need a new page
+      if (yPosition > pageHeight - marginBottom) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      const instruction = formatInstruction(step);
+      const distance = formatDistance(step.distance);
+
+      // Step number
+      doc.setFontSize(10);
+      doc.setTextColor(255, 102, 0);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`${stepNumber}.`, 20, yPosition);
+
+      // Instruction text
+      doc.setTextColor(0, 0, 0);
+      doc.setFont('helvetica', 'normal');
+      const instructionLines = doc.splitTextToSize(instruction, 140);
+      doc.text(instructionLines, 30, yPosition);
+
+      // Distance
+      doc.setTextColor(100, 100, 100);
+      doc.setFontSize(9);
+      doc.text(distance, 175, yPosition);
+
+      yPosition += instructionLines.length * 6 + 4;
+      stepNumber++;
+    });
+  });
+
+  // Add final arrival
+  if (yPosition > pageHeight - marginBottom) {
+    doc.addPage();
+    yPosition = 20;
+  }
+
+  doc.setFontSize(10);
+  doc.setTextColor(69, 69, 69);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`${stepNumber}.`, 20, yPosition);
+  doc.text('Dotarłeś do celu', 30, yPosition);
+
+  // Footer on last page
+  const totalPages = doc.internal.pages.length - 1;
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text(
+      `Strona ${i} z ${totalPages} | WTG Route Machine ${new Date().toLocaleDateString(
+        'pl-PL'
+      )}`,
+      20,
+      pageHeight - 10
+    );
+  }
+
+  // Generate filename
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+  const filename = `wtg-instrukcje-${timestamp}.pdf`;
+
+  // Save PDF
+  doc.save(filename);
+
+  console.log('PDF file downloaded:', filename);
+}
+
 // Export functions to global scope
 window.wtgRouting = {
   calculateRoute,
@@ -606,4 +748,5 @@ window.wtgRouting = {
   clearNavigationInstructions,
   exportRouteToGeoJSON,
   downloadRouteAsGeoJSON,
+  exportInstructionsToPDF,
 };

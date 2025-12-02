@@ -61,6 +61,9 @@ function initUI(map) {
   // Setup Export GeoJSON button
   setupExportGeoJSONButton();
 
+  // Setup Export PDF button
+  setupExportPDFButton();
+
   // Setup error notification
   setupErrorNotification();
 
@@ -424,17 +427,38 @@ function setupExportGeoJSONButton() {
 }
 
 /**
- * Enable or disable Export GeoJSON button based on route availability
+ * Setup Export PDF button handler
+ */
+function setupExportPDFButton() {
+  const exportPdfBtn = document.getElementById('export-pdf-btn');
+  if (exportPdfBtn) {
+    exportPdfBtn.addEventListener('click', () => {
+      if (window.wtgRouting && window.wtgRouting.exportInstructionsToPDF) {
+        window.wtgRouting.exportInstructionsToPDF();
+      }
+    });
+    console.log('Export PDF button initialized');
+  }
+}
+
+/**
+ * Enable or disable Export buttons based on route availability
  */
 function updateExportButtonState() {
   const exportBtn = document.getElementById('export-geojson-btn');
-  if (!exportBtn) return;
+  const exportPdfBtn = document.getElementById('export-pdf-btn');
 
   const hasRoute =
     window.wtgRouteLayer &&
     window.wtgRouteLayer.getSource().getFeatures().length > 0;
 
-  exportBtn.disabled = !hasRoute;
+  if (exportBtn) {
+    exportBtn.disabled = !hasRoute;
+  }
+
+  if (exportPdfBtn) {
+    exportPdfBtn.disabled = !hasRoute;
+  }
 }
 
 /**
