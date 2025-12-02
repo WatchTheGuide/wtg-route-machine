@@ -270,3 +270,71 @@
 - [ ] Trasa jest automatycznie przeliczana po usunięciu punktu.
 - [ ] Jeśli zostaje mniej niż 2 punkty, trasa znika.
 - [ ] Tooltip adresu usuniętego punktu jest usuwany z mapy.
+
+## Epic 8: Geolokalizacja i Routing Profile
+
+### US 8.1: Automatyczny Punkt Startowy GPS
+
+**Jako** użytkownik,
+**Chcę** aby moja aktualna pozycja GPS była automatycznie ustawiona jako pierwszy punkt trasy,
+**Aby** szybko rozpocząć planowanie trasy z mojej obecnej lokalizacji.
+
+**Kryteria Akceptacji:**
+
+- [ ] Przy pierwszym załadowaniu strony aplikacja prosi o dostęp do geolokalizacji.
+- [ ] Po uzyskaniu zgody pierwszy punkt (Start) jest automatycznie ustawiany na aktualnej pozycji GPS.
+- [ ] Na mapie pojawia się marker z numerem "1" w lokalizacji GPS użytkownika.
+- [ ] Mapa automatycznie centruje się na pozycji GPS użytkownika.
+- [ ] Poziom zoom jest ustawiany na odpowiedni dla widoku miejskiego (np. zoom 15).
+- [ ] W liście punktów wyświetla się adres odwrotnie geokodowany dla pozycji GPS.
+- [ ] Jeśli użytkownik odmówi dostępu do GPS, aplikacja działa normalnie bez punktu startowego.
+- [ ] Użytkownik może w każdej chwili usunąć lub przesunąć punkt startowy GPS.
+- [ ] Po usunięciu punktu GPS użytkownik może dodać nowy punkt manualnie.
+
+**Warunki Brzegowe:**
+
+- Jeśli geolokalizacja nie jest dostępna w przeglądarce, wyświetl komunikat.
+- Jeśli pozycja GPS jest poza obsługiwanym miastem, wyświetl ostrzeżenie.
+- Timeout na uzyskanie pozycji GPS: 10 sekund.
+
+### US 8.2: Wybór Profilu Trasowania (Pieszy/Rower/Auto)
+
+**Jako** użytkownik,
+**Chcę** móc wybrać tryb podróży (pieszo, rowerem, samochodem),
+**Aby** uzyskać trasę dostosowaną do mojego środka transportu.
+
+**Kryteria Akceptacji:**
+
+- [ ] Widoczne są trzy przyciski wyboru profilu: "Pieszo", "Rower", "Auto".
+- [ ] Domyślnie wybrany jest profil "Pieszo".
+- [ ] Przyciski są wyraźnie oznaczone ikonami (pieszy, rower, samochód).
+- [ ] Aktywny profil ma podświetlony przycisk (kolor pomarańczowy #ff6600).
+- [ ] Po zmianie profilu trasa jest automatycznie przeliczana.
+- [ ] Czas i dystans trasy są aktualizowane zgodnie z wybranym profilem.
+- [ ] Instrukcje nawigacji są dostosowane do profilu (np. "ścieżka rowerowa", "autostrada").
+- [ ] Wybór profilu jest zapamiętywany w localStorage.
+- [ ] Po eksporcie do PDF/GeoJSON w pliku znajduje się informacja o użytym profilu.
+
+**Warunki Brzegowe:**
+
+- Jeśli dla wybranego miasta nie ma danych dla profilu "Rower" lub "Auto", wyświetl komunikat.
+- Zmiana profilu na niedostępny powoduje wyświetlenie alertu i powrót do profilu "Pieszo".
+
+**Uwagi Techniczne:**
+
+- Backend OSRM wymaga przygotowania danych dla każdego profilu:
+  - `foot` (profil pieszy) - już dostępny
+  - `bicycle` (profil rowerowy) - wymaga przygotowania
+  - `car` (profil samochodowy) - wymaga przygotowania
+- Skrypty backend wymagają rozszerzenia:
+  - `prepare-city-osrm.sh` musi obsługiwać parametr profilu
+  - `run-city-server.sh` musi uruchamiać kontenery dla każdego profilu na osobnych portach
+- Mapowanie portów OSRM:
+  - Kraków Foot: 5001 (istniejący)
+  - Kraków Bicycle: 5002 (nowy)
+  - Kraków Car: 5003 (nowy)
+  - Warszawa Foot: 5004
+  - Warszawa Bicycle: 5005
+  - Warszawa Car: 5006
+  - (itd. dla innych miast)
+- Aplikacja frontend musi dynamicznie wybierać port na podstawie miasta + profilu.
