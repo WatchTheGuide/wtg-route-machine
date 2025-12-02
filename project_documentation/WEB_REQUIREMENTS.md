@@ -7,25 +7,29 @@ Stworzenie prostej, interaktywnej strony WWW do testowania i demonstracji funkcj
 ## 2. Technologie
 
 ### Frontend
+
 - **Mapa**: OpenLayers 9.x - nowoczesna biblioteka mapowa z pełnym wsparciem dla OSM
 - **Warstwa mapowa**: OpenStreetMap tiles (tile.openstreetmap.org)
-- **Stylowanie**: Vanilla CSS (bez frameworków) - prostota i szybkość
+- **Stylowanie**: Tailwind CSS (via CDN) - szybkie prototypowanie i nowoczesny wygląd
 - **JavaScript**: Vanilla JS (ES6+) - bez dodatkowych zależności
 - **Build**: Brak - proste pliki HTML/CSS/JS gotowe do otwarcia w przeglądarce
 
 ### Backend Integration
+
 - **OSRM API**: Bezpośrednie połączenie z lokalnym serwerem (localhost:5001)
 - **CORS**: Serwer lokalny - brak problemów z CORS
 
 ## 3. Wymagania Funkcjonalne
 
 ### 3.1. Wyświetlanie Mapy
+
 - Interaktywna mapa z OSM tiles
 - Domyślny widok: Kraków (19.9385, 50.0647, zoom: 14)
 - Kontrolki: zoom, pełny ekran, skala
 - Responsive design - dostosowanie do różnych rozdzielczości
 
 ### 3.2. Dodawanie Punktów Trasy
+
 - **Kliknięcie na mapę** dodaje punkt trasy (marker)
 - **Minimum 2 punkty** do wyznaczenia trasy
 - **Maksimum 10 punktów** (ograniczenie dla czytelności)
@@ -34,6 +38,7 @@ Stworzenie prostej, interaktywnej strony WWW do testowania i demonstracji funkcj
 - **Usuwanie punktów** - kliknięcie prawym przyciskiem lub przycisk "X"
 
 ### 3.3. Wyznaczanie Trasy
+
 - **Automatyczne przeliczanie** po dodaniu/przesunięciu/usunięciu punktu
 - **Wyświetlanie trasy** na mapie (linia polilinearna)
 - **Profil**: foot (pieszy) - zgodnie z celem projektu
@@ -42,6 +47,7 @@ Stworzenie prostej, interaktywnej strony WWW do testowania i demonstracji funkcj
   - `steps=true` - instrukcje nawigacyjne
 
 ### 3.4. Wyświetlanie Informacji o Trasie
+
 - **Dystans całkowity** (w km)
 - **Czas przejścia** (w minutach/godzinach)
 - **Lista instrukcji nawigacyjnych** (turn-by-turn)
@@ -50,6 +56,7 @@ Stworzenie prostej, interaktywnej strony WWW do testowania i demonstracji funkcj
   - Dystans do następnego manewru
 
 ### 3.5. Dodatkowe Funkcje
+
 - **Wyczyść wszystko** - usuń wszystkie punkty i trasę
 - **Eksport trasy** - pobierz jako GeoJSON
 - **Zmiana miasta** - dropdown z wyborem (Kraków, Warszawa, Wrocław, Trójmiasto)
@@ -59,17 +66,20 @@ Stworzenie prostej, interaktywnej strony WWW do testowania i demonstracji funkcj
 ## 4. Wymagania Niefunkcjonalne
 
 ### 4.1. Wydajność
+
 - Czas ładowania strony: < 2s
 - Czas odpowiedzi OSRM API: < 100ms (dla tras lokalnych)
 - Płynne animacje i interakcje (60 FPS)
 
 ### 4.2. UX/UI
+
 - Minimalistyczny, czysty interfejs
 - Intuicyjna obsługa (brak instrukcji)
 - Responsywność (desktop i tablet)
 - Komunikaty o błędach (brak połączenia z API, za dużo punktów, etc.)
 
 ### 4.3. Kompatybilność
+
 - Nowoczesne przeglądarki (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
 - Brak wsparcia dla IE11
 
@@ -122,11 +132,13 @@ web/
 ## 7. API Endpoints (OSRM)
 
 ### Route Service
+
 ```
 GET http://localhost:{PORT}/route/v1/foot/{lon1},{lat1};{lon2},{lat2};...?overview=full&steps=true
 ```
 
 **Response:**
+
 ```json
 {
   "code": "Ok",
@@ -148,6 +160,7 @@ GET http://localhost:{PORT}/route/v1/foot/{lon1},{lat1};{lon2},{lat2};...?overvi
 ## 8. Walidacja i Testowanie
 
 ### Testy Manualne
+
 1. Dodanie 2 punktów → wyświetlenie trasy
 2. Dodanie 3+ punktów → aktualizacja trasy
 3. Przesunięcie markera → przeliczenie trasy
@@ -156,6 +169,7 @@ GET http://localhost:{PORT}/route/v1/foot/{lon1},{lat1};{lon2},{lat2};...?overvi
 6. Eksport GeoJSON → poprawność pliku
 
 ### Scenariusze Testowe
+
 - Trasa przez centrum Krakowa (Rynek → Wawel → Kazimierz)
 - Trasa z wieloma punktami pośrednimi (>5)
 - Brak połączenia z OSRM (serwer wyłączony)
@@ -164,6 +178,7 @@ GET http://localhost:{PORT}/route/v1/foot/{lon1},{lat1};{lon2},{lat2};...?overvi
 ## 9. Dokumentacja dla Użytkownika
 
 W pliku `web/README.md`:
+
 - Jak uruchomić (otwarcie `index.html` w przeglądarce)
 - Jak używać (klikanie, przeciąganie markerów)
 - Jak uruchomić serwer OSRM dla danego miasta
@@ -172,18 +187,21 @@ W pliku `web/README.md`:
 ## 10. Fazy Implementacji
 
 ### Faza 1: MVP (Minimum Viable Product)
+
 - [ ] Wyświetlanie mapy OSM z OpenLayers
 - [ ] Dodawanie punktów kliknięciem
 - [ ] Wyznaczanie trasy (OSRM API)
 - [ ] Wyświetlanie podstawowych informacji (dystans, czas)
 
 ### Faza 2: Interakcje
+
 - [ ] Drag & drop markerów
 - [ ] Usuwanie punktów
 - [ ] Numerowane markery
 - [ ] Przycisk "Clear All"
 
 ### Faza 3: Rozszerzenia
+
 - [ ] Instrukcje nawigacyjne (turn-by-turn)
 - [ ] Zmiana miasta (dropdown)
 - [ ] Eksport GeoJSON
