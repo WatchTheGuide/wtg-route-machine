@@ -552,7 +552,7 @@ function updateMarkerTooltip(feature, coordinate) {
       const tooltipElement = document.createElement('div');
       tooltipElement.id = overlayId;
       tooltipElement.className =
-        'bg-white px-2 py-1 rounded shadow-lg text-xs border border-gray-300 max-w-xs';
+        'bg-white dark:bg-gray-800 px-2 py-1 rounded shadow-lg text-xs border border-gray-300 dark:border-gray-600 max-w-xs dark:text-gray-100';
       tooltipElement.style.cssText =
         'pointer-events: none; white-space: nowrap; margin-top: -35px;';
 
@@ -700,23 +700,23 @@ function updateWaypointsList() {
 
     const itemDiv = document.createElement('div');
     itemDiv.className =
-      'flex items-start gap-3 p-3 bg-gradient-to-r from-white to-orange-50 rounded-lg hover:shadow-md transition-all cursor-move border border-gray-200';
+      'flex items-start gap-3 p-3 bg-gradient-to-r from-white to-orange-50 dark:from-gray-700 dark:to-gray-800 rounded-lg hover:shadow-md transition-all cursor-move border border-gray-200 dark:border-gray-600';
     itemDiv.dataset.waypointNumber = waypointNumber;
     itemDiv.dataset.waypointIndex = index;
     itemDiv.draggable = true;
 
     itemDiv.innerHTML = `
-      <div class="flex-shrink-0 p-1 text-gray-400 cursor-grab active:cursor-grabbing" data-action="drag-handle">
+      <div class="flex-shrink-0 p-1 text-gray-400 dark:text-gray-500 cursor-grab active:cursor-grabbing" data-action="drag-handle">
         <i data-lucide="grip-vertical" class="w-5 h-5"></i>
       </div>
       <div class="flex-shrink-0 w-8 h-8 bg-[#ff6600] text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md">
         ${waypointNumber}
       </div>
       <div class="flex-1 min-w-0 cursor-pointer" data-action="highlight">
-        <p class="text-gray-900 font-medium truncate">${address}</p>
-        <p class="text-xs text-gray-500 mt-1">${coords}</p>
+        <p class="text-gray-900 dark:text-gray-100 font-medium truncate">${address}</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">${coords}</p>
       </div>
-      <button class="flex-shrink-0 p-1 text-gray-500 hover:text-[#ff6600] transition-colors" data-action="delete" title="Usuń punkt">
+      <button class="flex-shrink-0 p-1 text-gray-500 dark:text-gray-400 hover:text-[#ff6600] transition-colors" data-action="delete" title="Usuń punkt">
         <i data-lucide="trash-2" class="w-4 h-4"></i>
       </button>
     `;
@@ -1042,7 +1042,7 @@ async function performSearch(query) {
 
   // Show loading state
   searchResults.innerHTML =
-    '<div class="px-4 py-3 text-gray-500">Wyszukiwanie...</div>';
+    '<div class="px-4 py-3 text-gray-500 dark:text-gray-400">Wyszukiwanie...</div>';
   searchResults.classList.remove('hidden');
 
   try {
@@ -1057,7 +1057,7 @@ async function performSearch(query) {
 
     if (results.length === 0) {
       searchResults.innerHTML =
-        '<div class="px-4 py-3 text-gray-500">Nie znaleziono wyników</div>';
+        '<div class="px-4 py-3 text-gray-500 dark:text-gray-400">Nie znaleziono wyników</div>';
       return;
     }
 
@@ -1065,11 +1065,11 @@ async function performSearch(query) {
     searchResults.innerHTML = results
       .map(
         (result) => `
-      <div class="search-result-item px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-200 last:border-b-0" 
+      <div class="search-result-item px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-200 dark:border-gray-600 last:border-b-0" 
            data-lat="${result.lat}" 
            data-lon="${result.lon}">
-        <div class="font-medium text-gray-900">${result.displayName}</div>
-        <div class="text-xs text-gray-500 mt-1">${result.type}</div>
+        <div class="font-medium text-gray-900 dark:text-gray-100">${result.displayName}</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">${result.type}</div>
       </div>
     `
       )

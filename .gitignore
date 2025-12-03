@@ -26,3 +26,26 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# Node modules
+node_modules/
+package-lock.json
+
+# Capacitor / Mobile
+frontend/www/
+frontend/android/
+frontend/ios/
+frontend/.capacitor/
+
+# Build artifacts
+frontend/dist/
+frontend/build/
+
+# Mobile signing keys (CRITICAL - never commit!)
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+key.properties
+google-services.json
+GoogleService-Info.plist

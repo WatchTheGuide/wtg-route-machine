@@ -99,6 +99,39 @@ Nie powinny wystąpić przy lokalnym developmencie, ale jeśli pojawią się:
 - Użyj prostego serwera HTTP (nie otwieraj `index.html` bezpośrednio)
 - Upewnij się, że OSRM działa na `localhost`, nie `127.0.0.1`
 
+## 📱 Wersja mobilna (Android & iOS)
+
+Aplikacja może być opublikowana w **Google Play** i **Apple App Store** dzięki Capacitor.
+
+### Szybki start mobilny
+
+```bash
+# Instalacja zależności
+npm install
+
+# Budowanie aplikacji webowej
+npm run build
+
+# Synchronizacja z platformami
+npm run sync
+
+# Otwórz w Android Studio lub Xcode
+npm run open:android
+npm run open:ios
+```
+
+### Pełna dokumentacja buildu
+
+Zobacz szczegółową instrukcję: **[MOBILE_BUILD.md](./MOBILE_BUILD.md)**
+
+Zawiera:
+
+- Wymagania dla Android i iOS
+- Generowanie kluczy podpisujących
+- Konfiguracja App Store i Google Play
+- Instrukcje publikacji
+- Rozwiązywanie problemów
+
 ## Rozwój
 
 Wszystkie User Stories znajdują się w `../user_stories/web_interface.md`.
@@ -108,6 +141,7 @@ Implementacja podzielona na fazy:
 1. **MVP**: Mapa + routing + podstawowe info
 2. **Interakcje**: Drag & drop, usuwanie punktów
 3. **Rozszerzenia**: Turn-by-turn, zmiana miasta, eksport
+4. **Mobile**: Capacitor + publikacja w sklepach
 
 ## Dokumentacja API
 

@@ -1,0 +1,22 @@
+{
+  "appId": "com.wtg.routemachine",
+  "appName": "WTG Route Machine",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#ff6600",
+      "showSpinner": true,
+      "spinnerColor": "#ffffff"
+    },
+    "StatusBar": {
+      "style": "LIGHT",
+      "backgroundColor": "#ff6600",
+      "overlaysWebView": false
+    }
+  }
+}

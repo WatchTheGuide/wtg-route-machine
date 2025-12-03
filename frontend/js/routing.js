@@ -327,15 +327,15 @@ function displayNavigationInstructions(routeData) {
       // Create instruction element
       const stepDiv = document.createElement('div');
       stepDiv.className =
-        'flex items-start gap-3 p-3 bg-white rounded-lg hover:shadow-md transition-all border border-gray-200';
+        'flex items-start gap-3 p-3 bg-white dark:bg-gray-700 rounded-lg hover:shadow-md transition-all border border-gray-200 dark:border-gray-600';
 
       stepDiv.innerHTML = `
         <div class="flex-shrink-0 w-10 h-10 bg-[#ff6600] text-white rounded-full flex items-center justify-center shadow-md">
           <i data-lucide="${icon}" class="w-5 h-5"></i>
         </div>
         <div class="flex-1">
-          <p class="text-gray-900 font-medium">${instruction}</p>
-          <p class="text-sm text-gray-600 mt-1">${distance}</p>
+          <p class="text-gray-900 dark:text-gray-100 font-medium">${instruction}</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${distance}</p>
         </div>
       `;
 
@@ -347,13 +347,13 @@ function displayNavigationInstructions(routeData) {
   // Add final arrival instruction
   const arrivalDiv = document.createElement('div');
   arrivalDiv.className =
-    'flex items-start gap-3 p-3 bg-orange-50 rounded-lg border border-orange-200';
+    'flex items-start gap-3 p-3 bg-orange-50 dark:bg-gray-700 rounded-lg border border-orange-200 dark:border-gray-600';
   arrivalDiv.innerHTML = `
-    <div class="flex-shrink-0 w-10 h-10 bg-[#454545] text-white rounded-full flex items-center justify-center shadow-md">
+    <div class="flex-shrink-0 w-10 h-10 bg-[#454545] dark:bg-gray-600 text-white rounded-full flex items-center justify-center shadow-md">
       <i data-lucide="flag" class="w-5 h-5"></i>
     </div>
     <div class="flex-1">
-      <p class="text-gray-900 font-medium">Dotarłeś do celu</p>
+      <p class="text-gray-900 dark:text-gray-100 font-medium">Dotarłeś do celu</p>
     </div>
   `;
   listContainer.appendChild(arrivalDiv);
