@@ -7,9 +7,10 @@
  * Calculate and display route using OSRM API
  * @param {Array} waypoints - Array of [lon, lat] coordinate pairs
  * @param {number} port - OSRM server port
+ * @param {string} profile - Routing profile (foot, bicycle, car)
  * @returns {Promise} Route data from OSRM
  */
-async function calculateRoute(waypoints, port) {
+async function calculateRoute(waypoints, port, profile = 'foot') {
   if (!waypoints || waypoints.length < 2) {
     console.error('At least 2 waypoints required for routing');
     return null;
@@ -17,7 +18,7 @@ async function calculateRoute(waypoints, port) {
 
   // Build OSRM API URL
   const coordinates = waypoints.map((wp) => `${wp[0]},${wp[1]}`).join(';');
-  const osrmUrl = `http://localhost:${port}/route/v1/foot/${coordinates}?overview=full&steps=true`;
+  const osrmUrl = `http://localhost:${port}/route/v1/${profile}/${coordinates}?overview=full&steps=true`;
 
   console.log('Calculating route:', osrmUrl);
 

@@ -97,7 +97,8 @@ async function handleMapClick(event) {
   if (waypoints.length >= 2) {
     const routeData = await window.wtgRouting.calculateRoute(
       waypoints,
-      window.wtgCurrentOsrmPort
+      window.wtgCurrentOsrmPort,
+      window.wtgCurrentProfile
     );
 
     if (routeData) {
@@ -307,7 +308,8 @@ async function removeWaypoint(feature) {
     console.log('Calculating route with waypoints:', waypoints);
     const routeData = await window.wtgRouting.calculateRoute(
       waypoints,
-      window.wtgCurrentOsrmPort
+      window.wtgCurrentOsrmPort,
+      window.wtgCurrentProfile
     );
 
     if (routeData) {
@@ -457,7 +459,8 @@ async function handleMarkerDragEnd(feature) {
   if (waypoints.length >= 2) {
     const routeData = await window.wtgRouting.calculateRoute(
       waypoints,
-      window.wtgCurrentOsrmPort
+      window.wtgCurrentOsrmPort,
+      window.wtgCurrentProfile
     );
 
     if (routeData) {
@@ -826,7 +829,8 @@ async function swapWaypoints(index1, index2) {
     try {
       const routeData = await window.wtgRouting.calculateRoute(
         waypoints,
-        window.wtgCurrentOsrmPort
+        window.wtgCurrentOsrmPort,
+        window.wtgCurrentProfile
       );
 
       if (routeData) {
@@ -1134,7 +1138,8 @@ async function selectSearchResult(result) {
       try {
         const routeData = await window.wtgRouting.calculateRoute(
           waypoints,
-          window.wtgCurrentOsrmPort
+          window.wtgCurrentOsrmPort,
+          window.wtgCurrentProfile
         );
 
         if (routeData) {

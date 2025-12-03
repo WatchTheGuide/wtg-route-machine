@@ -408,7 +408,8 @@ async function switchProfile(profileKey) {
     console.log('Recalculating route with new profile...');
     const routeData = await window.wtgRouting.calculateRoute(
       waypoints,
-      currentOsrmPort
+      currentOsrmPort,
+      currentProfile
     );
     if (routeData) {
       window.wtgRouting.displayRoute(routeData);
