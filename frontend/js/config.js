@@ -8,7 +8,7 @@ const CONFIG = {
   production: {
     enabled: true,
     baseUrl: 'https://osrm.watchtheguide.com/api',
-    apiKey: 'dev-test-key-12345', // TODO: Replace with production key
+    apiKey: '61bb903f104f6e155de37fa44c9c4d3226b8842c36d62286c47d912eaaf42353', // TODO: Replace with production key
   },
 
   // Local development configuration

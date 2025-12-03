@@ -53,6 +53,14 @@ fi
 echo -e "${YELLOW}[3/5] Deploying Nginx configuration...${NC}"
 cp "$NGINX_CONF" /etc/nginx/sites-available/osrm-api.conf
 
+# Deploy API keys file if it doesn't exist (preserve existing keys)
+if [ ! -f "/etc/nginx/api-keys.map" ]; then
+    cp "$SCRIPT_DIR/../nginx/api-keys.map" /etc/nginx/api-keys.map
+    echo -e "${GREEN}✓ API keys file created${NC}"
+else
+    echo -e "${GREEN}✓ Existing API keys preserved${NC}"
+fi
+
 # Remove default site
 rm -f /etc/nginx/sites-enabled/default
 
@@ -82,7 +90,7 @@ echo -e "${GREEN}================================${NC}"
 echo ""
 echo -e "${YELLOW}Next steps:${NC}"
 echo "1. Generate API keys (run: openssl rand -hex 32)"
-echo "2. Add API keys to /etc/nginx/sites-available/osrm-api.conf"
+echo "2. Add API keys to /etc/nginx/api-keys.map"
 echo "3. Reload Nginx: sudo systemctl reload nginx"
 echo ""
 echo -e "${YELLOW}Test your API:${NC}"

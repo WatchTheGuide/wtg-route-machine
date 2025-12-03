@@ -3,11 +3,13 @@
 ## Setting up API Key
 
 1. Generate a production API key on the server:
+
    ```bash
    ./backend/scripts/generate-api-key.sh wtg-web-app
    ```
 
 2. Update `frontend/js/config.js`:
+
    ```javascript
    production: {
      enabled: true,
@@ -18,7 +20,7 @@
 
 3. Add the API key to Nginx configuration on the server:
    ```bash
-   sudo nano /etc/nginx/sites-available/osrm-api.conf
+   sudo nano /etc/nginx/api-keys.map
    # Add: "YOUR_GENERATED_API_KEY_HERE" "wtg-web-app";
    sudo systemctl reload nginx
    ```
@@ -26,6 +28,7 @@
 ## Switching Between Development and Production
 
 ### Use Production API (default):
+
 ```javascript
 production: {
   enabled: true,  // Production mode
@@ -34,6 +37,7 @@ production: {
 ```
 
 ### Use Local Development:
+
 ```javascript
 production: {
   enabled: false,  // Switches to development config
@@ -53,6 +57,7 @@ development: {
 ## Testing
 
 ### Test production API:
+
 ```bash
 # From browser console:
 console.log(CONFIG.getOsrmUrl('foot'));
@@ -63,6 +68,7 @@ console.log(CONFIG.getHeaders());
 ```
 
 ### Test route calculation:
+
 1. Open the web app
 2. Select city (Kraków)
 3. Add waypoints on the map

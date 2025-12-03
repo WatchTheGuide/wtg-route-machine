@@ -1,0 +1,13 @@
+# WTG Route Machine - API Keys Map
+# This file contains API key mappings for authentication
+# Format: "api_key_here" "client_name";
+
+# Development key (CHANGE IN PRODUCTION!)
+"dev-test-key-12345" "development";
+
+# Add your production API keys below:
+# "YOUR_API_KEY_HERE" "client-name";
+
+# Example:
+# "61bb903f104f6e155de37fa44c9c4d32..." "wtg-web-app";
+# "a1b2c3d4e5f6789..." "wtg-mobile-app";
