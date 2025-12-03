@@ -43,9 +43,11 @@ fi
 echo -e "${GREEN}✓ Prerequisites OK${NC}"
 
 echo -e "${YELLOW}[2/5] Backing up existing configuration...${NC}"
-if [ -f "/etc/nginx/sites-enabled/osrm-api.conf" ]; then
-    cp /etc/nginx/sites-enabled/osrm-api.conf /etc/nginx/sites-enabled/osrm-api.conf.backup.$(date +%Y%m%d_%H%M%S)
-    echo -e "${GREEN}✓ Backup created${NC}"
+# Create backup directory
+mkdir -p /etc/nginx/backups
+if [ -f "/etc/nginx/sites-available/osrm-api.conf" ]; then
+    cp /etc/nginx/sites-available/osrm-api.conf /etc/nginx/backups/osrm-api.conf.backup.$(date +%Y%m%d_%H%M%S)
+    echo -e "${GREEN}✓ Backup created in /etc/nginx/backups/${NC}"
 fi
 
 echo -e "${YELLOW}[3/5] Deploying Nginx configuration...${NC}"
@@ -63,10 +65,7 @@ echo -e "${YELLOW}[4/5] Testing Nginx configuration...${NC}"
 if nginx -t; then
     echo -e "${GREEN}✓ Configuration valid${NC}"
 else
-    echo -e "${RED}Configuration invalid! Restoring backup...${NC}"
-    if [ -f "/etc/nginx/sites-enabled/osrm-api.conf.backup.$(date +%Y%m%d)_"* ]; then
-        cp /etc/nginx/sites-enabled/osrm-api.conf.backup.* /etc/nginx/sites-enabled/osrm-api.conf
-    fi
+    echo -e "${RED}Configuration invalid! Check the logs above.${NC}"
     exit 1
 fi
 
