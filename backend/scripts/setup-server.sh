@@ -102,8 +102,14 @@ sed -i 's/#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
 sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 
-# Restart SSH
-systemctl restart sshd
+# Restart SSH (service name varies: sshd on RHEL/CentOS, ssh on Debian/Ubuntu)
+if systemctl list-units --full -all | grep -Fq 'sshd.service'; then
+  systemctl restart sshd
+elif systemctl list-units --full -all | grep -Fq 'ssh.service'; then
+  systemctl restart ssh
+else
+  echo "Warning: Could not find SSH service to restart"
+fi
 
 echo -e "${GREEN}✓ SSH hardened (root login disabled, password auth disabled)${NC}"
 

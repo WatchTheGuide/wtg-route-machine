@@ -82,6 +82,10 @@ PubkeyAuthentication yes
 **Restart SSH:**
 
 ```bash
+# On Debian/Ubuntu
+sudo systemctl restart ssh
+
+# On RHEL/CentOS/Fedora
 sudo systemctl restart sshd
 ```
 
@@ -155,7 +159,8 @@ sudo systemctl start fail2ban
    # Change: Port 2222
    sudo ufw allow 2222/tcp
    sudo ufw delete allow 22/tcp
-   sudo systemctl restart sshd
+   # Restart SSH (use 'ssh' on Debian/Ubuntu, 'sshd' on RHEL)
+   sudo systemctl restart ssh
    ```
 
 2. **Setup monitoring** (Covered in US 12.2)
