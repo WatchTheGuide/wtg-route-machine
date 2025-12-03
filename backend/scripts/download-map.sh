@@ -9,6 +9,7 @@ set -e
 REGION=${1:-poland}
 DATA_DIR="./osrm-data"
 GEOFABRIK_URL="https://download.geofabrik.de/europe"
+OUTPUT_FILE="$DATA_DIR/map-${REGION}.osm.pbf"
 
 # Mapa regionów do plików
 case $REGION in
@@ -17,7 +18,15 @@ case $REGION in
     ;;
   malopolskie)
     MAP_FILE="poland/malopolskie-latest.osm.pbf"
-    GEOFABRIK_URL="https://download.geofabrik.de/europe"
+    ;;
+  mazowieckie)
+    MAP_FILE="poland/mazowieckie-latest.osm.pbf"
+    ;;
+  dolnoslaskie)
+    MAP_FILE="poland/dolnoslaskie-latest.osm.pbf"
+    ;;
+  pomorskie)
+    MAP_FILE="poland/pomorskie-latest.osm.pbf"
     ;;
   europe)
     MAP_FILE="europe-latest.osm.pbf"
@@ -25,7 +34,7 @@ case $REGION in
     ;;
   *)
     echo "Nieznany region: $REGION"
-    echo "Dostępne regiony: poland, malopolskie, europe"
+    echo "Dostępne regiony: poland, malopolskie, mazowieckie, dolnoslaskie, pomorskie, europe"
     exit 1
     ;;
 esac
@@ -37,7 +46,7 @@ echo "URL: $GEOFABRIK_URL/$MAP_FILE"
 mkdir -p "$DATA_DIR"
 
 # Pobranie pliku
-wget -O "$DATA_DIR/map.osm.pbf" "$GEOFABRIK_URL/$MAP_FILE"
+wget -O "$OUTPUT_FILE" "$GEOFABRIK_URL/$MAP_FILE"
 
-echo "Mapa pobrana pomyślnie do: $DATA_DIR/map.osm.pbf"
-echo "Rozmiar pliku: $(du -h $DATA_DIR/map.osm.pbf | cut -f1)"
+echo "Mapa pobrana pomyślnie do: $OUTPUT_FILE"
+echo "Rozmiar pliku: $(du -h $OUTPUT_FILE | cut -f1)"

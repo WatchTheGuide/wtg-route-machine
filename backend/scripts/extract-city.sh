@@ -10,7 +10,7 @@ set -e
 REGION=${1}
 CITY=${2}
 DATA_DIR="./osrm-data"
-INPUT_FILE="$DATA_DIR/map.osm.pbf"
+INPUT_FILE="$DATA_DIR/map-${REGION}.osm.pbf"
 OUTPUT_FILE="$DATA_DIR/${CITY}.osm.pbf"
 
 if [ -z "$REGION" ] || [ -z "$CITY" ]; then
