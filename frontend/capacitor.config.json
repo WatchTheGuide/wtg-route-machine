@@ -1,6 +1,6 @@
 {
   "appId": "com.guidetrackee.route-machine",
-  "appName": "WTG Route Machine",
+  "appName": "GuideTrackee Routes",
   "webDir": "www",
   "server": {
     "androidScheme": "https",
