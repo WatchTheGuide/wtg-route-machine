@@ -6,7 +6,7 @@
 /**
  * Calculate and display route using OSRM API
  * @param {Array} waypoints - Array of [lon, lat] coordinate pairs
- * @param {number} port - OSRM server port
+ * @param {number} port - OSRM server port (ignored in production, kept for compatibility)
  * @param {string} profile - Routing profile (foot, bicycle, car)
  * @returns {Promise} Route data from OSRM
  */
@@ -16,16 +16,18 @@ async function calculateRoute(waypoints, port, profile = 'foot') {
     return null;
   }
 
-  // Build OSRM API URL
+  // Build OSRM API URL using config
+  const baseUrl = CONFIG.getOsrmUrl(profile);
   const coordinates = waypoints.map((wp) => `${wp[0]},${wp[1]}`).join(';');
-  const osrmUrl = `http://localhost:${port}/route/v1/${profile}/${coordinates}?overview=full&steps=true`;
+  const osrmUrl = `${baseUrl}/route/v1/${profile}/${coordinates}?overview=full&steps=true`;
 
   console.log('Calculating route:', osrmUrl);
 
   try {
-    const response = await fetch(osrmUrl);
+    const headers = CONFIG.getHeaders();
+    const response = await fetch(osrmUrl, { headers });
     if (!response.ok) {
-      const errorMsg = `Nie można połączyć się z serwerem OSRM (port ${port}). Sprawdź czy serwer działa.`;
+      const errorMsg = `Nie można połączyć się z serwerem OSRM. Sprawdź połączenie internetowe.`;
       if (window.wtgUI && window.wtgUI.showError) {
         window.wtgUI.showError(errorMsg);
       }
