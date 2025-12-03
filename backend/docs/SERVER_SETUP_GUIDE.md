@@ -86,6 +86,10 @@ PubkeyAuthentication yes
 sudo systemctl restart ssh
 
 # On RHEL/CentOS/Fedora
+# On Debian/Ubuntu:
+sudo systemctl restart ssh
+
+# On RHEL/CentOS/Fedora:
 sudo systemctl restart sshd
 ```
 

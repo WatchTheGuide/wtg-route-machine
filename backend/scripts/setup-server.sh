@@ -103,15 +103,23 @@ sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 
 # Restart SSH (service name varies: sshd on RHEL/CentOS, ssh on Debian/Ubuntu)
-if systemctl list-units --full -all | grep -Fq 'sshd.service'; then
+if systemctl list-unit-files | grep -q '^sshd.service'; then
+  echo "Restarting sshd.service..."
   systemctl restart sshd
-elif systemctl list-units --full -all | grep -Fq 'ssh.service'; then
+  echo -e "${GREEN}✓ SSH service (sshd) restarted${NC}"
+elif systemctl list-unit-files | grep -q '^ssh.service'; then
+  echo "Restarting ssh.service..."
   systemctl restart ssh
+  echo -e "${GREEN}✓ SSH service (ssh) restarted${NC}"
 else
-  echo "Warning: Could not find SSH service to restart"
+  echo -e "${RED}Warning: Could not find SSH service (tried sshd.service and ssh.service)${NC}"
+  echo "You may need to restart SSH manually: sudo systemctl restart ssh OR sudo systemctl restart sshd"
 fi
 
-echo -e "${GREEN}✓ SSH hardened (root login disabled, password auth disabled)${NC}"
+echo -e "${YELLOW}SSH configuration updated:${NC}"
+echo "  - Root login: DISABLED"
+echo "  - Password authentication: DISABLED"
+echo "  - Public key authentication: ENABLED"
 
 echo -e "${YELLOW}[6/7] Configuring automatic security updates...${NC}"
 cat > /etc/apt/apt.conf.d/50unattended-upgrades <<EOF
