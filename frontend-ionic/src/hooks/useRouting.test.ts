@@ -6,7 +6,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useRouting } from './useRouting';
 import { osrmService, OsrmError } from '../services/osrm.service';
-import { Waypoint } from '../types/route.types';
+import { Waypoint, Route } from '../types/route.types';
 
 // Mock osrmService
 vi.mock('../services/osrm.service', () => ({
@@ -86,7 +86,9 @@ describe('useRouting', () => {
       // Delay the mock to observe loading state
       vi.mocked(osrmService.calculateRoute).mockImplementation(
         () =>
-          new Promise((resolve) => setTimeout(() => resolve(mockRoute), 100))
+          new Promise<Route>((resolve) =>
+            setTimeout(() => resolve(mockRoute), 100)
+          )
       );
 
       const { result } = renderHook(() => useRouting());
