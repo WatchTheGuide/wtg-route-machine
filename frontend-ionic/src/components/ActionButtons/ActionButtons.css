@@ -1,0 +1,35 @@
+.action-fab {
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  margin-right: 16px;
+}
+
+.locate-fab {
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  margin-left: 16px;
+}
+
+.action-fab ion-fab-button[disabled] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Fab list animations */
+.action-fab ion-fab-list {
+  --ion-background-color: transparent;
+}
+
+.action-fab ion-fab-list ion-fab-button {
+  margin-bottom: 8px;
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Responsive positioning for larger screens */
+@media (min-width: 768px) {
+  .action-fab {
+    margin-right: 24px;
+  }
+
+  .locate-fab {
+    margin-left: 24px;
+  }
+}

@@ -1,0 +1,29 @@
+.city-selector-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ion-color-light);
+  border-radius: 8px;
+  padding: 4px 12px;
+}
+
+.city-icon {
+  font-size: 20px;
+  color: var(--ion-color-primary);
+}
+
+.city-selector {
+  --padding-start: 0;
+  --padding-end: 0;
+  min-width: 120px;
+  font-weight: 500;
+}
+
+.city-selector::part(text) {
+  font-weight: 600;
+}
+
+/* Dark mode */
+.dark .city-selector-wrapper {
+  background: var(--ion-color-step-100);
+}

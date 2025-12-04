@@ -1,0 +1,46 @@
+.profile-selector {
+  --background: var(--ion-color-light);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.profile-selector ion-segment-button {
+  --indicator-color: var(--ion-color-primary);
+  --indicator-box-shadow: none;
+  --color: var(--ion-color-medium);
+  --color-checked: white;
+  --border-radius: 8px;
+  min-height: 44px;
+  text-transform: none;
+  font-weight: 500;
+}
+
+.profile-selector ion-segment-button::part(indicator-background) {
+  border-radius: 8px;
+}
+
+.profile-selector ion-segment-button ion-icon {
+  font-size: 20px;
+  margin-bottom: 2px;
+}
+
+.profile-selector ion-segment-button ion-label {
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+/* Hide labels on small screens */
+@media (max-width: 360px) {
+  .profile-selector ion-segment-button ion-label {
+    display: none;
+  }
+
+  .profile-selector ion-segment-button ion-icon {
+    margin-bottom: 0;
+  }
+}
+
+/* Dark mode */
+.dark .profile-selector {
+  --background: var(--ion-color-step-100);
+}

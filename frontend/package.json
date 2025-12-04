@@ -1,7 +1,7 @@
 {
   "name": "wtg-route-machine",
   "version": "1.0.0",
-  "description": "City Walking Tours - Mobile Routing Application",
+  "description": "GuideTrackee Routes - Mobile Routing Application",
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf www",
@@ -31,5 +31,9 @@
     "@capacitor/ios": "^7.4.4",
     "@capacitor/splash-screen": "^7.0.3",
     "@capacitor/status-bar": "^7.0.3"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "canvas": "^3.2.0"
   }
 }

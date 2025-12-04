@@ -1,7 +1,7 @@
 {
-  "name": "WTG Route Machine",
-  "short_name": "WTG Routes",
-  "description": "Aplikacja do planowania tras pieszych, rowerowych i samochodowych",
+  "name": "GuideTrackee Routes",
+  "short_name": "GuideTrackee",
+  "description": "GuideTrackee Routes - Mobile Routing Application",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ff6600",

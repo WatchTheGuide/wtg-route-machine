@@ -1,0 +1,62 @@
+.route-info-card {
+  margin: 8px;
+  border-radius: 12px;
+  --background: linear-gradient(135deg, #fff5eb 0%, #ffffff 100%);
+  border: 1px solid rgba(255, 102, 0, 0.15);
+}
+
+.dark .route-info-card {
+  --background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border-color: rgba(255, 102, 0, 0.25);
+}
+
+.route-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 400px) {
+  .route-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+
+.route-info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 102, 0, 0.1);
+  border-radius: 10px;
+}
+
+.info-icon ion-icon {
+  font-size: 20px;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.info-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
