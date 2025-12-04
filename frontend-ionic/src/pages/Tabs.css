@@ -1,41 +1,19 @@
-.app-tab-bar {
+ion-tab-bar {
   --background: var(--ion-background-color);
   --border: 1px solid var(--ion-border-color);
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
-.app-tab-bar ion-tab-button {
+ion-tab-button {
   --color: var(--ion-color-medium);
   --color-selected: var(--ion-color-primary);
-  --padding-top: 8px;
-  --padding-bottom: 8px;
 }
 
-.app-tab-bar ion-tab-button ion-label {
+ion-tab-button ion-icon {
+  font-size: 26px;
+}
+
+ion-tab-button ion-label {
   font-size: 11px;
   font-weight: 500;
-  margin-top: 4px;
-}
-
-/* Show/hide icons based on selected state */
-.app-tab-bar ion-tab-button .tab-icon-active {
-  display: none;
-}
-
-.app-tab-bar ion-tab-button .tab-icon-inactive {
-  display: block;
-}
-
-.app-tab-bar ion-tab-button.tab-selected .tab-icon-active {
-  display: block;
-}
-
-.app-tab-bar ion-tab-button.tab-selected .tab-icon-inactive {
-  display: none;
-}
-
-/* Dark mode */
-.dark .app-tab-bar {
-  --background: var(--ion-background-color);
-  --border: 1px solid var(--ion-border-color);
 }
