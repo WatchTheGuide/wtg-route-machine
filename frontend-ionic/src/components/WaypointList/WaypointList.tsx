@@ -57,10 +57,11 @@ const WaypointList: React.FC<WaypointListProps> = ({
         </IonLabel>
       </IonListHeader>
       <IonReorderGroup disabled={false} onIonItemReorder={handleReorder}>
-        {waypoints.map((waypoint) => (
+        {waypoints.map((waypoint, index) => (
           <WaypointItem
             key={waypoint.id}
             waypoint={waypoint}
+            index={index}
             onRemove={onRemove}
           />
         ))}

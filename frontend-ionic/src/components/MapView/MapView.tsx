@@ -41,25 +41,22 @@ const MapView: React.FC<MapViewProps> = ({
   }, [onMapClick]);
 
   // Create marker style
-  const createMarkerStyle = useCallback(
-    (waypointNumber: number, isGPS = false) => {
-      const color = isGPS ? '#22c55e' : '#ff6600';
-      return new Style({
-        image: new CircleStyle({
-          radius: 16,
-          fill: new Fill({ color }),
-          stroke: new Stroke({ color: '#ffffff', width: 3 }),
-        }),
-        text: new Text({
-          text: waypointNumber.toString(),
-          fill: new Fill({ color: '#ffffff' }),
-          font: 'bold 12px sans-serif',
-          offsetY: 1,
-        }),
-      });
-    },
-    []
-  );
+  const createMarkerStyle = useCallback((waypointNumber: number) => {
+    const color = '#ff6600';
+    return new Style({
+      image: new CircleStyle({
+        radius: 16,
+        fill: new Fill({ color }),
+        stroke: new Stroke({ color: '#ffffff', width: 3 }),
+      }),
+      text: new Text({
+        text: waypointNumber.toString(),
+        fill: new Fill({ color: '#ffffff' }),
+        font: 'bold 12px sans-serif',
+        offsetY: 1,
+      }),
+    });
+  }, []);
 
   // Create route style - memoized to avoid recreating
   const routeStyle = useMemo(
@@ -99,7 +96,7 @@ const MapView: React.FC<MapViewProps> = ({
     const initialCenter = center;
     const initialZoom = zoom;
 
-    // Create map
+    // Create map - center is now [lon, lat] tuple
     const map = new Map({
       target: mapRef.current,
       layers: [
@@ -110,15 +107,16 @@ const MapView: React.FC<MapViewProps> = ({
         markerLayer,
       ],
       view: new View({
-        center: fromLonLat([initialCenter.lon, initialCenter.lat]),
+        center: fromLonLat([initialCenter[0], initialCenter[1]]),
         zoom: initialZoom,
       }),
     });
 
     // Handle click events using ref to avoid stale closure
+    // Return coordinate as [lon, lat] tuple
     map.on('click', (event) => {
       const coordinate = toLonLat(event.coordinate);
-      onMapClickRef.current({ lon: coordinate[0], lat: coordinate[1] });
+      onMapClickRef.current([coordinate[0], coordinate[1]]);
     });
 
     mapInstanceRef.current = map;
@@ -136,8 +134,9 @@ const MapView: React.FC<MapViewProps> = ({
     if (!mapInstanceRef.current) return;
 
     const view = mapInstanceRef.current.getView();
+    // center is now [lon, lat] tuple
     view.animate({
-      center: fromLonLat([center.lon, center.lat]),
+      center: fromLonLat([center[0], center[1]]),
       zoom,
       duration: 500,
     });
@@ -152,15 +151,16 @@ const MapView: React.FC<MapViewProps> = ({
 
     source.clear();
 
-    waypoints.forEach((waypoint) => {
+    waypoints.forEach((waypoint, index) => {
       const feature = new Feature({
         geometry: new Point(
-          fromLonLat([waypoint.coordinate.lon, waypoint.coordinate.lat])
+          // coordinate is now [lon, lat] tuple
+          fromLonLat([waypoint.coordinate[0], waypoint.coordinate[1]])
         ),
         waypointId: waypoint.id,
-        waypointNumber: waypoint.order,
+        waypointNumber: index + 1,
       });
-      feature.setStyle(createMarkerStyle(waypoint.order, waypoint.isGPS));
+      feature.setStyle(createMarkerStyle(index + 1));
       source.addFeature(feature);
     });
   }, [waypoints, createMarkerStyle]);
@@ -174,11 +174,10 @@ const MapView: React.FC<MapViewProps> = ({
 
     source.clear();
 
-    if (route?.geometry) {
-      // Decode polyline
-      const coordinates = decodePolyline(route.geometry);
+    // Route now has coordinates array instead of geometry
+    if (route?.coordinates && route.coordinates.length > 0) {
       const lineString = new LineString(
-        coordinates.map((coord) => fromLonLat(coord))
+        route.coordinates.map((coord) => fromLonLat(coord))
       );
 
       const feature = new Feature({
@@ -192,49 +191,5 @@ const MapView: React.FC<MapViewProps> = ({
 
   return <div ref={mapRef} className="map-container" />;
 };
-
-/**
- * Decode polyline from OSRM (polyline6 format)
- */
-function decodePolyline(encoded: string, precision = 6): [number, number][] {
-  const coordinates: [number, number][] = [];
-  let index = 0;
-  let lat = 0;
-  let lon = 0;
-
-  while (index < encoded.length) {
-    let b: number;
-    let shift = 0;
-    let result = 0;
-
-    do {
-      b = encoded.charCodeAt(index++) - 63;
-      result |= (b & 0x1f) << shift;
-      shift += 5;
-    } while (b >= 0x20);
-
-    const dlat = result & 1 ? ~(result >> 1) : result >> 1;
-    lat += dlat;
-
-    shift = 0;
-    result = 0;
-
-    do {
-      b = encoded.charCodeAt(index++) - 63;
-      result |= (b & 0x1f) << shift;
-      shift += 5;
-    } while (b >= 0x20);
-
-    const dlon = result & 1 ? ~(result >> 1) : result >> 1;
-    lon += dlon;
-
-    coordinates.push([
-      lon / Math.pow(10, precision),
-      lat / Math.pow(10, precision),
-    ]);
-  }
-
-  return coordinates;
-}
 
 export default MapView;

@@ -28,9 +28,9 @@ vi.mock('@ionic/react', async () => {
 
 // Mock WaypointItem
 vi.mock('../WaypointItem', () => ({
-  default: ({ waypoint, onRemove }: any) => (
+  default: ({ waypoint, index, onRemove }: any) => (
     <div data-testid={`waypoint-${waypoint.id}`}>
-      <span>{waypoint.address || `Point ${waypoint.order}`}</span>
+      <span>{waypoint.address || `Point ${index + 1}`}</span>
       <button onClick={() => onRemove(waypoint.id)}>Remove</button>
     </div>
   ),
@@ -40,15 +40,13 @@ describe('WaypointList', () => {
   const mockWaypoints: Waypoint[] = [
     {
       id: '1',
-      coordinate: { lon: 19.9385, lat: 50.0647 },
+      coordinate: [19.9385, 50.0647],
       address: 'Rynek Główny',
-      order: 1,
     },
     {
       id: '2',
-      coordinate: { lon: 19.945, lat: 50.06 },
+      coordinate: [19.945, 50.06],
       address: 'Wawel',
-      order: 2,
     },
   ];
 
@@ -100,10 +98,9 @@ describe('WaypointList', () => {
   });
 
   it('displays correct count for 5+ waypoints', () => {
-    const manyWaypoints = Array.from({ length: 5 }, (_, i) => ({
+    const manyWaypoints: Waypoint[] = Array.from({ length: 5 }, (_, i) => ({
       id: String(i + 1),
-      coordinate: { lon: 19.9385 + i * 0.01, lat: 50.0647 },
-      order: i + 1,
+      coordinate: [19.9385 + i * 0.01, 50.0647] as [number, number],
     }));
 
     render(
