@@ -70,28 +70,38 @@ describe('ActionButtons', () => {
     expect(defaultProps.onLocateMe).toHaveBeenCalledTimes(1);
   });
 
-  it('disables clear button when no waypoints', () => {
+  it('hides clear button when no waypoints', () => {
     render(<ActionButtons {...defaultProps} hasWaypoints={false} />);
 
-    const clearButton = screen.getByTestId('fab-button-wyczyść-wszystko');
-    expect(clearButton).toBeDisabled();
+    const clearButton = screen.queryByTestId('fab-button-wyczyść-wszystko');
+    expect(clearButton).not.toBeInTheDocument();
   });
 
-  it('enables clear button when waypoints exist', () => {
+  it('shows clear button when waypoints exist', () => {
     render(<ActionButtons {...defaultProps} hasWaypoints={true} />);
 
     const clearButton = screen.getByTestId('fab-button-wyczyść-wszystko');
-    expect(clearButton).not.toBeDisabled();
+    expect(clearButton).toBeInTheDocument();
   });
 
-  it('disables export buttons when no route', () => {
+  it('hides export buttons when no route', () => {
     render(<ActionButtons {...defaultProps} hasRoute={false} />);
 
-    const geoJsonButton = screen.getByTestId('fab-button-eksportuj-geojson');
-    const pdfButton = screen.getByTestId('fab-button-eksportuj-pdf');
+    const geoJsonButton = screen.queryByTestId('fab-button-eksportuj-geojson');
+    const pdfButton = screen.queryByTestId('fab-button-eksportuj-pdf');
 
-    expect(geoJsonButton).toBeDisabled();
-    expect(pdfButton).toBeDisabled();
+    expect(geoJsonButton).not.toBeInTheDocument();
+    expect(pdfButton).not.toBeInTheDocument();
+  });
+
+  it('hides action FAB when no waypoints and no route', () => {
+    render(
+      <ActionButtons {...defaultProps} hasWaypoints={false} hasRoute={false} />
+    );
+
+    // Action FAB should not be rendered, only locate button
+    const menuButton = screen.queryByTestId('fab-button-menu-akcji');
+    expect(menuButton).not.toBeInTheDocument();
   });
 
   it('calls onClearAll when clear button is clicked', () => {

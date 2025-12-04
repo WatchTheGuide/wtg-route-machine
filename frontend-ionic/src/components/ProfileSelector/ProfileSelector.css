@@ -1,7 +1,10 @@
 .profile-selector {
-  --background: var(--ion-color-light);
-  border-radius: 12px;
-  padding: 4px;
+  --background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  padding: 3px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  max-width: 240px;
 }
 
 .profile-selector ion-segment-button {
@@ -9,38 +12,50 @@
   --indicator-box-shadow: none;
   --color: var(--ion-color-medium);
   --color-checked: white;
-  --border-radius: 8px;
-  min-height: 44px;
+  --border-radius: 20px;
+  min-height: 36px;
+  min-width: 70px;
   text-transform: none;
   font-weight: 500;
+  --padding-start: 8px;
+  --padding-end: 8px;
 }
 
 .profile-selector ion-segment-button::part(indicator-background) {
-  border-radius: 8px;
+  border-radius: 20px;
 }
 
 .profile-selector ion-segment-button ion-icon {
-  font-size: 20px;
-  margin-bottom: 2px;
+  font-size: 18px;
+  margin-right: 4px;
 }
 
 .profile-selector ion-segment-button ion-label {
-  font-size: 0.75rem;
-  margin-top: 2px;
+  font-size: 12px;
+  margin: 0;
 }
 
-/* Hide labels on small screens */
+/* Stack icon and label on small screens */
 @media (max-width: 360px) {
+  .profile-selector {
+    max-width: 180px;
+  }
+
+  .profile-selector ion-segment-button {
+    min-width: 50px;
+    flex-direction: column;
+  }
+
   .profile-selector ion-segment-button ion-label {
     display: none;
   }
 
   .profile-selector ion-segment-button ion-icon {
-    margin-bottom: 0;
+    margin-right: 0;
   }
 }
 
 /* Dark mode */
 .dark .profile-selector {
-  --background: var(--ion-color-step-100);
+  --background: rgba(30, 30, 30, 0.95);
 }

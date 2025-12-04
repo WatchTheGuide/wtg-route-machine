@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { IonContent, IonPage } from '@ionic/react';
+import { IonContent, IonPage, IonIcon } from '@ionic/react';
+import { locationOutline } from 'ionicons/icons';
 import AppHeader from '../components/AppHeader/AppHeader';
 import MapView from '../components/MapView/MapView';
 import WaypointList from '../components/WaypointList/WaypointList';
@@ -71,6 +72,7 @@ const Home: React.FC = () => {
       <AppHeader isDarkMode={isDarkMode} onToggleTheme={handleToggleTheme} />
       <IonContent fullscreen>
         <div className="home-container">
+          {/* Map section - full height */}
           <div className="map-section">
             <MapView
               waypoints={waypoints}
@@ -79,28 +81,54 @@ const Home: React.FC = () => {
               center={[19.9449, 50.0647]}
               zoom={13}
             />
-          </div>
 
-          <div className="controls-section">
-            <ProfileSelector
-              currentProfile={profile}
-              onProfileChange={setProfile}
-              disabled={isLoading}
-            />
+            {/* Floating controls overlay */}
+            <div className="map-overlay">
+              <div className="profile-selector-container">
+                <ProfileSelector
+                  currentProfile={profile}
+                  onProfileChange={setProfile}
+                  disabled={isLoading}
+                />
+              </div>
 
-            {route && <RouteInfo route={route} profile={profile} />}
+              {route && (
+                <div className="route-info-container">
+                  <RouteInfo route={route} profile={profile} />
+                </div>
+              )}
+            </div>
 
-            {waypoints.length > 0 && (
-              <WaypointList
-                waypoints={waypoints}
-                onRemove={removeWaypoint}
-                onReorder={reorderWaypoints}
-              />
+            {/* Empty state hint */}
+            {waypoints.length === 0 && (
+              <div className="empty-hint">
+                <IonIcon icon={locationOutline} />
+                <p>Dotknij mapę aby dodać punkty trasy</p>
+              </div>
             )}
-
-            {error && <div className="error-message">{error}</div>}
           </div>
 
+          {/* Bottom panel with waypoints */}
+          {waypoints.length > 0 && (
+            <div className="bottom-panel">
+              <div className="bottom-panel-header">
+                <h3>Punkty trasy</h3>
+                <span className="waypoint-count">{waypoints.length}</span>
+              </div>
+              <div className="bottom-panel-content">
+                <WaypointList
+                  waypoints={waypoints}
+                  onRemove={removeWaypoint}
+                  onReorder={reorderWaypoints}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Error message */}
+          {error && <div className="error-message">{error}</div>}
+
+          {/* FAB buttons */}
           <ActionButtons
             hasWaypoints={waypoints.length > 0}
             hasRoute={!!route}

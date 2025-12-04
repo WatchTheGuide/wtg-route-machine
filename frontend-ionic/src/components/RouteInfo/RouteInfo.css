@@ -1,47 +1,45 @@
 .route-info-card {
-  margin: 8px;
-  border-radius: 12px;
-  --background: linear-gradient(135deg, #fff5eb 0%, #ffffff 100%);
-  border: 1px solid rgba(255, 102, 0, 0.15);
+  margin: 0;
+  border-radius: 16px;
+  --background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.route-info-card ion-card-content {
+  padding: 10px 14px;
 }
 
 .dark .route-info-card {
-  --background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-  border-color: rgba(255, 102, 0, 0.25);
+  --background: rgba(30, 30, 30, 0.95);
 }
 
 .route-info-grid {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-@media (min-width: 400px) {
-  .route-info-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
+  align-items: center;
+  justify-content: space-around;
+  gap: 8px;
 }
 
 .route-info-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
 }
 
 .info-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 28px;
+  height: 28px;
   background: rgba(255, 102, 0, 0.1);
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .info-icon ion-icon {
-  font-size: 20px;
+  font-size: 14px;
+  color: var(--ion-color-primary);
 }
 
 .info-content {
@@ -50,13 +48,14 @@
 }
 
 .info-label {
-  font-size: 0.75rem;
-  font-weight: 500;
+  font-size: 9px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.03em;
+  color: var(--ion-color-medium);
 }
 
 .info-value {
-  font-size: 1.125rem;
+  font-size: 13px;
   font-weight: 700;
 }

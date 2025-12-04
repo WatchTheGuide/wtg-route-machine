@@ -27,16 +27,17 @@ const ProfileSelector: React.FC<ProfileSelectorProps> = ({
       value={currentProfile}
       onIonChange={handleChange}
       disabled={disabled}
-      className="profile-selector">
-      <IonSegmentButton value="foot" aria-label="Trasa piesza">
+      className="profile-selector"
+      mode="ios">
+      <IonSegmentButton value="foot" layout="icon-start" aria-label="Pieszo">
         <IonIcon icon={walkOutline} />
         <IonLabel>Pieszo</IonLabel>
       </IonSegmentButton>
-      <IonSegmentButton value="bicycle" aria-label="Trasa rowerowa">
+      <IonSegmentButton value="bicycle" layout="icon-start" aria-label="Rower">
         <IonIcon icon={bicycleOutline} />
         <IonLabel>Rower</IonLabel>
       </IonSegmentButton>
-      <IonSegmentButton value="car" aria-label="Trasa samochodowa">
+      <IonSegmentButton value="car" layout="icon-start" aria-label="Auto">
         <IonIcon icon={carOutline} />
         <IonLabel>Auto</IonLabel>
       </IonSegmentButton>

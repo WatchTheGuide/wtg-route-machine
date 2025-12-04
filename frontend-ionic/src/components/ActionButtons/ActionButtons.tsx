@@ -1,7 +1,7 @@
 import React from 'react';
 import { IonFab, IonFabButton, IonFabList, IonIcon } from '@ionic/react';
 import {
-  add,
+  ellipsisVertical,
   trashOutline,
   downloadOutline,
   documentOutline,
@@ -39,62 +39,65 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         className="locate-fab">
         <IonFabButton
           size="small"
-          color="light"
           onClick={onLocateMe}
           aria-label="Znajdź moją lokalizację">
           <IonIcon icon={locateOutline} />
         </IonFabButton>
       </IonFab>
 
-      {/* Main action FAB */}
-      <IonFab
-        slot="fixed"
-        vertical="bottom"
-        horizontal="end"
-        className="action-fab">
-        <IonFabButton color="primary" aria-label="Otwórz menu akcji">
-          <IonIcon icon={add} />
-        </IonFabButton>
-        <IonFabList side="top">
-          {/* Clear all */}
-          <IonFabButton
-            color="danger"
-            onClick={onClearAll}
-            disabled={!hasWaypoints}
-            aria-label="Wyczyść wszystko">
-            <IonIcon icon={trashOutline} />
+      {/* Main action FAB - only show when there's content */}
+      {(hasWaypoints || hasRoute) && (
+        <IonFab
+          slot="fixed"
+          vertical="bottom"
+          horizontal="end"
+          className="action-fab">
+          <IonFabButton size="small" color="primary" aria-label="Menu akcji">
+            <IonIcon icon={ellipsisVertical} />
           </IonFabButton>
+          <IonFabList side="top">
+            {/* Share */}
+            {onShare && hasRoute && (
+              <IonFabButton
+                color="success"
+                onClick={onShare}
+                aria-label="Udostępnij">
+                <IonIcon icon={shareOutline} />
+              </IonFabButton>
+            )}
 
-          {/* Export GeoJSON */}
-          <IonFabButton
-            color="secondary"
-            onClick={onExportGeoJSON}
-            disabled={!hasRoute}
-            aria-label="Eksportuj GeoJSON">
-            <IonIcon icon={downloadOutline} />
-          </IonFabButton>
+            {/* Export PDF */}
+            {hasRoute && (
+              <IonFabButton
+                color="tertiary"
+                onClick={onExportPDF}
+                aria-label="Eksportuj PDF">
+                <IonIcon icon={documentOutline} />
+              </IonFabButton>
+            )}
 
-          {/* Export PDF */}
-          <IonFabButton
-            color="tertiary"
-            onClick={onExportPDF}
-            disabled={!hasRoute}
-            aria-label="Eksportuj PDF">
-            <IonIcon icon={documentOutline} />
-          </IonFabButton>
+            {/* Export GeoJSON */}
+            {hasRoute && (
+              <IonFabButton
+                color="secondary"
+                onClick={onExportGeoJSON}
+                aria-label="Eksportuj GeoJSON">
+                <IonIcon icon={downloadOutline} />
+              </IonFabButton>
+            )}
 
-          {/* Share */}
-          {onShare && (
-            <IonFabButton
-              color="success"
-              onClick={onShare}
-              disabled={!hasRoute}
-              aria-label="Udostępnij">
-              <IonIcon icon={shareOutline} />
-            </IonFabButton>
-          )}
-        </IonFabList>
-      </IonFab>
+            {/* Clear all */}
+            {hasWaypoints && (
+              <IonFabButton
+                color="danger"
+                onClick={onClearAll}
+                aria-label="Wyczyść wszystko">
+                <IonIcon icon={trashOutline} />
+              </IonFabButton>
+            )}
+          </IonFabList>
+        </IonFab>
+      )}
     </>
   );
 };

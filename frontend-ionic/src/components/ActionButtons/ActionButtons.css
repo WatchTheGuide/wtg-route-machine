@@ -1,11 +1,34 @@
 .action-fab {
-  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
-  margin-right: 16px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  right: 16px;
+}
+
+.action-fab ion-fab-button {
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* When bottom panel is visible, move FAB up */
+.has-bottom-panel .action-fab {
+  bottom: calc(35vh + env(safe-area-inset-bottom, 0px) + 16px);
 }
 
 .locate-fab {
-  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
-  margin-left: 16px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  left: 16px;
+}
+
+.locate-fab ion-fab-button {
+  --background: rgba(255, 255, 255, 0.95);
+  --background-activated: rgba(240, 240, 240, 0.95);
+  --color: var(--ion-color-dark);
+  --box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.dark .locate-fab ion-fab-button {
+  --background: rgba(40, 40, 40, 0.95);
+  --background-activated: rgba(50, 50, 50, 0.95);
+  --color: var(--ion-color-light);
 }
 
 .action-fab ion-fab-button[disabled] {
@@ -13,23 +36,34 @@
   pointer-events: none;
 }
 
-/* Fab list animations */
+/* Fab list styling */
 .action-fab ion-fab-list {
   --ion-background-color: transparent;
 }
 
 .action-fab ion-fab-list ion-fab-button {
-  margin-bottom: 8px;
-  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  margin-bottom: 10px;
+  --box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  width: 44px;
+  height: 44px;
 }
 
-/* Responsive positioning for larger screens */
+/* On tablet/desktop, position FAB in map area */
 @media (min-width: 768px) {
   .action-fab {
-    margin-right: 24px;
+    bottom: auto;
+    top: 100px;
+    right: 16px;
+  }
+
+  .has-bottom-panel .action-fab {
+    bottom: auto;
   }
 
   .locate-fab {
-    margin-left: 24px;
+    bottom: auto;
+    top: 100px;
+    left: auto;
+    right: 70px;
   }
 }
