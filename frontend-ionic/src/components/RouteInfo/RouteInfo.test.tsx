@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import RouteInfo from './RouteInfo';
@@ -15,9 +16,7 @@ vi.mock('@ionic/react', async () => {
     ),
     IonCardContent: ({ children }: any) => <div>{children}</div>,
     IonIcon: () => <span data-testid="ion-icon" />,
-    IonText: ({ children, color }: any) => (
-      <span data-color={color}>{children}</span>
-    ),
+    IonText: ({ children }: any) => <span>{children}</span>,
   };
 });
 

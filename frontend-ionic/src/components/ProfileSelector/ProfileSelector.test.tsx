@@ -1,14 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import ProfileSelector from './ProfileSelector';
-import { RoutingProfile } from '../../types/route.types';
 
 // Mock Ionic components
 vi.mock('@ionic/react', async () => {
   const actual = await vi.importActual('@ionic/react');
   return {
     ...actual,
-    IonSegment: ({ value, onIonChange, children, ...props }: any) => (
+    IonSegment: ({ value, children, ...props }: any) => (
       <div data-testid="ion-segment" data-value={value} {...props}>
         {children}
       </div>
@@ -21,7 +21,7 @@ vi.mock('@ionic/react', async () => {
         {children}
       </button>
     ),
-    IonIcon: ({ icon }: any) => <span data-testid="ion-icon" />,
+    IonIcon: (_props: any) => <span data-testid="ion-icon" />,
     IonLabel: ({ children }: any) => <span>{children}</span>,
   };
 });

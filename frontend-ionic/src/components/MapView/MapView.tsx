@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -33,6 +33,12 @@ const MapView: React.FC<MapViewProps> = ({
   const mapInstanceRef = useRef<Map | null>(null);
   const markerLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
   const routeLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
+  const onMapClickRef = useRef(onMapClick);
+
+  // Keep onMapClick ref updated
+  useEffect(() => {
+    onMapClickRef.current = onMapClick;
+  }, [onMapClick]);
 
   // Create marker style
   const createMarkerStyle = useCallback(
@@ -55,15 +61,19 @@ const MapView: React.FC<MapViewProps> = ({
     []
   );
 
-  // Create route style
-  const routeStyle = new Style({
-    stroke: new Stroke({
-      color: '#ff6600',
-      width: 5,
-      lineCap: 'round',
-      lineJoin: 'round',
-    }),
-  });
+  // Create route style - memoized to avoid recreating
+  const routeStyle = useMemo(
+    () =>
+      new Style({
+        stroke: new Stroke({
+          color: '#ff6600',
+          width: 5,
+          lineCap: 'round',
+          lineJoin: 'round',
+        }),
+      }),
+    []
+  );
 
   // Initialize map
   useEffect(() => {
@@ -85,6 +95,10 @@ const MapView: React.FC<MapViewProps> = ({
     });
     routeLayerRef.current = routeLayer;
 
+    // Initial center and zoom (from props at mount time)
+    const initialCenter = center;
+    const initialZoom = zoom;
+
     // Create map
     const map = new Map({
       target: mapRef.current,
@@ -96,15 +110,15 @@ const MapView: React.FC<MapViewProps> = ({
         markerLayer,
       ],
       view: new View({
-        center: fromLonLat([center.lon, center.lat]),
-        zoom,
+        center: fromLonLat([initialCenter.lon, initialCenter.lat]),
+        zoom: initialZoom,
       }),
     });
 
-    // Handle click events
+    // Handle click events using ref to avoid stale closure
     map.on('click', (event) => {
       const coordinate = toLonLat(event.coordinate);
-      onMapClick({ lon: coordinate[0], lat: coordinate[1] });
+      onMapClickRef.current({ lon: coordinate[0], lat: coordinate[1] });
     });
 
     mapInstanceRef.current = map;
@@ -114,6 +128,7 @@ const MapView: React.FC<MapViewProps> = ({
       map.setTarget(undefined);
       mapInstanceRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update center and zoom
@@ -173,7 +188,7 @@ const MapView: React.FC<MapViewProps> = ({
       feature.setStyle(routeStyle);
       source.addFeature(feature);
     }
-  }, [route]);
+  }, [route, routeStyle]);
 
   return <div ref={mapRef} className="map-container" />;
 };

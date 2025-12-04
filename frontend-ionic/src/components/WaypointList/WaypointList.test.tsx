@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import WaypointList from './WaypointList';
@@ -17,7 +18,7 @@ vi.mock('@ionic/react', async () => {
       <div data-testid="ion-list-header">{children}</div>
     ),
     IonLabel: ({ children }: any) => <div>{children}</div>,
-    IonReorderGroup: ({ children, onIonItemReorder }: any) => (
+    IonReorderGroup: ({ children }: any) => (
       <div data-testid="ion-reorder-group">{children}</div>
     ),
     IonText: ({ children }: any) => <span>{children}</span>,

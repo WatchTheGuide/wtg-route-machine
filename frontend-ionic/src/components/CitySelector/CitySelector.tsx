@@ -22,8 +22,6 @@ const CitySelector: React.FC<CitySelectorProps> = ({
     }
   };
 
-  const selectedCity = CITIES.find((c) => c.id === currentCity);
-
   return (
     <div className="city-selector-wrapper">
       <IonIcon icon={locationOutline} className="city-icon" />
