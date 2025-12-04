@@ -5,9 +5,35 @@ You are working on **WTG Route Machine** - a lightweight OSRM (Open Source Routi
 ## Project Overview
 
 - **Purpose**: City walking tour routing service
-- **Tech Stack**: OSRM Backend (C++/Docker), Bash scripts, osmium-tool
-- **Profile**: Pedestrian (`foot`) - optimized for sidewalks, paths, tourist attractions
+- **Tech Stack**:
+  - **Backend**: OSRM Backend (C++/Docker), Bash scripts, osmium-tool
+  - **Frontend**: Ionic React 8 + TypeScript + Capacitor 7 (mobile apps)
+- **Profiles**: Pedestrian (`foot`), Bicycle (`bicycle`), Car (`car`)
 - **Deployment**: AWS (EC2/ECS) with minimal resource footprint (2GB RAM target)
+
+## Project Structure
+
+```
+wtg-route-machine/
+├── backend/                    # OSRM routing backend
+│   ├── docker/                 # Docker configurations
+│   ├── nginx/                  # Nginx proxy config
+│   ├── osrm-data/             # Processed OSRM data
+│   ├── osrm-profiles/         # Routing profiles (foot, bicycle, car)
+│   └── scripts/               # Backend management scripts
+├── frontend/                   # Legacy frontend (Vanilla JS + Tailwind)
+├── frontend-ionic/            # NEW: Ionic React frontend
+│   ├── src/
+│   │   ├── components/        # UI components (Ionic)
+│   │   ├── hooks/             # React hooks (useRouting, useWaypoints, etc.)
+│   │   ├── services/          # API services (osrmService, exportService)
+│   │   ├── types/             # TypeScript types
+│   │   └── pages/             # Page components
+│   ├── ios/                   # iOS native project
+│   └── android/               # Android native project
+├── project_documentation/     # Architecture docs
+└── user_stories/              # Epic & User Story definitions
+```
 
 ## Development Workflow
 
@@ -98,6 +124,27 @@ find . -type l -! -exec test -e {} \; -print
 - Update REQUIREMENTS.md if changing architecture
 - Add inline comments for complex logic
 - Document new city bbox coordinates
+
+#### 5. Frontend Testing (Ionic React)
+
+```bash
+cd frontend-ionic
+
+# Run linting
+npm run lint
+
+# Run unit tests
+npm run test.unit -- --run
+
+# Build for production
+npm run build
+
+# Run on iOS simulator
+npx cap run ios
+
+# Run on Android emulator
+npx cap run android
+```
 
 ### Commit Message Format
 
@@ -196,6 +243,75 @@ When adding support for a new city:
 3. **Test extraction** with a small region first
 4. **Verify bbox coverage** - ensure city center + suburbs included
 5. **Update documentation** - add city to README.md
+
+### Ionic React Frontend Guidelines
+
+The `frontend-ionic/` directory contains the mobile app built with Ionic React 8.
+
+#### Project Structure
+
+```
+frontend-ionic/src/
+├── components/              # Reusable UI components
+│   ├── AppHeader/          # IonHeader + IonToolbar
+│   ├── MapView/            # OpenLayers map wrapper
+│   ├── WaypointList/       # IonList with drag & drop
+│   ├── WaypointItem/       # Single waypoint item
+│   ├── ActionButtons/      # FAB action buttons
+│   ├── RouteInfo/          # Route info panel
+│   └── ProfileSelector/    # Routing profile selector
+├── hooks/                   # Custom React hooks
+│   ├── useRouting.ts       # Route calculation
+│   ├── useWaypoints.ts     # Waypoint management
+│   ├── useExport.ts        # Export functionality
+│   └── useHistory.ts       # Route history
+├── services/               # API services
+│   ├── osrm.service.ts     # OSRM API communication
+│   └── export.service.ts   # GeoJSON/PDF export
+├── types/                  # TypeScript types
+│   └── route.types.ts      # Route, Waypoint, Coordinate types
+└── pages/                  # Page components
+```
+
+#### Key Patterns
+
+1. **Coordinate Type**: Uses `[lon, lat]` tuple format for OSRM compatibility
+
+   ```typescript
+   type Coordinate = [number, number]; // [longitude, latitude]
+   ```
+
+2. **Hooks Pattern**: Business logic in custom hooks, components for UI only
+
+   ```typescript
+   const { waypoints, addWaypoint, removeWaypoint } = useWaypoints();
+   const { route, calculateRoute, isLoading } = useRouting();
+   ```
+
+3. **Service Pattern**: API calls in singleton services
+
+   ```typescript
+   import { osrmService } from '@/services/osrm.service';
+   const route = await osrmService.calculateRoute(waypoints, 'foot');
+   ```
+
+4. **Testing**: Vitest + React Testing Library
+   ```bash
+   npm run test.unit -- --run           # Run all tests
+   npm run test.unit -- --watch         # Watch mode
+   npm run test.unit -- --coverage      # With coverage
+   ```
+
+#### Available Cities
+
+```typescript
+const CITIES = {
+  krakow: { name: 'Kraków', center: [19.9449, 50.0647] },
+  warszawa: { name: 'Warszawa', center: [21.0122, 52.2297] },
+  wroclaw: { name: 'Wrocław', center: [17.0385, 51.1079] },
+  trojmiasto: { name: 'Trójmiasto', center: [18.6466, 54.352] },
+};
+```
 
 ### Docker Best Practices
 
