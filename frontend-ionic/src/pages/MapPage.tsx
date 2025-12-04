@@ -10,9 +10,9 @@ import ProfileSelector from '../components/ProfileSelector/ProfileSelector';
 import { useWaypoints } from '../hooks/useWaypoints';
 import { useRouting } from '../hooks/useRouting';
 import { useExport } from '../hooks/useExport';
-import './Home.css';
+import './MapPage.css';
 
-const Home: React.FC = () => {
+const MapPage: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(
     window.matchMedia('(prefers-color-scheme: dark)').matches
   );
@@ -71,7 +71,7 @@ const Home: React.FC = () => {
     <IonPage>
       <AppHeader isDarkMode={isDarkMode} onToggleTheme={handleToggleTheme} />
       <IonContent fullscreen>
-        <div className="home-container">
+        <div className="map-container">
           {/* Map section - full height */}
           <div className="map-section">
             <MapView
@@ -144,4 +144,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default MapPage;
