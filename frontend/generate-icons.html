@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>GuideTrackee Routes Icon Generator</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="1024" height="1024"></canvas>
+
+    <script>
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const size = 1024;
+
+      // Background - pomarańczowy z zaokrąglonymi rogami
+      ctx.fillStyle = '#ff6600';
+
+      // Zaokrąglone rogi (border-radius: 22.5% ~ 230px dla 1024px)
+      const cornerRadius = size * 0.225;
+      ctx.beginPath();
+      ctx.moveTo(cornerRadius, 0);
+      ctx.lineTo(size - cornerRadius, 0);
+      ctx.quadraticCurveTo(size, 0, size, cornerRadius);
+      ctx.lineTo(size, size - cornerRadius);
+      ctx.quadraticCurveTo(size, size, size - cornerRadius, size);
+      ctx.lineTo(cornerRadius, size);
+      ctx.quadraticCurveTo(0, size, 0, size - cornerRadius);
+      ctx.lineTo(0, cornerRadius);
+      ctx.quadraticCurveTo(0, 0, cornerRadius, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      // Map Pin Check Inside z Lucide Icons
+      // Skalowanie i pozycjonowanie
+      const scale = 35; // Większa skala dla lepszego wypełnienia
+      const offsetX = 512 - 12 * scale; // Centrowanie X (środek ikony to x=12)
+      const offsetY = 100; // Pozycja Y
+
+      ctx.save();
+      ctx.translate(offsetX, offsetY);
+      ctx.scale(scale, scale);
+
+      // 1. Rysujemy białą pinezkę (wypełnioną)
+      ctx.fillStyle = '#ffffff';
+      // Path dla map-pin
+      const pinPath = new Path2D(
+        'M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0'
+      );
+      ctx.fill(pinPath);
+
+      // 2. Rysujemy "wycięty" checkmark (pomarańczowy obrys)
+      ctx.strokeStyle = '#ff6600';
+      ctx.lineWidth = 2.5; // Grubość linii checkmarka (względem skali)
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // Path dla checkmarka (m9 10 2 2 4-4)
+      const checkPath = new Path2D('M9 10l2 2 4-4');
+      ctx.stroke(checkPath);
+
+      ctx.restore(); // Konwertuj do różnych rozmiarów
+      console.log(
+        'Icon generated! Right-click on canvas and "Save image as..." or use the download buttons below.'
+      );
+
+      // Dodaj przyciski do pobierania
+      const sizes = [1024, 512, 192, 180, 152, 120, 144, 96, 72, 48];
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.marginTop = '20px';
+
+      sizes.forEach((size) => {
+        const button = document.createElement('button');
+        button.textContent = `Download ${size}x${size}`;
+        button.style.margin = '5px';
+        button.style.padding = '10px';
+        button.onclick = () => downloadIcon(size);
+        buttonContainer.appendChild(button);
+      });
+
+      document.body.appendChild(buttonContainer);
+
+      function downloadIcon(size) {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = size;
+        tempCanvas.height = size;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(canvas, 0, 0, size, size);
+
+        tempCanvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `icon-${size}.png`;
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      }
+    </script>
+
+    <div style="margin-top: 20px; padding: 20px; background: #f0f0f0">
+      <h2>Instrukcja:</h2>
+      <ol>
+        <li>Otwórz ten plik w przeglądarce</li>
+        <li>
+          Kliknij przyciski "Download" aby pobrać ikony w różnych rozmiarach
+        </li>
+        <li>Zapisz ikony w folderze <code>frontend/assets/icons/</code></li>
+      </ol>
+      <p><strong>Potrzebne rozmiary dla iOS i Android:</strong></p>
+      <ul>
+        <li>1024x1024 - App Store</li>
+        <li>512x512 - Android</li>
+        <li>192x192 - Android</li>
+        <li>180x180 - iOS</li>
+        <li>152x152 - iOS</li>
+        <li>120x120 - iOS</li>
+        <li>144x144 - Android</li>
+        <li>96x96 - Android</li>
+        <li>72x72 - Android</li>
+        <li>48x48 - Android</li>
+      </ul>
+    </div>
+  </body>
+</html>

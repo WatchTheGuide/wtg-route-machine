@@ -1,0 +1,7 @@
+{
+  "name": "guidetrackee-routes",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

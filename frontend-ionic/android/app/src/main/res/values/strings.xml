@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">GuideTrackee Routes</string>
+    <string name="title_activity_main">GuideTrackee Routes</string>
+    <string name="package_name">com.guidetrackee.routemachine</string>
+    <string name="custom_url_scheme">com.guidetrackee.routemachine</string>
+</resources>
