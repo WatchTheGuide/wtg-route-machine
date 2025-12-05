@@ -313,13 +313,14 @@ class OsrmService {
    */
   async calculateRoute(
     waypoints: Coordinate[],
-    profile: RoutingProfile = 'foot'
+    profile: RoutingProfile = 'foot',
+    cityId?: string
   ): Promise<Route> {
     if (!waypoints || waypoints.length < 2) {
       throw new Error('At least 2 waypoints required for routing');
     }
 
-    const baseUrl = CONFIG.getOsrmUrl(profile);
+    const baseUrl = CONFIG.getOsrmUrl(profile, cityId);
     const coordinates = waypoints.map((wp) => `${wp[0]},${wp[1]}`).join(';');
     const osrmUrl = `${baseUrl}/route/v1/${profile}/${coordinates}?overview=full&steps=true`;
 

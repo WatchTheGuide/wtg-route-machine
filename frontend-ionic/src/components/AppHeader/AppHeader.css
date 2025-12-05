@@ -6,34 +6,18 @@
 .header-content {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   line-height: 1.2;
 }
 
 .header-title {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: -0.025em;
 }
 
-.header-subtitle {
-  font-size: 0.75rem;
-  opacity: 0.85;
-  font-weight: 400;
-}
-
 @media (min-width: 768px) {
-  .header-content {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
   .header-title {
-    font-size: 1.5rem;
-  }
-
-  .header-subtitle {
-    font-size: 0.875rem;
+    font-size: 1.25rem;
   }
 }

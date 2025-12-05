@@ -36,12 +36,30 @@ vi.mock('@ionic/react', async () => {
   };
 });
 
+// Mock CitySelector
+vi.mock('../CitySelector/CitySelector', () => ({
+  default: ({
+    currentCity,
+    onCityChange,
+  }: {
+    currentCity: string;
+    onCityChange: (city: string) => void;
+  }) => (
+    <select
+      data-testid="city-selector"
+      value={currentCity}
+      onChange={(e) => onCityChange(e.target.value)}>
+      <option value="krakow">Kraków</option>
+      <option value="warszawa">Warszawa</option>
+    </select>
+  ),
+}));
+
 describe('AppHeader', () => {
   it('renders the app title', () => {
     render(<AppHeader isDarkMode={false} onToggleTheme={() => {}} />);
 
-    expect(screen.getByText('GuideTrackee Routes')).toBeInTheDocument();
-    expect(screen.getByText('City Walking Tours')).toBeInTheDocument();
+    expect(screen.getByText('GuideTrackee')).toBeInTheDocument();
   });
 
   it('calls onToggleTheme when theme button is clicked', () => {
@@ -70,5 +88,24 @@ describe('AppHeader', () => {
     expect(
       screen.getByRole('button', { name: /switch to light mode/i })
     ).toBeInTheDocument();
+  });
+
+  it('renders CitySelector when city props are provided', () => {
+    render(
+      <AppHeader
+        isDarkMode={false}
+        onToggleTheme={() => {}}
+        currentCity="krakow"
+        onCityChange={() => {}}
+      />
+    );
+
+    expect(screen.getByTestId('city-selector')).toBeInTheDocument();
+  });
+
+  it('does not render CitySelector when city props are not provided', () => {
+    render(<AppHeader isDarkMode={false} onToggleTheme={() => {}} />);
+
+    expect(screen.queryByTestId('city-selector')).not.toBeInTheDocument();
   });
 });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IonContent, IonPage, IonIcon } from '@ionic/react';
+import { IonContent, IonPage, IonIcon, useIonAlert } from '@ionic/react';
 import { locationOutline } from 'ionicons/icons';
 import AppHeader from '../components/AppHeader/AppHeader';
 import MapView from '../components/MapView/MapView';
@@ -10,12 +10,16 @@ import ProfileSelector from '../components/ProfileSelector/ProfileSelector';
 import { useWaypoints } from '../hooks/useWaypoints';
 import { useRouting } from '../hooks/useRouting';
 import { useExport } from '../hooks/useExport';
+import { useCity } from '../hooks/useCity';
 import './MapPage.css';
 
 const MapPage: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(
     window.matchMedia('(prefers-color-scheme: dark)').matches
   );
+  const [presentAlert] = useIonAlert();
+
+  const { city, cityId, setCity } = useCity();
 
   const {
     waypoints,
@@ -30,7 +34,6 @@ const MapPage: React.FC = () => {
     isLoading,
     error,
     profile,
-    city,
     calculateRoute,
     clearRoute,
     setProfile,
@@ -67,9 +70,40 @@ const MapPage: React.FC = () => {
     console.log('Locate me clicked');
   };
 
+  const handleCityChange = (newCityId: string) => {
+    if (waypoints.length > 0) {
+      presentAlert({
+        header: 'Zmiana miasta',
+        message:
+          'Zmiana miasta spowoduje usunięcie wszystkich punktów trasy. Czy kontynuować?',
+        buttons: [
+          {
+            text: 'Anuluj',
+            role: 'cancel',
+          },
+          {
+            text: 'Zmień miasto',
+            handler: () => {
+              clearWaypoints();
+              clearRoute();
+              setCity(newCityId);
+            },
+          },
+        ],
+      });
+    } else {
+      setCity(newCityId);
+    }
+  };
+
   return (
     <IonPage>
-      <AppHeader isDarkMode={isDarkMode} onToggleTheme={handleToggleTheme} />
+      <AppHeader
+        isDarkMode={isDarkMode}
+        onToggleTheme={handleToggleTheme}
+        currentCity={cityId}
+        onCityChange={handleCityChange}
+      />
       <IonContent fullscreen>
         <div className="map-container">
           {/* Map section - full height */}
@@ -78,8 +112,8 @@ const MapPage: React.FC = () => {
               waypoints={waypoints}
               route={route}
               onMapClick={handleMapClick}
-              center={[19.9449, 50.0647]}
-              zoom={13}
+              center={city.center}
+              zoom={city.zoom}
             />
 
             {/* Floating controls overlay */}

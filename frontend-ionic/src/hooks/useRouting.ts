@@ -68,7 +68,8 @@ export function useRouting(): UseRoutingReturn {
         const coordinates = waypoints.map((wp) => wp.coordinate);
         const routeResult = await osrmService.calculateRoute(
           coordinates,
-          profile
+          profile,
+          city.id
         );
 
         setRoute(routeResult);
@@ -93,7 +94,7 @@ export function useRouting(): UseRoutingReturn {
         setIsLoading(false);
       }
     },
-    [profile]
+    [profile, city]
   );
 
   /**
@@ -135,32 +136,36 @@ export function useRouting(): UseRoutingReturn {
 }
 
 /**
- * Hook to auto-recalculate route when waypoints or profile change
+ * Hook to auto-recalculate route when waypoints, profile, or city change
  */
 export function useAutoRouting(
   waypoints: Waypoint[],
   profile: RoutingProfile,
-  calculateRoute: (waypoints: Waypoint[]) => Promise<void>
+  calculateRoute: (waypoints: Waypoint[]) => Promise<void>,
+  cityId?: string
 ): void {
   const waypointsRef = useRef<string>('');
   const profileRef = useRef<RoutingProfile>(profile);
+  const cityRef = useRef<string | undefined>(cityId);
 
   useEffect(() => {
     const waypointsKey = waypoints
       .map((wp) => `${wp.coordinate[0]},${wp.coordinate[1]}`)
       .join(';');
 
-    // Only recalculate if waypoints or profile changed
+    // Only recalculate if waypoints, profile, or city changed
     if (
       waypointsKey !== waypointsRef.current ||
-      profile !== profileRef.current
+      profile !== profileRef.current ||
+      cityId !== cityRef.current
     ) {
       waypointsRef.current = waypointsKey;
       profileRef.current = profile;
+      cityRef.current = cityId;
 
       if (waypoints.length >= 2) {
         calculateRoute(waypoints);
       }
     }
-  }, [waypoints, profile, calculateRoute]);
+  }, [waypoints, profile, calculateRoute, cityId]);
 }

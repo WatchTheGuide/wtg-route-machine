@@ -13,3 +13,6 @@ export type { UseExportReturn, UseExportProps } from './useExport';
 
 export { useHistory, useAutoSaveHistory } from './useHistory';
 export type { UseHistoryReturn, HistoryEntry } from './useHistory';
+
+export { useCity } from './useCity';
+export type { UseCityReturn } from './useCity';

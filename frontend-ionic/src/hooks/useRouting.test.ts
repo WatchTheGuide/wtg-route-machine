@@ -187,7 +187,8 @@ describe('useRouting', () => {
 
       expect(osrmService.calculateRoute).toHaveBeenCalledWith(
         expect.any(Array),
-        'bicycle'
+        'bicycle',
+        expect.any(String) // cityId
       );
     });
   });
@@ -248,6 +249,13 @@ describe('useRouting', () => {
         name: 'Warszawa',
         center: [21.0122, 52.2297] as [number, number],
         zoom: 12,
+        bbox: [20.8516, 52.0976, 21.2712, 52.3681] as [
+          number,
+          number,
+          number,
+          number
+        ],
+        region: 'mazowieckie',
       };
 
       act(() => {

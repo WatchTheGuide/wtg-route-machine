@@ -6,7 +6,7 @@
 const CONFIG = {
   // Production API configuration
   production: {
-    enabled: true,
+    enabled: false,
     baseUrl: 'https://osrm.watchtheguide.com/api',
     apiKey: '61bb903f104f6e155de37fa44c9c4d3226b8842c36d62286c47d912eaaf42353', // TODO: Replace with production key
   },
