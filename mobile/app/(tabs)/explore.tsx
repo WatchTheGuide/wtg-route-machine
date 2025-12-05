@@ -8,10 +8,18 @@ import { Text, FAB, useTheme, Chip } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCityStore } from '../../src/stores';
 import { colors } from '../../src/theme/colors';
+import { LeafletMap } from '../../src/components/map';
 
 export default function ExploreScreen() {
   const theme = useTheme();
   const { selectedCity } = useCityStore();
+
+  const handleMapPress = (coordinate: {
+    latitude: number;
+    longitude: number;
+  }) => {
+    console.log('Map pressed:', coordinate);
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -30,23 +38,16 @@ export default function ExploreScreen() {
         </View>
       </View>
 
-      {/* Map Placeholder */}
-      <View
-        style={[
-          styles.mapContainer,
-          { backgroundColor: theme.colors.surfaceVariant },
-        ]}>
-        <Text
-          variant="titleMedium"
-          style={{ color: theme.colors.onSurfaceVariant }}>
-          🗺️ Mapa pojawi się tutaj
-        </Text>
-        <Text
-          variant="bodySmall"
-          style={{ color: theme.colors.onSurfaceVariant, marginTop: 8 }}>
-          Centrum: {selectedCity.center[1].toFixed(4)},{' '}
-          {selectedCity.center[0].toFixed(4)}
-        </Text>
+      {/* Map */}
+      <View style={styles.mapContainer}>
+        <LeafletMap
+          center={{
+            latitude: selectedCity.center[1], // lat
+            longitude: selectedCity.center[0], // lon
+          }}
+          zoom={14}
+          onMapPress={handleMapPress}
+        />
       </View>
 
       {/* FAB for adding waypoint */}
@@ -84,8 +85,7 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 16,
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    overflow: 'hidden',
   },
   fab: {
     position: 'absolute',
