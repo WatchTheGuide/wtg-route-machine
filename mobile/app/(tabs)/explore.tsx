@@ -2,17 +2,19 @@
  * Explore Screen - Map with POI markers
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, FAB, useTheme, Chip } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCityStore } from '../../src/stores';
 import { colors } from '../../src/theme/colors';
 import { LeafletMap } from '../../src/components/map';
+import { CitySelector } from '../../src/components/city';
 
 export default function ExploreScreen() {
   const theme = useTheme();
   const { selectedCity } = useCityStore();
+  const [cityModalVisible, setCityModalVisible] = useState(false);
 
   const handleMapPress = (coordinate: {
     latitude: number;
@@ -32,7 +34,8 @@ export default function ExploreScreen() {
           <Chip
             icon="map-marker"
             style={styles.cityChip}
-            textStyle={{ color: colors.primary }}>
+            textStyle={{ color: colors.primary }}
+            onPress={() => setCityModalVisible(true)}>
             {selectedCity.name}
           </Chip>
         </View>
@@ -41,6 +44,7 @@ export default function ExploreScreen() {
       {/* Map */}
       <View style={styles.mapContainer}>
         <LeafletMap
+          key={selectedCity.id}
           center={{
             latitude: selectedCity.center[1], // lat
             longitude: selectedCity.center[0], // lon
@@ -56,6 +60,12 @@ export default function ExploreScreen() {
         style={[styles.fab, { backgroundColor: theme.colors.primary }]}
         color={colors.white}
         onPress={() => console.log('Add waypoint')}
+      />
+
+      {/* City Selector Modal */}
+      <CitySelector
+        visible={cityModalVisible}
+        onDismiss={() => setCityModalVisible(false)}
       />
     </SafeAreaView>
   );
