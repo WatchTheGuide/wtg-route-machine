@@ -1,24 +1,30 @@
 /**
- * Explore Screen - Map with POI markers
+ * Explore Screen - Map with POI markers and route planning
  */
 
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import {
   Text,
   FAB,
   useTheme,
   Chip,
   ActivityIndicator,
+  IconButton,
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCityStore } from '../../src/stores';
 import { colors } from '../../src/theme/colors';
-import { LeafletMap, MapMarker } from '../../src/components/map';
+import { LeafletMap, MapMarker, MapRoute } from '../../src/components/map';
 import { CitySelector } from '../../src/components/city';
 import { POICard } from '../../src/components/poi';
-import { usePOIs } from '../../src/hooks';
-import { POI, POICategory } from '../../src/types';
+import {
+  WaypointList,
+  ProfileSelector,
+  RouteInfo,
+} from '../../src/components/route';
+import { usePOIs, useWaypoints, useRouting } from '../../src/hooks';
+import { POI, POICategory, Coordinate } from '../../src/types';
 
 const CATEGORY_COLORS: Record<POICategory, string> = {
   landmark: colors.poiLandmark,
@@ -36,12 +42,44 @@ export default function ExploreScreen() {
   const [cityModalVisible, setCityModalVisible] = useState(false);
   const [selectedPOI, setSelectedPOI] = useState<POI | null>(null);
   const [poiCardVisible, setPOICardVisible] = useState(false);
+  const [showRoutePanel, setShowRoutePanel] = useState(false);
 
   // Fetch POIs for selected city
   const { data: pois, isLoading } = usePOIs(selectedCity.id);
 
+  // Waypoints and routing
+  const {
+    waypoints,
+    addWaypoint,
+    addFromPOI,
+    removeWaypoint,
+    reorderWaypoints,
+    clearWaypoints,
+    canCalculateRoute,
+  } = useWaypoints();
+
+  const {
+    route,
+    profile,
+    isCalculating,
+    calculateRoute,
+    clearRoute,
+    changeProfile,
+    formatDistance,
+    formatDuration,
+  } = useRouting();
+
+  // Recalculate route when waypoints or profile change
+  useEffect(() => {
+    if (canCalculateRoute) {
+      calculateRoute(waypoints);
+    } else {
+      clearRoute();
+    }
+  }, [waypoints, profile, canCalculateRoute]);
+
   // Convert POIs to map markers
-  const markers: MapMarker[] = (pois || []).map((poi) => ({
+  const poiMarkers: MapMarker[] = (pois || []).map((poi) => ({
     id: poi.id,
     latitude: poi.coordinate[1],
     longitude: poi.coordinate[0],
@@ -49,14 +87,49 @@ export default function ExploreScreen() {
     color: CATEGORY_COLORS[poi.category] || colors.primary,
   }));
 
+  // Add waypoint markers
+  const waypointMarkers: MapMarker[] = waypoints.map((wp, index) => ({
+    id: `waypoint-${wp.id}`,
+    latitude: wp.coordinate[1],
+    longitude: wp.coordinate[0],
+    title: wp.name || `Punkt ${index + 1}`,
+    color:
+      index === 0
+        ? colors.success
+        : index === waypoints.length - 1
+        ? colors.primary
+        : colors.gray600,
+  }));
+
+  const allMarkers = [...poiMarkers, ...waypointMarkers];
+
+  // Map route from calculated route
+  const mapRoute: MapRoute | undefined = route
+    ? {
+        coordinates: route.coordinates.map(
+          (c) => [c[1], c[0]] as [number, number]
+        ),
+        color: colors.primary,
+        width: 4,
+      }
+    : undefined;
+
   const handleMapPress = (coordinate: {
     latitude: number;
     longitude: number;
   }) => {
-    console.log('Map pressed:', coordinate);
+    // Add waypoint from map press
+    const coord: Coordinate = [coordinate.longitude, coordinate.latitude];
+    addWaypoint(coord);
+    setShowRoutePanel(true);
   };
 
   const handleMarkerPress = (markerId: string) => {
+    // Check if it's a waypoint marker
+    if (markerId.startsWith('waypoint-')) {
+      return;
+    }
+
     const poi = pois?.find((p) => p.id === markerId);
     if (poi) {
       setSelectedPOI(poi);
@@ -65,8 +138,15 @@ export default function ExploreScreen() {
   };
 
   const handleAddToRoute = (poi: POI) => {
-    console.log('Add to route:', poi.name);
-    // TODO: Implement in Story 7.5
+    addFromPOI(poi);
+    setPOICardVisible(false);
+    setShowRoutePanel(true);
+  };
+
+  const handleClearRoute = () => {
+    clearWaypoints();
+    clearRoute();
+    setShowRoutePanel(false);
   };
 
   return (
@@ -85,30 +165,78 @@ export default function ExploreScreen() {
             {selectedCity.name}
           </Chip>
         </View>
-        {isLoading && <ActivityIndicator size="small" color={colors.primary} />}
+        <View style={styles.headerRight}>
+          {isLoading && (
+            <ActivityIndicator size="small" color={colors.primary} />
+          )}
+          {isCalculating && (
+            <ActivityIndicator size="small" color={colors.primary} />
+          )}
+          {waypoints.length > 0 && (
+            <IconButton
+              icon={showRoutePanel ? 'chevron-down' : 'chevron-up'}
+              onPress={() => setShowRoutePanel(!showRoutePanel)}
+            />
+          )}
+        </View>
       </View>
 
       {/* Map */}
-      <View style={styles.mapContainer}>
+      <View
+        style={[
+          styles.mapContainer,
+          showRoutePanel && styles.mapContainerSmall,
+        ]}>
         <LeafletMap
-          key={selectedCity.id}
+          key={`${selectedCity.id}-${waypoints.length}`}
           center={{
             latitude: selectedCity.center[1],
             longitude: selectedCity.center[0],
           }}
           zoom={14}
-          markers={markers}
+          markers={allMarkers}
+          route={mapRoute}
           onMapPress={handleMapPress}
           onMarkerPress={handleMarkerPress}
         />
       </View>
 
-      {/* FAB for adding waypoint */}
+      {/* Route Planning Panel */}
+      {showRoutePanel && (
+        <View style={styles.routePanel}>
+          <ProfileSelector
+            value={profile}
+            onChange={changeProfile}
+            disabled={isCalculating}
+          />
+
+          <ScrollView style={styles.waypointScroll}>
+            <WaypointList
+              waypoints={waypoints}
+              onRemove={removeWaypoint}
+              onReorder={reorderWaypoints}
+            />
+          </ScrollView>
+
+          {route && (
+            <RouteInfo
+              route={route}
+              formatDistance={formatDistance}
+              formatDuration={formatDuration}
+              onStartNavigation={() => console.log('Start navigation')}
+              onClear={handleClearRoute}
+            />
+          )}
+        </View>
+      )}
+
+      {/* FAB for toggling route panel */}
       <FAB
-        icon="plus"
+        icon={showRoutePanel ? 'map' : 'directions'}
         style={[styles.fab, { backgroundColor: theme.colors.primary }]}
         color={colors.white}
-        onPress={() => console.log('Add waypoint')}
+        onPress={() => setShowRoutePanel(!showRoutePanel)}
+        label={waypoints.length > 0 ? `${waypoints.length} pkt` : undefined}
       />
 
       {/* City Selector Modal */}
@@ -140,6 +268,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   title: {
     fontWeight: 'bold',
     color: colors.gray900,
@@ -153,6 +285,18 @@ const styles = StyleSheet.create({
     margin: 16,
     borderRadius: 12,
     overflow: 'hidden',
+  },
+  mapContainerSmall: {
+    flex: 0.5,
+  },
+  routePanel: {
+    flex: 0.5,
+    backgroundColor: colors.gray50,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+  },
+  waypointScroll: {
+    flex: 1,
   },
   fab: {
     position: 'absolute',

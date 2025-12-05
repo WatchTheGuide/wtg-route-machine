@@ -52,14 +52,26 @@ export interface Route {
   waypoints: Waypoint[];
   distance: number; // meters
   duration: number; // seconds
-  geometry: Coordinate[]; // polyline coordinates
+  coordinates: Coordinate[]; // polyline coordinates
   profile: RoutingProfile;
-  createdAt: Date;
-  updatedAt: Date;
-  isFavorite: boolean;
+  instructions?: RouteInstruction[];
+  createdAt: string;
+  updatedAt?: string;
+  isFavorite?: boolean;
 }
 
-export type RoutingProfile = 'foot' | 'bicycle' | 'car';
+// Route instruction for turn-by-turn navigation
+export interface RouteInstruction {
+  type: string;
+  modifier?: string;
+  instruction: string;
+  distance: number;
+  duration: number;
+  name: string;
+  location: Coordinate;
+}
+
+export type RoutingProfile = 'walking' | 'cycling' | 'driving';
 
 // Tour (curated walking tour)
 export interface Tour {
