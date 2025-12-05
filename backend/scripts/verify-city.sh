@@ -35,25 +35,30 @@ log_error() {
     echo -e "${RED}[✗]${NC} $1"
 }
 
-# Testowe współrzędne dla każdego miasta
-declare -A CITY_COORDS
-CITY_COORDS[krakow]="19.9385,50.0647"
-CITY_COORDS[warszawa]="21.0122,52.2297"
-CITY_COORDS[wroclaw]="17.0385,51.1079"
-CITY_COORDS[trojmiasto]="18.6466,54.352"
+# Helper function to get city coordinates
+get_city_coords() {
+    case "$1" in
+        krakow) echo "19.9385,50.0647" ;;
+        warszawa) echo "21.0122,52.2297" ;;
+        wroclaw) echo "17.0385,51.1079" ;;
+        trojmiasto) echo "18.6466,54.352" ;;
+    esac
+}
 
-# Porty dla każdego miasta
-declare -A CITY_PORTS
-CITY_PORTS[krakow]="5001 5002 5003"
-CITY_PORTS[warszawa]="5011 5012 5013"
-CITY_PORTS[wroclaw]="5021 5022 5023"
-CITY_PORTS[trojmiasto]="5031 5032 5033"
+# Helper function to get city ports
+get_city_ports() {
+    case "$1" in
+        krakow) echo "5001 5002 5003" ;;
+        warszawa) echo "5011 5012 5013" ;;
+        wroclaw) echo "5021 5022 5023" ;;
+        trojmiasto) echo "5031 5032 5033" ;;
+    esac
+}
 
 verify_city() {
     local city=$1
-    local coords=${CITY_COORDS[$city]}
-    local ports=(${CITY_PORTS[$city]})
-    local profiles=("foot" "bicycle" "car")
+    local coords=$(get_city_coords "$city")
+    local ports=$(get_city_ports "$city")
     local all_ok=true
     
     echo ""
@@ -61,9 +66,12 @@ verify_city() {
     log_info "Weryfikacja: $city"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     
-    for i in "${!ports[@]}"; do
-        local port=${ports[$i]}
-        local profile=${profiles[$i]}
+    local port_arr=($ports)
+    local profiles_arr=(foot bicycle car)
+    
+    for i in 0 1 2; do
+        local port=${port_arr[$i]}
+        local profile=${profiles_arr[$i]}
         local container="osrm-${city}-${profile}"
         
         echo -n "  $container (port $port): "

@@ -38,13 +38,13 @@ echo ""
 docker stop $CONTAINER_NAME 2>/dev/null || true
 docker rm $CONTAINER_NAME 2>/dev/null || true
 
-# Uruchomienie nowego kontenera
+# Uruchomienie nowego kontenera (z algorytmem MLD)
 docker run -d \
     --name $CONTAINER_NAME \
     -p $PORT:5000 \
     -v "$(pwd)/osrm-data:/data" \
     ghcr.io/project-osrm/osrm-backend:latest \
-    osrm-routed /data/${OUTPUT_BASE}.osrm --max-table-size 10000
+    osrm-routed --algorithm mld /data/${OUTPUT_BASE}.osrm --max-table-size 10000
 
 echo ""
 echo "✓ Serwer OSRM uruchomiony: $CITY / $PROFILE"

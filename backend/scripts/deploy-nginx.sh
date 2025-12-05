@@ -22,7 +22,8 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-NGINX_CONF="$SCRIPT_DIR/../nginx/osrm-api.conf"
+NGINX_CONF="$SCRIPT_DIR/../nginx/osrm-api-multi-city.conf"
+NGINX_SNIPPETS="$SCRIPT_DIR/../nginx/snippets"
 
 echo -e "${YELLOW}[1/5] Checking prerequisites...${NC}"
 
@@ -51,6 +52,16 @@ if [ -f "/etc/nginx/sites-available/osrm-api.conf" ]; then
 fi
 
 echo -e "${YELLOW}[3/5] Deploying Nginx configuration...${NC}"
+
+# Create snippets directory if it doesn't exist
+mkdir -p /etc/nginx/snippets
+
+# Deploy snippets
+if [ -d "$NGINX_SNIPPETS" ]; then
+    cp "$NGINX_SNIPPETS"/*.conf /etc/nginx/snippets/
+    echo -e "${GREEN}✓ Nginx snippets deployed${NC}"
+fi
+
 cp "$NGINX_CONF" /etc/nginx/sites-available/osrm-api.conf
 
 # Deploy API keys file if it doesn't exist (preserve existing keys)
@@ -88,13 +99,23 @@ echo -e "${GREEN}================================${NC}"
 echo -e "${GREEN}✓ Deployment complete!${NC}"
 echo -e "${GREEN}================================${NC}"
 echo ""
+echo -e "${YELLOW}Available cities:${NC}"
+echo "  - Kraków:     https://osrm.watchtheguide.com/api/krakow/{profile}/..."
+echo "  - Warszawa:   https://osrm.watchtheguide.com/api/warszawa/{profile}/..."
+echo "  - Wrocław:    https://osrm.watchtheguide.com/api/wroclaw/{profile}/..."
+echo "  - Trójmiasto: https://osrm.watchtheguide.com/api/trojmiasto/{profile}/..."
+echo ""
+echo -e "${YELLOW}Available profiles: foot, bicycle, car${NC}"
+echo ""
 echo -e "${YELLOW}Next steps:${NC}"
 echo "1. Generate API keys (run: openssl rand -hex 32)"
 echo "2. Add API keys to /etc/nginx/api-keys.map"
 echo "3. Reload Nginx: sudo systemctl reload nginx"
 echo ""
 echo -e "${YELLOW}Test your API:${NC}"
-echo "curl -H 'X-API-Key: dev-test-key-12345' 'https://osrm.watchtheguide.com/api/foot/route/v1/foot/19.9385,50.0647;19.9450,50.0619?overview=false'"
+echo "curl -H 'X-API-Key: YOUR_KEY' 'https://osrm.watchtheguide.com/api/krakow/foot/route/v1/foot/19.9385,50.0647;19.9450,50.0619'"
+echo "curl -H 'X-API-Key: YOUR_KEY' 'https://osrm.watchtheguide.com/api/warszawa/bicycle/route/v1/bicycle/21.0122,52.2297;21.02,52.23'"
 echo ""
 echo -e "${YELLOW}Health check:${NC}"
 echo "curl https://osrm.watchtheguide.com/health"
+echo "curl https://osrm.watchtheguide.com/health/krakow"

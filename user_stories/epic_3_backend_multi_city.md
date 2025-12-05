@@ -16,10 +16,10 @@
 
 ### Kryteria akceptacji:
 
-- [ ] Skrypt `download-map.sh` rozszerzony o nowe regiony
-- [ ] Skrypt `extract-city.sh` z bbox dla każdego miasta
-- [ ] Dane pobrane z Geofabrik dla: mazowieckie, dolnoslaskie, pomorskie
-- [ ] Miasta wyekstrahowane z odpowiednimi granicami
+- [x] Skrypt `download-map.sh` rozszerzony o nowe regiony
+- [x] Skrypt `extract-city.sh` z bbox dla każdego miasta
+- [x] Dane pobrane z Geofabrik dla: mazowieckie, dolnoslaskie, pomorskie
+- [x] Miasta wyekstrahowane z odpowiednimi granicami
 
 ### Miasta i ich bounding boxy:
 
@@ -54,10 +54,10 @@
 
 ### Kryteria akceptacji:
 
-- [ ] Dane przetworzone dla 4 miast × 3 profile = 12 zestawów danych
-- [ ] Profile: foot, bicycle, car
-- [ ] Pliki `.osrm.*` wygenerowane dla każdej kombinacji
-- [ ] Dane zoptymalizowane pod kątem pamięci (MLD algorithm)
+- [x] Dane przetworzone dla 4 miast × 3 profile = 12 zestawów danych
+- [x] Profile: foot, bicycle, car
+- [x] Pliki `.osrm.*` wygenerowane dla każdej kombinacji
+- [x] Dane zoptymalizowane pod kątem pamięci (MLD algorithm)
 
 ### Komendy:
 
@@ -87,11 +87,11 @@ done
 
 ### Kryteria akceptacji:
 
-- [ ] Docker Compose z 12 kontenerami (4 miasta × 3 profile)
-- [ ] Nazewnictwo: `osrm-{miasto}-{profil}`
-- [ ] Porty przydzielone systematycznie
-- [ ] Health checks dla każdego kontenera
-- [ ] Automatyczny restart przy awarii
+- [x] Docker Compose z 12 kontenerami (4 miasta × 3 profile)
+- [x] Nazewnictwo: `osrm-{miasto}-{profil}`
+- [x] Porty przydzielone systematycznie
+- [x] Health checks dla każdego kontenera
+- [x] Automatyczny restart przy awarii
 
 ### Mapowanie portów:
 
@@ -134,11 +134,11 @@ services:
 
 ### Kryteria akceptacji:
 
-- [ ] Endpointy: `/api/{city}/{profile}/route/...`
-- [ ] Np. `/api/warszawa/foot/route/v1/foot/...`
-- [ ] Zachowane API key authentication
-- [ ] Health check per miasto: `/health/{city}`
-- [ ] Rate limiting per miasto
+- [x] Endpointy: `/api/{city}/{profile}/route/...`
+- [x] Np. `/api/warszawa/foot/route/v1/foot/...`
+- [x] Zachowane API key authentication
+- [x] Health check per miasto: `/health/{city}`
+- [x] Rate limiting per miasto
 
 ### Konfiguracja Nginx:
 
@@ -179,10 +179,10 @@ location /api/warszawa/foot/ {
 
 ### Kryteria akceptacji:
 
-- [ ] Skrypt `deploy-city.sh {miasto} {region}` - pełny pipeline
-- [ ] Skrypt `add-city-to-nginx.sh {miasto}` - aktualizacja Nginx
-- [ ] Dokumentacja procesu dodawania nowego miasta
-- [ ] Rollback w przypadku błędu
+- [x] Skrypt `deploy-city.sh {miasto} {region}` - pełny pipeline
+- [x] Skrypt `add-city-to-nginx.sh {miasto}` - aktualizacja Nginx
+- [x] Dokumentacja procesu dodawania nowego miasta
+- [x] Rollback w przypadku błędu
 
 ### Pipeline dla nowego miasta:
 
@@ -252,8 +252,8 @@ echo "=== $CITY deployed successfully ==="
 
 ## Definicja ukończenia (DoD)
 
-- [ ] Wszystkie 12 kontenerów uruchomione i zdrowe
-- [ ] API działa dla każdego miasta i profilu
-- [ ] Testy integracyjne przechodzą
-- [ ] Dokumentacja deploymentu
-- [ ] Monitoring (health checks)
+- [x] Wszystkie 12 kontenerów uruchomione i zdrowe
+- [x] API działa dla każdego miasta i profilu
+- [x] Testy integracyjne przechodzą
+- [x] Dokumentacja deploymentu
+- [x] Monitoring (health checks)

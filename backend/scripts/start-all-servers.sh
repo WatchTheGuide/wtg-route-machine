@@ -18,23 +18,28 @@ echo "WTG Route Machine - Start All Servers"
 echo "=========================================="
 echo ""
 
-# Nowe mapowanie portów - systematyczne (miasto_base + profile_offset)
-# Miasto:       Kraków=5000, Warszawa=5010, Wrocław=5020, Trójmiasto=5030
-# Profil:       foot=1, bicycle=2, car=3
-declare -A SERVER_CONFIG=(
-    ["krakow-foot"]=5001
-    ["krakow-bicycle"]=5002
-    ["krakow-car"]=5003
-    ["warszawa-foot"]=5011
-    ["warszawa-bicycle"]=5012
-    ["warszawa-car"]=5013
-    ["wroclaw-foot"]=5021
-    ["wroclaw-bicycle"]=5022
-    ["wroclaw-car"]=5023
-    ["trojmiasto-foot"]=5031
-    ["trojmiasto-bicycle"]=5032
-    ["trojmiasto-car"]=5033
-)
+# Konfiguracja serwerów
+CITIES="krakow warszawa wroclaw trojmiasto"
+PROFILES="foot bicycle car"
+
+# Funkcja do pobierania bazowego portu dla miasta
+get_base_port() {
+    case $1 in
+        krakow) echo 5000 ;;
+        warszawa) echo 5010 ;;
+        wroclaw) echo 5020 ;;
+        trojmiasto) echo 5030 ;;
+    esac
+}
+
+# Funkcja do pobierania offsetu dla profilu
+get_profile_offset() {
+    case $1 in
+        foot) echo 1 ;;
+        bicycle) echo 2 ;;
+        car) echo 3 ;;
+    esac
+}
 
 echo "Uruchamianie 12 serwerów OSRM..."
 echo ""
@@ -43,31 +48,34 @@ SUCCESS_COUNT=0
 FAILED_COUNT=0
 SKIPPED_COUNT=0
 
-for key in "${!SERVER_CONFIG[@]}"; do
-    IFS='-' read -r city profile <<< "$key"
-    port="${SERVER_CONFIG[$key]}"
-    
-    echo "▶️  Uruchamianie: $city / $profile (port $port)"
-    
-    # Sprawdzenie czy dane istnieją
-    if [ ! -f "$SCRIPT_DIR/../osrm-data/${city}-${profile}.osrm.fileIndex" ]; then
-        echo "⚠️  Pominięto: brak danych dla $city/$profile"
-        ((SKIPPED_COUNT++))
+for city in $CITIES; do
+    for profile in $PROFILES; do
+        base_port=$(get_base_port "$city")
+        offset=$(get_profile_offset "$profile")
+        port=$((base_port + offset))
+        
+        echo "▶️  Uruchamianie: $city / $profile (port $port)"
+        
+        # Sprawdzenie czy dane istnieją
+        if [ ! -f "$SCRIPT_DIR/../osrm-data/${city}-${profile}.osrm.fileIndex" ]; then
+            echo "⚠️  Pominięto: brak danych dla $city/$profile"
+            SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
+            echo ""
+            continue
+        fi
+        
+        # Uruchomienie serwera
+        if "$SCRIPT_DIR/run-city-server.sh" "$city" "$profile" "$port" > /dev/null 2>&1; then
+            echo "✅ Uruchomiono: $city / $profile -> http://localhost:$port"
+            SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+        else
+            echo "❌ Błąd: nie udało się uruchomić $city / $profile"
+            FAILED_COUNT=$((FAILED_COUNT + 1))
+        fi
+        
         echo ""
-        continue
-    fi
-    
-    # Uruchomienie serwera
-    if "$SCRIPT_DIR/run-city-server.sh" "$city" "$profile" "$port" > /dev/null 2>&1; then
-        echo "✅ Uruchomiono: $city / $profile -> http://localhost:$port"
-        ((SUCCESS_COUNT++))
-    else
-        echo "❌ Błąd: nie udało się uruchomić $city / $profile"
-        ((FAILED_COUNT++))
-    fi
-    
-    echo ""
-    sleep 1  # Krótka pauza między uruchomieniami
+        sleep 1  # Krótka pauza między uruchomieniami
+    done
 done
 
 echo "=========================================="

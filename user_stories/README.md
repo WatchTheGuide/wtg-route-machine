@@ -6,25 +6,25 @@ Ten katalog zawiera dokumentację user stories dla rozwoju aplikacji GuideTracke
 
 ## Lista Epików
 
-| #   | Epic                                                                   | Priorytet | Status         | Estymacja |
-| --- | ---------------------------------------------------------------------- | --------- | -------------- | --------- |
-| 1   | [Migracja Frontendu na Ionic/React](./epic_1_ionic_react_migration.md) | 🔴 Wysoki | 📋 Zaplanowany | 8 dni     |
-| 2   | [Obsługa Wielu Miast (Frontend)](./epic_2_multi_city_frontend.md)      | 🔴 Wysoki | 📋 Zaplanowany | 3 dni     |
-| 3   | [Backend Multi-City](./epic_3_backend_multi_city.md)                   | 🔴 Wysoki | 📋 Zaplanowany | 6 dni     |
-| 4   | [Punkty Turystyczne (POI)](./epic_4_points_of_interest.md)             | 🟡 Średni | 📋 Zaplanowany | 6.5 dni   |
-| 5   | [Gotowe Wycieczki](./epic_5_curated_tours.md)                          | 🟡 Średni | 📋 Zaplanowany | 8.5 dni   |
-| 6   | [Nawigacja Turn-by-Turn](./epic_6_turn_by_turn_navigation.md)          | 🟢 Niski  | 📋 Zaplanowany | 12 dni    |
+| #   | Epic                                                                   | Priorytet | Status                    | Estymacja       |
+| --- | ---------------------------------------------------------------------- | --------- | ------------------------- | --------------- |
+| 1   | [Migracja Frontendu na Ionic/React](./epic_1_ionic_react_migration.md) | 🔴 Wysoki | ✅ Ukończony              | 8 dni           |
+| 2   | [Obsługa Wielu Miast (Frontend)](./epic_2_multi_city_frontend.md)      | 🔴 Wysoki | 📋 Zaplanowany            | 3 dni           |
+| 3   | [Backend Multi-City](./epic_3_backend_multi_city.md)                   | 🔴 Wysoki | ✅ Ukończony              | 6 dni           |
+| 4   | [Punkty Turystyczne (POI)](./epic_4_points_of_interest.md)             | 🟡 Średni | 🟡 Backend ✅ Frontend 📋 | 4 dni (Backend) |
+| 5   | [Gotowe Wycieczki](./epic_5_curated_tours.md)                          | 🟡 Średni | 📋 Zaplanowany            | 8.5 dni         |
+| 6   | [Nawigacja Turn-by-Turn](./epic_6_turn_by_turn_navigation.md)          | 🟢 Niski  | 📋 Zaplanowany            | 12 dni          |
 
-**Łączna estymacja:** ~44 dni robocze
+**Łączna estymacja:** ~41.5 dni robocze
 
 ## Obsługiwane Miasta
 
-| Miasto     | Region OSM   | Status         |
-| ---------- | ------------ | -------------- |
-| Kraków     | małopolskie  | ✅ Gotowe      |
-| Warszawa   | mazowieckie  | 📋 Zaplanowane |
-| Wrocław    | dolnośląskie | 📋 Zaplanowane |
-| Trójmiasto | pomorskie    | 📋 Zaplanowane |
+| Miasto     | Region OSM   | Status    |
+| ---------- | ------------ | --------- |
+| Kraków     | małopolskie  | ✅ Gotowe |
+| Warszawa   | mazowieckie  | ✅ Gotowe |
+| Wrocław    | dolnośląskie | ✅ Gotowe |
+| Trójmiasto | pomorskie    | ✅ Gotowe |
 
 ## Proponowana Kolejność Realizacji
 

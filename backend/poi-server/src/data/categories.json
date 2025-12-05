@@ -1,0 +1,40 @@
+{
+  "categories": [
+    {
+      "id": "landmark",
+      "name": "Zabytki",
+      "icon": "business",
+      "color": "#FF6600"
+    },
+    {
+      "id": "museum",
+      "name": "Muzea",
+      "icon": "library",
+      "color": "#8B4513"
+    },
+    {
+      "id": "park",
+      "name": "Parki",
+      "icon": "leaf",
+      "color": "#228B22"
+    },
+    {
+      "id": "restaurant",
+      "name": "Restauracje",
+      "icon": "restaurant",
+      "color": "#DC143C"
+    },
+    {
+      "id": "viewpoint",
+      "name": "Punkty widokowe",
+      "icon": "eye",
+      "color": "#4169E1"
+    },
+    {
+      "id": "church",
+      "name": "Kościoły",
+      "icon": "home",
+      "color": "#9932CC"
+    }
+  ]
+}
