@@ -1,10 +1,9 @@
 /**
- * WTG Routes - Tabs Index
- * Redirects to explore tab
+ * Index redirect to explore tab
  */
 
 import { Redirect } from 'expo-router';
 
-export default function TabsIndex() {
+export default function Index() {
   return <Redirect href="/(tabs)/explore" />;
 }

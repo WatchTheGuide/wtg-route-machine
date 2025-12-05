@@ -1,55 +1,50 @@
 /**
- * WTG Routes - Color Palette
- * Primary: #ff6600 (Orange)
- * Secondary: #454545 (Dark Gray)
+ * WTG Route Machine - Color Palette
+ * Brand colors and semantic colors for the app
  */
 
 export const colors = {
   // Brand colors
   primary: '#ff6600',
-  primaryLight: '#ff8533',
   primaryDark: '#cc5200',
+  primaryLight: '#ff8533',
 
   secondary: '#454545',
-  secondaryLight: '#6b6b6b',
   secondaryDark: '#2d2d2d',
+  secondaryLight: '#666666',
 
   // Semantic colors
-  success: '#10B981',
-  warning: '#F59E0B',
-  error: '#EF4444',
-  info: '#3B82F6',
+  success: '#4CAF50',
+  warning: '#FFC107',
+  error: '#F44336',
+  info: '#2196F3',
 
-  // Neutrals
+  // Grayscale
   white: '#FFFFFF',
-  black: '#000000',
-
-  // Grays
   gray50: '#FAFAFA',
   gray100: '#F5F5F5',
-  gray200: '#E5E5E5',
-  gray300: '#D4D4D4',
-  gray400: '#A3A3A3',
-  gray500: '#737373',
-  gray600: '#525252',
-  gray700: '#404040',
-  gray800: '#262626',
-  gray900: '#171717',
-
-  // Category colors (POI)
-  landmark: '#ff6600',
-  museum: '#8B4513',
-  park: '#228B22',
-  restaurant: '#DC143C',
-  viewpoint: '#4169E1',
-  church: '#9932CC',
+  gray200: '#EEEEEE',
+  gray300: '#E0E0E0',
+  gray400: '#BDBDBD',
+  gray500: '#9E9E9E',
+  gray600: '#757575',
+  gray700: '#616161',
+  gray800: '#424242',
+  gray900: '#212121',
+  black: '#000000',
 
   // Map colors
-  route: '#ff6600',
-  routeAlternate: '#454545',
-  userLocation: '#3B82F6',
-  waypoint: '#ff6600',
-  waypointVisited: '#10B981',
+  routeColor: '#ff6600',
+  waypointColor: '#454545',
+  userLocationColor: '#2196F3',
+
+  // POI category colors
+  poiLandmark: '#E91E63',
+  poiMuseum: '#9C27B0',
+  poiPark: '#4CAF50',
+  poiRestaurant: '#FF5722',
+  poiCafe: '#795548',
+  poiHotel: '#607D8B',
 } as const;
 
 export type ColorName = keyof typeof colors;

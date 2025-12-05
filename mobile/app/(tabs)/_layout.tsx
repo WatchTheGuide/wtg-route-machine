@@ -1,14 +1,23 @@
 /**
- * WTG Routes - Tab Navigation Layout
+ * WTG Route Machine - Tabs Layout
+ * Bottom tab navigation
  */
 
 import { Tabs } from 'expo-router';
 import { useTheme } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
+type IconName =
+  | 'compass'
+  | 'compass-outline'
+  | 'map-marker-path'
+  | 'map-marker-outline'
+  | 'walk'
+  | 'shoe-print'
+  | 'cog'
+  | 'cog-outline';
 
-export default function TabLayout() {
+export default function TabsLayout() {
   const theme = useTheme();
 
   return (
@@ -20,27 +29,24 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: theme.colors.surface,
           borderTopColor: theme.colors.outline,
-          height: 60,
-          paddingBottom: 8,
-          paddingTop: 8,
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
         },
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          href: null, // Hide from tab bar
+          href: null, // Redirect screen, hide from tabs
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
           title: 'Odkrywaj',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="compass" size={size} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons
+              name={focused ? 'compass' : 'compass-outline'}
+              size={24}
+              color={color}
+            />
           ),
         }}
       />
@@ -48,10 +54,10 @@ export default function TabLayout() {
         name="routes"
         options={{
           title: 'Trasy',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
-              name="map-marker-path"
-              size={size}
+              name={focused ? 'map-marker-path' : 'map-marker-outline'}
+              size={24}
               color={color}
             />
           ),
@@ -61,8 +67,12 @@ export default function TabLayout() {
         name="tours"
         options={{
           title: 'Wycieczki',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="walk" size={size} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons
+              name={focused ? 'walk' : 'shoe-print'}
+              size={24}
+              color={color}
+            />
           ),
         }}
       />
@@ -70,8 +80,12 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: 'Ustawienia',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="cog" size={size} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons
+              name={focused ? 'cog' : 'cog-outline'}
+              size={24}
+              color={color}
+            />
           ),
         }}
       />

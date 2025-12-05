@@ -1,51 +1,55 @@
 /**
- * WTG Routes - Saved Routes Screen
+ * Routes Screen - Saved routes list
  */
 
+import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import {
-  Text,
-  Card,
-  FAB,
-  useTheme,
-  IconButton,
-  Chip,
-} from 'react-native-paper';
+import { Text, Card, FAB, useTheme, IconButton } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import { useSavedRoutes } from '../../src/hooks/useRoutes';
+import { useRouter } from 'expo-router';
 import { colors } from '../../src/theme/colors';
-import type { SavedRoute } from '../../src/types';
+
+// Placeholder data
+const SAMPLE_ROUTES = [
+  {
+    id: '1',
+    name: 'Spacer po Starym Mieście',
+    distance: 3200,
+    duration: 2400,
+    waypoints: 5,
+    isFavorite: true,
+  },
+  {
+    id: '2',
+    name: 'Kazimierz kulturalny',
+    distance: 4100,
+    duration: 3000,
+    waypoints: 7,
+    isFavorite: false,
+  },
+];
 
 export default function RoutesScreen() {
   const theme = useTheme();
-  const { data: routes, isLoading } = useSavedRoutes();
+  const router = useRouter();
 
-  const formatDistance = (meters: number): string => {
-    if (meters < 1000) {
-      return `${Math.round(meters)} m`;
-    }
+  const formatDistance = (meters: number) => {
+    if (meters < 1000) return `${meters} m`;
     return `${(meters / 1000).toFixed(1)} km`;
   };
 
-  const formatDuration = (seconds: number): string => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    if (hours > 0) {
-      return `${hours}h ${minutes}min`;
-    }
-    return `${minutes} min`;
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    if (mins < 60) return `${mins} min`;
+    const hours = Math.floor(mins / 60);
+    const remainMins = mins % 60;
+    return `${hours}h ${remainMins}min`;
   };
 
-  const handleRoutePress = (route: SavedRoute) => {
-    router.push({
-      pathname: '/navigation/[routeId]',
-      params: { routeId: route.id },
-    });
-  };
-
-  const renderRoute = ({ item }: { item: SavedRoute }) => (
-    <Card style={styles.card} onPress={() => handleRoutePress(item)}>
+  const renderRoute = ({ item }: { item: (typeof SAMPLE_ROUTES)[0] }) => (
+    <Card
+      style={styles.card}
+      onPress={() => console.log('Open route', item.id)}>
       <Card.Title
         title={item.name}
         subtitle={`${formatDistance(item.distance)} • ${formatDuration(
@@ -58,27 +62,12 @@ export default function RoutesScreen() {
             iconColor={item.isFavorite ? colors.error : colors.gray400}
           />
         )}
-        right={(props) => (
-          <IconButton
-            {...props}
-            icon="chevron-right"
-            onPress={() => handleRoutePress(item)}
-          />
-        )}
+        right={(props) => <IconButton {...props} icon="chevron-right" />}
       />
       <Card.Content>
-        <View style={styles.chipsContainer}>
-          <Chip icon="walk" compact style={styles.chip}>
-            {item.profile === 'foot'
-              ? 'Pieszo'
-              : item.profile === 'bicycle'
-              ? 'Rower'
-              : 'Auto'}
-          </Chip>
-          <Chip icon="map-marker" compact style={styles.chip}>
-            {item.waypoints.length} punktów
-          </Chip>
-        </View>
+        <Text variant="bodySmall" style={{ color: colors.gray600 }}>
+          {item.waypoints} punktów na trasie
+        </Text>
       </Card.Content>
     </Card>
   );
@@ -89,7 +78,7 @@ export default function RoutesScreen() {
         Brak zapisanych tras
       </Text>
       <Text variant="bodyMedium" style={styles.emptyDescription}>
-        Utwórz swoją pierwszą trasę i rozpocznij zwiedzanie!
+        Zaplanuj swoją pierwszą trasę pieszą!
       </Text>
     </View>
   );
@@ -103,19 +92,19 @@ export default function RoutesScreen() {
       </View>
 
       <FlatList
-        data={routes}
+        data={SAMPLE_ROUTES}
         renderItem={renderRoute}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
-        ListEmptyComponent={isLoading ? null : EmptyState}
-        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={EmptyState}
       />
 
       <FAB
         icon="plus"
         label="Nowa trasa"
         style={[styles.fab, { backgroundColor: theme.colors.primary }]}
-        onPress={() => router.push('/route-planner')}
+        color={colors.white}
+        onPress={() => console.log('Create new route')}
       />
     </SafeAreaView>
   );
@@ -124,13 +113,11 @@ export default function RoutesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.gray50,
+    backgroundColor: colors.white,
   },
   header: {
-    padding: 16,
-    backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.gray200,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   title: {
     fontWeight: 'bold',
@@ -142,34 +129,25 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 12,
-    backgroundColor: colors.white,
-  },
-  chipsContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 8,
-  },
-  chip: {
-    backgroundColor: colors.gray100,
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 100,
+    paddingVertical: 60,
   },
   emptyTitle: {
     color: colors.gray600,
     marginBottom: 8,
   },
   emptyDescription: {
-    color: colors.gray400,
+    color: colors.gray500,
     textAlign: 'center',
-    paddingHorizontal: 32,
   },
   fab: {
     position: 'absolute',
-    bottom: 16,
-    right: 16,
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });

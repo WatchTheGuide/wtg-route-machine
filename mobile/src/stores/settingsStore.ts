@@ -1,67 +1,31 @@
 /**
- * WTG Routes - Settings Store (Zustand)
+ * WTG Route Machine - Settings Store
+ * Zustand store for app settings
  */
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppSettings, RoutingProfile } from '../types';
 
-interface SettingsState {
-  // Navigation settings
-  voiceNavigation: boolean;
-  offlineMaps: boolean;
-
-  // App settings
-  darkMode: boolean;
-  metricUnits: boolean;
-  language: string;
-
-  // Map settings
-  defaultCity: string;
-  defaultProfile: 'foot' | 'bicycle' | 'car';
-  mapStyle: 'standard' | 'satellite' | 'terrain';
-
-  // Actions
-  setVoiceNavigation: (value: boolean) => void;
-  setOfflineMaps: (value: boolean) => void;
-  setDarkMode: (value: boolean) => void;
-  setMetricUnits: (value: boolean) => void;
-  setLanguage: (value: string) => void;
-  setDefaultCity: (value: string) => void;
-  setDefaultProfile: (value: 'foot' | 'bicycle' | 'car') => void;
-  setMapStyle: (value: 'standard' | 'satellite' | 'terrain') => void;
-  resetSettings: () => void;
+interface SettingsState extends AppSettings {
+  setDefaultCity: (city: string) => void;
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  setUnits: (units: 'metric' | 'imperial') => void;
+  setDefaultProfile: (profile: RoutingProfile) => void;
+  setNavigationVoice: (enabled: boolean) => void;
 }
 
-const defaultSettings = {
-  voiceNavigation: true,
-  offlineMaps: false,
-  darkMode: false,
-  metricUnits: true,
-  language: 'pl',
+export const useSettingsStore = create<SettingsState>((set) => ({
+  // Default settings
   defaultCity: 'krakow',
-  defaultProfile: 'foot' as const,
-  mapStyle: 'standard' as const,
-};
+  theme: 'system',
+  units: 'metric',
+  defaultProfile: 'foot',
+  navigationVoice: true,
 
-export const useSettingsStore = create<SettingsState>()(
-  persist(
-    (set) => ({
-      ...defaultSettings,
-
-      setVoiceNavigation: (value) => set({ voiceNavigation: value }),
-      setOfflineMaps: (value) => set({ offlineMaps: value }),
-      setDarkMode: (value) => set({ darkMode: value }),
-      setMetricUnits: (value) => set({ metricUnits: value }),
-      setLanguage: (value) => set({ language: value }),
-      setDefaultCity: (value) => set({ defaultCity: value }),
-      setDefaultProfile: (value) => set({ defaultProfile: value }),
-      setMapStyle: (value) => set({ mapStyle: value }),
-      resetSettings: () => set(defaultSettings),
-    }),
-    {
-      name: 'settings-storage',
-      storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
-);
+  // Actions
+  setDefaultCity: (city) => set({ defaultCity: city }),
+  setTheme: (theme) => set({ theme }),
+  setUnits: (units) => set({ units }),
+  setDefaultProfile: (profile) => set({ defaultProfile: profile }),
+  setNavigationVoice: (enabled) => set({ navigationVoice: enabled }),
+}));

@@ -1,94 +1,25 @@
 /**
- * WTG Routes - Settings Screen
+ * Settings Screen - App preferences
  */
 
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import {
   Text,
   List,
   Switch,
   Divider,
-  Avatar,
-  Button,
   useTheme,
+  RadioButton,
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import { useState } from 'react';
+import { useSettingsStore, useCityStore, CITIES } from '../../src/stores';
 import { colors } from '../../src/theme/colors';
-import { useAuthStore } from '../../src/stores/authStore';
-import { useSettingsStore } from '../../src/stores/settingsStore';
 
 export default function SettingsScreen() {
   const theme = useTheme();
-  const { user, signOut } = useAuthStore();
-  const {
-    voiceNavigation,
-    setVoiceNavigation,
-    offlineMaps,
-    setOfflineMaps,
-    darkMode,
-    setDarkMode,
-    metricUnits,
-    setMetricUnits,
-  } = useSettingsStore();
-
-  const handleSignOut = () => {
-    Alert.alert('Wyloguj', 'Czy na pewno chcesz się wylogować?', [
-      { text: 'Anuluj', style: 'cancel' },
-      { text: 'Wyloguj', style: 'destructive', onPress: signOut },
-    ]);
-  };
-
-  const ProfileSection = () => (
-    <View style={styles.profileSection}>
-      {user ? (
-        <>
-          <Avatar.Text
-            size={64}
-            label={user.name?.substring(0, 2).toUpperCase() || 'U'}
-            style={{ backgroundColor: theme.colors.primary }}
-          />
-          <View style={styles.profileInfo}>
-            <Text variant="titleLarge" style={styles.profileName}>
-              {user.name || 'Użytkownik'}
-            </Text>
-            <Text variant="bodyMedium" style={styles.profileEmail}>
-              {user.email}
-            </Text>
-            {user.subscription && (
-              <View style={styles.subscriptionBadge}>
-                <Text variant="labelSmall" style={styles.subscriptionText}>
-                  {user.subscription === 'premium'
-                    ? '⭐ Premium'
-                    : 'Darmowa wersja'}
-                </Text>
-              </View>
-            )}
-          </View>
-        </>
-      ) : (
-        <>
-          <Avatar.Icon
-            size={64}
-            icon="account-outline"
-            style={{ backgroundColor: colors.gray200 }}
-          />
-          <View style={styles.profileInfo}>
-            <Text variant="titleLarge" style={styles.profileName}>
-              Gość
-            </Text>
-            <Button
-              mode="contained"
-              onPress={() => router.push('/auth/login')}
-              style={styles.loginButton}>
-              Zaloguj się
-            </Button>
-          </View>
-        </>
-      )}
-    </View>
-  );
+  const settings = useSettingsStore();
+  const { selectedCity, setCity, getCityList } = useCityStore();
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -98,107 +29,106 @@ export default function SettingsScreen() {
         </Text>
       </View>
 
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
-        <ProfileSection />
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* City Selection */}
+        <List.Section>
+          <List.Subheader style={styles.sectionHeader}>Miasto</List.Subheader>
+          <RadioButton.Group
+            onValueChange={(value) => setCity(value)}
+            value={selectedCity.id}>
+            {getCityList().map((city) => (
+              <List.Item
+                key={city.id}
+                title={city.name}
+                left={() => <RadioButton value={city.id} />}
+                onPress={() => setCity(city.id)}
+              />
+            ))}
+          </RadioButton.Group>
+        </List.Section>
 
-        <Divider style={styles.divider} />
+        <Divider />
 
-        {/* Navigation Settings */}
+        {/* Theme */}
+        <List.Section>
+          <List.Subheader style={styles.sectionHeader}>Wygląd</List.Subheader>
+          <RadioButton.Group
+            onValueChange={(value) =>
+              settings.setTheme(value as 'light' | 'dark' | 'system')
+            }
+            value={settings.theme}>
+            <List.Item
+              title="Jasny"
+              left={() => <RadioButton value="light" />}
+              onPress={() => settings.setTheme('light')}
+            />
+            <List.Item
+              title="Ciemny"
+              left={() => <RadioButton value="dark" />}
+              onPress={() => settings.setTheme('dark')}
+            />
+            <List.Item
+              title="Systemowy"
+              left={() => <RadioButton value="system" />}
+              onPress={() => settings.setTheme('system')}
+            />
+          </RadioButton.Group>
+        </List.Section>
+
+        <Divider />
+
+        {/* Profile */}
+        <List.Section>
+          <List.Subheader style={styles.sectionHeader}>
+            Domyślny profil
+          </List.Subheader>
+          <RadioButton.Group
+            onValueChange={(value) =>
+              settings.setDefaultProfile(value as 'foot' | 'bicycle' | 'car')
+            }
+            value={settings.defaultProfile}>
+            <List.Item
+              title="Pieszo"
+              description="Trasy piesze"
+              left={() => <RadioButton value="foot" />}
+              onPress={() => settings.setDefaultProfile('foot')}
+            />
+            <List.Item
+              title="Rower"
+              description="Trasy rowerowe"
+              left={() => <RadioButton value="bicycle" />}
+              onPress={() => settings.setDefaultProfile('bicycle')}
+            />
+            <List.Item
+              title="Samochód"
+              description="Trasy samochodowe"
+              left={() => <RadioButton value="car" />}
+              onPress={() => settings.setDefaultProfile('car')}
+            />
+          </RadioButton.Group>
+        </List.Section>
+
+        <Divider />
+
+        {/* Navigation Voice */}
         <List.Section>
           <List.Subheader style={styles.sectionHeader}>
             Nawigacja
           </List.Subheader>
           <List.Item
-            title="Nawigacja głosowa"
-            description="Odczytuj wskazówki na głos"
-            left={(props) => <List.Icon {...props} icon="volume-high" />}
+            title="Powiadomienia głosowe"
+            description="Instrukcje podczas nawigacji"
             right={() => (
               <Switch
-                value={voiceNavigation}
-                onValueChange={setVoiceNavigation}
-                color={theme.colors.primary}
-              />
-            )}
-          />
-          <List.Item
-            title="Mapy offline"
-            description="Pobieraj mapy do użytku offline"
-            left={(props) => <List.Icon {...props} icon="map-marker-off" />}
-            right={() => (
-              <Switch
-                value={offlineMaps}
-                onValueChange={setOfflineMaps}
+                value={settings.navigationVoice}
+                onValueChange={settings.setNavigationVoice}
                 color={theme.colors.primary}
               />
             )}
           />
         </List.Section>
 
-        <Divider style={styles.divider} />
-
-        {/* App Settings */}
-        <List.Section>
-          <List.Subheader style={styles.sectionHeader}>
-            Aplikacja
-          </List.Subheader>
-          <List.Item
-            title="Tryb ciemny"
-            description="Zmień wygląd aplikacji"
-            left={(props) => <List.Icon {...props} icon="weather-night" />}
-            right={() => (
-              <Switch
-                value={darkMode}
-                onValueChange={setDarkMode}
-                color={theme.colors.primary}
-              />
-            )}
-          />
-          <List.Item
-            title="Jednostki metryczne"
-            description={metricUnits ? 'Kilometry i metry' : 'Mile i stopy'}
-            left={(props) => <List.Icon {...props} icon="ruler" />}
-            right={() => (
-              <Switch
-                value={metricUnits}
-                onValueChange={setMetricUnits}
-                color={theme.colors.primary}
-              />
-            )}
-          />
-          <List.Item
-            title="Język"
-            description="Polski"
-            left={(props) => <List.Icon {...props} icon="translate" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => {}}
-          />
-        </List.Section>
-
-        <Divider style={styles.divider} />
-
-        {/* Subscription */}
-        {user && user.subscription !== 'premium' && (
-          <>
-            <List.Section>
-              <List.Subheader style={styles.sectionHeader}>
-                Subskrypcja
-              </List.Subheader>
-              <List.Item
-                title="Przejdź na Premium"
-                description="Odblokuj wszystkie funkcje"
-                left={(props) => (
-                  <List.Icon {...props} icon="star" color={colors.warning} />
-                )}
-                right={(props) => <List.Icon {...props} icon="chevron-right" />}
-                onPress={() => router.push('/subscription')}
-                titleStyle={{ color: theme.colors.primary, fontWeight: '600' }}
-              />
-            </List.Section>
-            <Divider style={styles.divider} />
-          </>
-        )}
+        <Divider />
 
         {/* About */}
         <List.Section>
@@ -206,47 +136,16 @@ export default function SettingsScreen() {
             Informacje
           </List.Subheader>
           <List.Item
-            title="O aplikacji"
+            title="WTG Route Machine"
             description="Wersja 1.0.0"
             left={(props) => <List.Icon {...props} icon="information" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => router.push('/about')}
           />
           <List.Item
-            title="Polityka prywatności"
-            left={(props) => <List.Icon {...props} icon="shield-account" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => {}}
-          />
-          <List.Item
-            title="Regulamin"
-            left={(props) => <List.Icon {...props} icon="file-document" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => {}}
+            title="Powered by OSRM"
+            description="Open Source Routing Machine"
+            left={(props) => <List.Icon {...props} icon="map-marker-path" />}
           />
         </List.Section>
-
-        {user && (
-          <>
-            <Divider style={styles.divider} />
-            <Button
-              mode="outlined"
-              onPress={handleSignOut}
-              style={styles.signOutButton}
-              textColor={colors.error}>
-              Wyloguj się
-            </Button>
-          </>
-        )}
-
-        <View style={styles.footer}>
-          <Text variant="bodySmall" style={styles.footerText}>
-            WTG Routes © 2025
-          </Text>
-          <Text variant="bodySmall" style={styles.footerText}>
-            Watch The Guide
-          </Text>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -255,71 +154,21 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.gray50,
+    backgroundColor: colors.white,
   },
   header: {
-    padding: 16,
-    backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.gray200,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   title: {
     fontWeight: 'bold',
     color: colors.gray900,
   },
   scrollContent: {
-    paddingBottom: 100,
-  },
-  profileSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: colors.white,
-  },
-  profileInfo: {
-    marginLeft: 16,
-    flex: 1,
-  },
-  profileName: {
-    fontWeight: '600',
-    color: colors.gray900,
-  },
-  profileEmail: {
-    color: colors.gray500,
-    marginTop: 2,
-  },
-  subscriptionBadge: {
-    marginTop: 8,
-    backgroundColor: colors.primary + '20',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-  },
-  subscriptionText: {
-    color: colors.primary,
-    fontWeight: '600',
-  },
-  loginButton: {
-    marginTop: 12,
-    alignSelf: 'flex-start',
-  },
-  divider: {
-    backgroundColor: colors.gray200,
+    paddingBottom: 32,
   },
   sectionHeader: {
-    color: colors.gray600,
+    color: colors.primary,
     fontWeight: '600',
-  },
-  signOutButton: {
-    margin: 16,
-    borderColor: colors.error,
-  },
-  footer: {
-    alignItems: 'center',
-    padding: 24,
-  },
-  footerText: {
-    color: colors.gray400,
   },
 });

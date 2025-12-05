@@ -1,168 +1,104 @@
 /**
- * WTG Routes - Type definitions
+ * WTG Route Machine - Type Definitions
  */
 
-// Coordinate type [longitude, latitude]
+// Coordinate type [longitude, latitude] for OSRM compatibility
 export type Coordinate = [number, number];
 
-// POI Category
+// City definition
+export interface City {
+  id: string;
+  name: string;
+  center: Coordinate;
+  port: number;
+}
+
+// POI (Point of Interest)
+export interface POI {
+  id: string;
+  name: string;
+  description?: string;
+  category: POICategory;
+  coordinate: Coordinate;
+  address?: string;
+  imageUrl?: string;
+  rating?: number;
+  openingHours?: string;
+}
+
 export type POICategory =
   | 'landmark'
   | 'museum'
   | 'park'
   | 'restaurant'
-  | 'viewpoint'
-  | 'church'
   | 'cafe'
   | 'hotel'
-  | 'monument'
-  | 'theater';
+  | 'other';
 
-// Point of Interest
-export interface POI {
-  id: string;
-  name: string;
-  description: string;
-  coordinate: Coordinate; // Changed from coordinates
-  category: POICategory;
-  imageUrl?: string;
-  thumbnailUrl?: string;
-  estimatedTime?: number;
-  openingHours?: string;
-  closedDays?: string;
-  website?: string;
-  address?: string;
-  ticketPrice?: string;
-  tags?: string[];
-  phone?: string;
-  accessibility?: {
-    wheelchairAccessible?: boolean;
-    audioGuide?: boolean;
-  };
-}
-
-// City
-export interface City {
-  id: string;
-  name: string;
-  poiCount?: number;
-  center: Coordinate;
-  bounds?: {
-    minLon: number;
-    minLat: number;
-    maxLon: number;
-    maxLat: number;
-  };
-}
-
-// Category info
-export interface CategoryInfo {
-  id: POICategory;
-  name: string;
-  icon: string;
-  color: string;
-}
-
-// Routing profile
-export type RoutingProfile = 'foot' | 'bicycle' | 'car';
-
-// Waypoint
+// Waypoint for route planning
 export interface Waypoint {
-  id?: string;
+  id: string;
   coordinate: Coordinate;
   name?: string;
-  type?: 'poi' | 'custom';
-  poiId?: string;
-  order?: number;
+  poi?: POI;
+  order: number;
 }
 
-// Route step (maneuver)
-export interface RouteStep {
-  instruction: string;
-  distance: number;
-  duration: number;
-  maneuver: string; // Simplified to just type
-  modifier?: string;
-  name: string;
-  geometry?: Coordinate[];
-}
-
-// Full route
+// Route
 export interface Route {
-  geometry: Coordinate[];
-  distance: number;
-  duration: number;
-  steps: RouteStep[];
-  profile: RoutingProfile;
-}
-
-// Saved route (from Supabase)
-export interface SavedRoute {
   id: string;
-  userId?: string;
   name: string;
-  cityId: string;
-  profile: RoutingProfile;
+  description?: string;
   waypoints: Waypoint[];
-  distance: number;
-  duration: number;
-  geometry?: Coordinate[];
-  createdAt: string;
-  updatedAt: string;
+  distance: number; // meters
+  duration: number; // seconds
+  geometry: Coordinate[]; // polyline coordinates
+  profile: RoutingProfile;
+  createdAt: Date;
+  updatedAt: Date;
   isFavorite: boolean;
 }
 
-// Tour (predefined route)
+export type RoutingProfile = 'foot' | 'bicycle' | 'car';
+
+// Tour (curated walking tour)
 export interface Tour {
   id: string;
   name: string;
   description: string;
-  cityId: string;
-  waypoints?: Waypoint[];
-  estimatedDuration: number; // in minutes
-  distance: number;
-  difficulty: 'easy' | 'medium' | 'hard';
-  category: string;
+  city: string;
+  category: TourCategory;
+  difficulty: TourDifficulty;
+  duration: number; // minutes
+  distance: number; // meters
+  pois: POI[];
   imageUrl?: string;
-  rating?: number;
-  reviewCount?: number;
 }
 
-// User
-export interface User {
-  id: string;
-  email: string;
-  name?: string;
-  avatarUrl?: string;
-  subscription?: 'free' | 'premium';
-  createdAt: string;
+export type TourCategory =
+  | 'history'
+  | 'art'
+  | 'food'
+  | 'nature'
+  | 'architecture'
+  | 'nightlife';
+
+export type TourDifficulty = 'easy' | 'medium' | 'hard';
+
+// Navigation step
+export interface NavigationStep {
+  instruction: string;
+  distance: number; // meters
+  duration: number; // seconds
+  maneuver: string;
+  coordinate: Coordinate;
 }
 
-// Navigation state
-export interface NavigationState {
-  route: Route;
-  currentStepIndex: number;
-  currentPosition: Coordinate;
-  distanceToNextStep: number;
-  distanceToDestination: number;
-  estimatedTimeRemaining: number;
-  isOffRoute: boolean;
-  isNavigating: boolean;
-  isPaused: boolean;
-}
-
-// User subscription
-export type SubscriptionPlan = 'free' | 'premium_monthly' | 'premium_yearly';
-
-export interface UserSubscription {
-  plan: SubscriptionPlan;
-  status: 'active' | 'cancelled' | 'expired';
-  expiresAt?: string;
-}
-
-// API Response types
-export interface ApiResponse<T> {
-  data?: T;
-  error?: string;
-  code?: string;
+// Settings
+export interface AppSettings {
+  defaultCity: string;
+  theme: 'light' | 'dark' | 'system';
+  units: 'metric' | 'imperial';
+  defaultProfile: RoutingProfile;
+  navigationVoice: boolean;
 }

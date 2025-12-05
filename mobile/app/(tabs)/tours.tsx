@@ -1,130 +1,84 @@
 /**
- * WTG Routes - Predefined Tours Screen
+ * Tours Screen - Curated walking tours
  */
 
-import { View, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import {
   Text,
   Card,
   Chip,
-  useTheme,
-  Searchbar,
   SegmentedButtons,
+  useTheme,
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import { useState } from 'react';
-import { useTours } from '../../src/hooks/useTours';
 import { colors } from '../../src/theme/colors';
-import type { Tour } from '../../src/types';
+import { TourDifficulty } from '../../src/types';
 
-const { width } = Dimensions.get('window');
-const CARD_WIDTH = (width - 48) / 2;
+// Placeholder data
+const SAMPLE_TOURS = [
+  {
+    id: '1',
+    name: 'Kraków - Droga Królewska',
+    description: 'Historyczna trasa od Barbakanu do Wawelu',
+    city: 'krakow',
+    difficulty: 'easy' as TourDifficulty,
+    duration: 90,
+    distance: 2500,
+    imageUrl: null,
+  },
+  {
+    id: '2',
+    name: 'Kazimierz - Dziedzictwo Żydowskie',
+    description: 'Poznaj historię żydowskiej dzielnicy Krakowa',
+    city: 'krakow',
+    difficulty: 'medium' as TourDifficulty,
+    duration: 120,
+    distance: 3500,
+    imageUrl: null,
+  },
+  {
+    id: '3',
+    name: 'Nowa Huta - Socrealizm',
+    description: 'Architektura socrealistyczna w Nowej Hucie',
+    city: 'krakow',
+    difficulty: 'medium' as TourDifficulty,
+    duration: 150,
+    distance: 4200,
+    imageUrl: null,
+  },
+];
 
-const DIFFICULTY_LABELS: Record<string, string> = {
-  easy: 'Łatwa',
-  medium: 'Średnia',
-  hard: 'Trudna',
-};
-
-const DIFFICULTY_COLORS: Record<string, string> = {
+const DIFFICULTY_COLORS: Record<TourDifficulty, string> = {
   easy: colors.success,
   medium: colors.warning,
   hard: colors.error,
 };
 
+const DIFFICULTY_LABELS: Record<TourDifficulty, string> = {
+  easy: 'Łatwa',
+  medium: 'Średnia',
+  hard: 'Trudna',
+};
+
 export default function ToursScreen() {
   const theme = useTheme();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCity, setSelectedCity] = useState<string>('krakow');
-  const { data: tours, isLoading } = useTours(selectedCity);
+  const [selectedCity, setSelectedCity] = useState('krakow');
 
-  const filteredTours =
-    tours?.filter(
-      (tour) =>
-        tour.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        tour.description.toLowerCase().includes(searchQuery.toLowerCase())
-    ) ?? [];
-
-  const formatDuration = (minutes: number): string => {
+  const formatDuration = (minutes: number) => {
+    if (minutes < 60) return `${minutes} min`;
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    if (hours > 0) {
-      return `${hours}h ${mins > 0 ? `${mins}min` : ''}`;
-    }
-    return `${mins} min`;
+    return mins > 0 ? `${hours}h ${mins}min` : `${hours}h`;
   };
 
-  const handleTourPress = (tour: Tour) => {
-    router.push({
-      pathname: '/navigation/tour/[tourId]',
-      params: { tourId: tour.id },
-    });
+  const formatDistance = (meters: number) => {
+    if (meters < 1000) return `${meters} m`;
+    return `${(meters / 1000).toFixed(1)} km`;
   };
 
-  const renderTourCard = (tour: Tour) => (
-    <Card
-      key={tour.id}
-      style={styles.card}
-      onPress={() => handleTourPress(tour)}>
-      <Card.Cover
-        source={{ uri: tour.imageUrl || 'https://via.placeholder.com/300x200' }}
-        style={styles.cardCover}
-      />
-      <Card.Content style={styles.cardContent}>
-        <Text variant="titleMedium" numberOfLines={2} style={styles.tourName}>
-          {tour.name}
-        </Text>
-        <Text
-          variant="bodySmall"
-          numberOfLines={2}
-          style={styles.tourDescription}>
-          {tour.description}
-        </Text>
-        <View style={styles.tourMeta}>
-          <Chip
-            compact
-            style={[
-              styles.difficultyChip,
-              { backgroundColor: DIFFICULTY_COLORS[tour.difficulty] + '20' },
-            ]}
-            textStyle={{
-              color: DIFFICULTY_COLORS[tour.difficulty],
-              fontSize: 10,
-            }}>
-            {DIFFICULTY_LABELS[tour.difficulty]}
-          </Chip>
-          <Text variant="labelSmall" style={styles.duration}>
-            {formatDuration(tour.estimatedDuration)}
-          </Text>
-        </View>
-      </Card.Content>
-    </Card>
-  );
-
-  const CitySelector = () => (
-    <SegmentedButtons
-      value={selectedCity}
-      onValueChange={setSelectedCity}
-      buttons={[
-        { value: 'krakow', label: 'Kraków' },
-        { value: 'warszawa', label: 'Warszawa' },
-        { value: 'wroclaw', label: 'Wrocław' },
-        { value: 'trojmiasto', label: 'Trójmiasto' },
-      ]}
-      style={styles.segmentedButtons}
-    />
-  );
-
-  const EmptyState = () => (
-    <View style={styles.emptyContainer}>
-      <Text variant="headlineSmall" style={styles.emptyTitle}>
-        Brak wycieczek
-      </Text>
-      <Text variant="bodyMedium" style={styles.emptyDescription}>
-        Wycieczki dla tego miasta pojawią się wkrótce!
-      </Text>
-    </View>
+  const filteredTours = SAMPLE_TOURS.filter(
+    (tour) => tour.city === selectedCity
   );
 
   return (
@@ -133,24 +87,71 @@ export default function ToursScreen() {
         <Text variant="headlineMedium" style={styles.title}>
           Wycieczki
         </Text>
-        <Searchbar
-          placeholder="Szukaj wycieczek..."
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-          style={styles.searchbar}
-          inputStyle={styles.searchInput}
+      </View>
+
+      {/* City Filter */}
+      <View style={styles.filterContainer}>
+        <SegmentedButtons
+          value={selectedCity}
+          onValueChange={setSelectedCity}
+          buttons={[
+            { value: 'krakow', label: 'Kraków' },
+            { value: 'warszawa', label: 'Warszawa' },
+            { value: 'wroclaw', label: 'Wrocław' },
+          ]}
+          style={styles.segmentedButtons}
         />
       </View>
 
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
-        <CitySelector />
-
-        {filteredTours.length === 0 && !isLoading ? (
-          <EmptyState />
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {filteredTours.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text variant="titleMedium" style={{ color: colors.gray500 }}>
+              Brak wycieczek dla tego miasta
+            </Text>
+            <Text
+              variant="bodySmall"
+              style={{ color: colors.gray400, marginTop: 4 }}>
+              Wkrótce dodamy nowe trasy!
+            </Text>
+          </View>
         ) : (
-          <View style={styles.grid}>{filteredTours.map(renderTourCard)}</View>
+          filteredTours.map((tour) => (
+            <Card
+              key={tour.id}
+              style={styles.card}
+              onPress={() => console.log('Open tour', tour.id)}>
+              <Card.Content>
+                <Text variant="titleMedium" style={styles.tourName}>
+                  {tour.name}
+                </Text>
+                <Text variant="bodySmall" style={styles.tourDescription}>
+                  {tour.description}
+                </Text>
+                <View style={styles.tourMeta}>
+                  <Chip
+                    compact
+                    style={[
+                      styles.difficultyChip,
+                      {
+                        backgroundColor:
+                          DIFFICULTY_COLORS[tour.difficulty] + '20',
+                      },
+                    ]}
+                    textStyle={{
+                      color: DIFFICULTY_COLORS[tour.difficulty],
+                      fontSize: 12,
+                    }}>
+                    {DIFFICULTY_LABELS[tour.difficulty]}
+                  </Chip>
+                  <Text variant="labelSmall" style={styles.duration}>
+                    ⏱️ {formatDuration(tour.duration)} • 📍{' '}
+                    {formatDistance(tour.distance)}
+                  </Text>
+                </View>
+              </Card.Content>
+            </Card>
+          ))
         )}
       </ScrollView>
     </SafeAreaView>
@@ -160,48 +161,29 @@ export default function ToursScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.gray50,
+    backgroundColor: colors.white,
   },
   header: {
-    padding: 16,
-    backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.gray200,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   title: {
     fontWeight: 'bold',
     color: colors.gray900,
-    marginBottom: 12,
   },
-  searchbar: {
-    backgroundColor: colors.gray100,
-    elevation: 0,
+  filterContainer: {
+    paddingHorizontal: 16,
+    marginBottom: 8,
   },
-  searchInput: {
-    fontSize: 14,
+  segmentedButtons: {
+    // Styling handled by Paper
   },
   scrollContent: {
     padding: 16,
-    paddingBottom: 100,
-  },
-  segmentedButtons: {
-    marginBottom: 16,
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    paddingBottom: 32,
   },
   card: {
-    width: CARD_WIDTH,
-    marginBottom: 16,
-    backgroundColor: colors.white,
-  },
-  cardCover: {
-    height: 120,
-  },
-  cardContent: {
-    paddingVertical: 12,
+    marginBottom: 12,
   },
   tourName: {
     fontWeight: '600',
@@ -209,8 +191,8 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   tourDescription: {
-    color: colors.gray500,
-    marginBottom: 8,
+    color: colors.gray600,
+    marginBottom: 12,
   },
   tourMeta: {
     flexDirection: 'row',
@@ -218,23 +200,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   difficultyChip: {
-    height: 24,
+    height: 28,
   },
   duration: {
     color: colors.gray500,
   },
   emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
+    paddingVertical: 60,
     alignItems: 'center',
-    paddingTop: 100,
-  },
-  emptyTitle: {
-    color: colors.gray600,
-    marginBottom: 8,
-  },
-  emptyDescription: {
-    color: colors.gray400,
-    textAlign: 'center',
   },
 });
