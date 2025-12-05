@@ -1,29 +1,35 @@
 .city-selector-wrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: var(--ion-color-light);
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 8px;
-  padding: 4px 12px;
+  padding: 4px 8px;
+  margin-left: 8px;
 }
 
 .city-icon {
-  font-size: 20px;
-  color: var(--ion-color-primary);
+  font-size: 18px;
+  color: white;
 }
 
 .city-selector {
   --padding-start: 0;
   --padding-end: 0;
-  min-width: 120px;
-  font-weight: 500;
-}
-
-.city-selector::part(text) {
+  --placeholder-color: white;
+  --placeholder-opacity: 0.8;
+  color: white;
   font-weight: 600;
+  font-size: 14px;
+  min-width: 100px;
 }
 
-/* Dark mode */
+.city-selector::part(icon) {
+  color: white;
+  opacity: 0.8;
+}
+
+/* Dark mode - same style on primary toolbar */
 .dark .city-selector-wrapper {
-  background: var(--ion-color-step-100);
+  background: rgba(255, 255, 255, 0.15);
 }
