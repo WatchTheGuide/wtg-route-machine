@@ -64,10 +64,14 @@ const generateMapHTML = (
       })
       .addTo(map)
       .bindPopup('${m.title || ''}')
-      .on('click', function() {
-        window.ReactNativeWebView?.postMessage(JSON.stringify({ type: 'markerPress', id: '${
-          m.id
-        }' }));
+      .on('click', function(e) {
+        e.originalEvent.stopPropagation();
+        var msg = JSON.stringify({ type: 'markerPress', id: '${m.id}' });
+        if (window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(msg);
+        } else {
+          window.parent.postMessage(msg, '*');
+        }
       });
     `
     )
@@ -114,11 +118,16 @@ const generateMapHTML = (
     ${routeJS}
     
     map.on('click', function(e) {
-      window.ReactNativeWebView?.postMessage(JSON.stringify({
+      var msg = JSON.stringify({
         type: 'mapPress',
         latitude: e.latlng.lat,
         longitude: e.latlng.lng
-      }));
+      });
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(msg);
+      } else {
+        window.parent.postMessage(msg, '*');
+      }
     });
     
     window.setCenter = function(lat, lng) {

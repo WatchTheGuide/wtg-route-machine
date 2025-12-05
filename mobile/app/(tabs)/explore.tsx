@@ -4,23 +4,69 @@
 
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, FAB, useTheme, Chip } from 'react-native-paper';
+import {
+  Text,
+  FAB,
+  useTheme,
+  Chip,
+  ActivityIndicator,
+} from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCityStore } from '../../src/stores';
 import { colors } from '../../src/theme/colors';
-import { LeafletMap } from '../../src/components/map';
+import { LeafletMap, MapMarker } from '../../src/components/map';
 import { CitySelector } from '../../src/components/city';
+import { POICard } from '../../src/components/poi';
+import { usePOIs } from '../../src/hooks';
+import { POI, POICategory } from '../../src/types';
+
+const CATEGORY_COLORS: Record<POICategory, string> = {
+  landmark: colors.poiLandmark,
+  museum: colors.poiMuseum,
+  park: colors.poiPark,
+  restaurant: colors.poiRestaurant,
+  cafe: colors.poiCafe,
+  hotel: colors.poiHotel,
+  other: colors.gray500,
+};
 
 export default function ExploreScreen() {
   const theme = useTheme();
   const { selectedCity } = useCityStore();
   const [cityModalVisible, setCityModalVisible] = useState(false);
+  const [selectedPOI, setSelectedPOI] = useState<POI | null>(null);
+  const [poiCardVisible, setPOICardVisible] = useState(false);
+
+  // Fetch POIs for selected city
+  const { data: pois, isLoading } = usePOIs(selectedCity.id);
+
+  // Convert POIs to map markers
+  const markers: MapMarker[] = (pois || []).map((poi) => ({
+    id: poi.id,
+    latitude: poi.coordinate[1],
+    longitude: poi.coordinate[0],
+    title: poi.name,
+    color: CATEGORY_COLORS[poi.category] || colors.primary,
+  }));
 
   const handleMapPress = (coordinate: {
     latitude: number;
     longitude: number;
   }) => {
     console.log('Map pressed:', coordinate);
+  };
+
+  const handleMarkerPress = (markerId: string) => {
+    const poi = pois?.find((p) => p.id === markerId);
+    if (poi) {
+      setSelectedPOI(poi);
+      setPOICardVisible(true);
+    }
+  };
+
+  const handleAddToRoute = (poi: POI) => {
+    console.log('Add to route:', poi.name);
+    // TODO: Implement in Story 7.5
   };
 
   return (
@@ -39,6 +85,7 @@ export default function ExploreScreen() {
             {selectedCity.name}
           </Chip>
         </View>
+        {isLoading && <ActivityIndicator size="small" color={colors.primary} />}
       </View>
 
       {/* Map */}
@@ -46,11 +93,13 @@ export default function ExploreScreen() {
         <LeafletMap
           key={selectedCity.id}
           center={{
-            latitude: selectedCity.center[1], // lat
-            longitude: selectedCity.center[0], // lon
+            latitude: selectedCity.center[1],
+            longitude: selectedCity.center[0],
           }}
           zoom={14}
+          markers={markers}
           onMapPress={handleMapPress}
+          onMarkerPress={handleMarkerPress}
         />
       </View>
 
@@ -66,6 +115,14 @@ export default function ExploreScreen() {
       <CitySelector
         visible={cityModalVisible}
         onDismiss={() => setCityModalVisible(false)}
+      />
+
+      {/* POI Card Modal */}
+      <POICard
+        poi={selectedPOI}
+        visible={poiCardVisible}
+        onDismiss={() => setPOICardVisible(false)}
+        onAddToRoute={handleAddToRoute}
       />
     </SafeAreaView>
   );
