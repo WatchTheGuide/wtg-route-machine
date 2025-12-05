@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
 # Skrypt do uruchamiania wszystkich serwerów OSRM
-# US 8.2: Route profile selection - uruchomienie serwerów dla wszystkich profili
+# Obsługuje 4 miasta × 3 profile = 12 kontenerów
+#
+# Mapowanie portów:
+#   Kraków:     5001 (foot), 5002 (bicycle), 5003 (car)
+#   Warszawa:   5011 (foot), 5012 (bicycle), 5013 (car)
+#   Wrocław:    5021 (foot), 5022 (bicycle), 5023 (car)
+#   Trójmiasto: 5031 (foot), 5032 (bicycle), 5033 (car)
 
 set -e
 
@@ -12,25 +18,22 @@ echo "WTG Route Machine - Start All Servers"
 echo "=========================================="
 echo ""
 
-# Definicje portów zgodnie z konfiguracją frontend (map.js)
-# Kraków: 5001 (foot), 5002 (bicycle), 5003 (car)
-# Warszawa: 5004 (foot), 5005 (bicycle), 5006 (car)
-# Wrocław: 5007 (foot), 5008 (bicycle), 5009 (car)
-# Trójmiasto: 5010 (foot), 5011 (bicycle), 5012 (car)
-
+# Nowe mapowanie portów - systematyczne (miasto_base + profile_offset)
+# Miasto:       Kraków=5000, Warszawa=5010, Wrocław=5020, Trójmiasto=5030
+# Profil:       foot=1, bicycle=2, car=3
 declare -A SERVER_CONFIG=(
     ["krakow-foot"]=5001
     ["krakow-bicycle"]=5002
     ["krakow-car"]=5003
-    ["warszawa-foot"]=5004
-    ["warszawa-bicycle"]=5005
-    ["warszawa-car"]=5006
-    ["wroclaw-foot"]=5007
-    ["wroclaw-bicycle"]=5008
-    ["wroclaw-car"]=5009
-    ["trojmiasto-foot"]=5010
-    ["trojmiasto-bicycle"]=5011
-    ["trojmiasto-car"]=5012
+    ["warszawa-foot"]=5011
+    ["warszawa-bicycle"]=5012
+    ["warszawa-car"]=5013
+    ["wroclaw-foot"]=5021
+    ["wroclaw-bicycle"]=5022
+    ["wroclaw-car"]=5023
+    ["trojmiasto-foot"]=5031
+    ["trojmiasto-bicycle"]=5032
+    ["trojmiasto-car"]=5033
 )
 
 echo "Uruchamianie 12 serwerów OSRM..."

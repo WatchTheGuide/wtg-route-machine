@@ -1,0 +1,150 @@
+# WTG Route Machine - Multi-City Docker Compose
+# Obsługuje 4 miasta × 3 profile = 12 kontenerów OSRM
+#
+# Miasta: Kraków, Warszawa, Wrocław, Trójmiasto
+# Profile: foot (pieszy), bicycle (rowerowy), car (samochodowy)
+#
+# Użycie:
+#   docker-compose -f docker-compose.multi-city.yml up -d
+#   docker-compose -f docker-compose.multi-city.yml down
+#   docker-compose -f docker-compose.multi-city.yml logs -f
+
+version: '3.8'
+
+x-osrm-defaults: &osrm-defaults
+  image: ghcr.io/project-osrm/osrm-backend:latest
+  restart: unless-stopped
+  networks:
+    - osrm-network
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+    start_period: 10s
+
+services:
+  # ============================================
+  # KRAKÓW
+  # ============================================
+  osrm-krakow-foot:
+    <<: *osrm-defaults
+    container_name: osrm-krakow-foot
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./osrm-data:/data:ro
+    command: osrm-routed /data/krakow-foot.osrm --max-table-size 10000
+
+  osrm-krakow-bicycle:
+    <<: *osrm-defaults
+    container_name: osrm-krakow-bicycle
+    ports:
+      - "5002:5000"
+    volumes:
+      - ./osrm-data:/data:ro
+    command: osrm-routed /data/krakow-bicycle.osrm --max-table-size 10000
+
+  osrm-krakow-car:
+    <<: *osrm-defaults
+    container_name: osrm-krakow-car
+    ports:
+      - "5003:5000"
+    volumes:
+      - ./osrm-data:/data:ro
+    command: osrm-routed /data/krakow-car.osrm --max-table-size 10000
+
+  # ============================================
+  # WARSZAWA
+  # ============================================
+  osrm-warszawa-foot:
+    <<: *osrm-defaults
+    container_name: osrm-warszawa-foot
+    ports:
+      - "5011:5000"
+    volumes:
+      - ./osrm-data:/data:ro
+    command: osrm-routed /data/warszawa-foot.osrm --max-table-size 10000
+
+  osrm-warszawa-bicycle:
+    <<: *osrm-defaults
+    container_name: osrm-warszawa-bicycle
+    ports:
+      - "5012:5000"
+    volumes:
+      - ./osrm-data:/data:ro
+    command: osrm-routed /data/warszawa-bicycle.osrm --max-table-size 10000
+
+  osrm-warszawa-car:
+    <<: *osrm-defaults
+    container_name: osrm-warszawa-car
+    ports:
+      - "5013:5000"
+    volumes:
+      - ./osrm-data:/data:ro
+    command: osrm-routed /data/warszawa-car.osrm --max-table-size 10000
+
+  # ============================================
+  # WROCŁAW
+  # ============================================
+  osrm-wroclaw-foot:
+    <<: *osrm-defaults
+    container_name: osrm-wroclaw-foot
+    ports:
+      - "5021:5000"
+    volumes:
+      - ./osrm-data:/data:ro
+    command: osrm-routed /data/wroclaw-foot.osrm --max-table-size 10000
+
+  osrm-wroclaw-bicycle:
+    <<: *osrm-defaults
+    container_name: osrm-wroclaw-bicycle
+    ports:
+      - "5022:5000"
+    volumes:
+      - ./osrm-data:/data:ro
+    command: osrm-routed /data/wroclaw-bicycle.osrm --max-table-size 10000
+
+  osrm-wroclaw-car:
+    <<: *osrm-defaults
+    container_name: osrm-wroclaw-car
+    ports:
+      - "5023:5000"
+    volumes:
+      - ./osrm-data:/data:ro
+    command: osrm-routed /data/wroclaw-car.osrm --max-table-size 10000
+
+  # ============================================
+  # TRÓJMIASTO (Gdańsk, Sopot, Gdynia)
+  # ============================================
+  osrm-trojmiasto-foot:
+    <<: *osrm-defaults
+    container_name: osrm-trojmiasto-foot
+    ports:
+      - "5031:5000"
+    volumes:
+      - ./osrm-data:/data:ro
+    command: osrm-routed /data/trojmiasto-foot.osrm --max-table-size 10000
+
+  osrm-trojmiasto-bicycle:
+    <<: *osrm-defaults
+    container_name: osrm-trojmiasto-bicycle
+    ports:
+      - "5032:5000"
+    volumes:
+      - ./osrm-data:/data:ro
+    command: osrm-routed /data/trojmiasto-bicycle.osrm --max-table-size 10000
+
+  osrm-trojmiasto-car:
+    <<: *osrm-defaults
+    container_name: osrm-trojmiasto-car
+    ports:
+      - "5033:5000"
+    volumes:
+      - ./osrm-data:/data:ro
+    command: osrm-routed /data/trojmiasto-car.osrm --max-table-size 10000
+
+networks:
+  osrm-network:
+    driver: bridge
+    name: wtg-osrm-network
