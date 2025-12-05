@@ -4,23 +4,28 @@
  */
 
 import { useState, useCallback, useRef } from 'react';
-import { View, StyleSheet, Dimensions, ScrollView } from 'react-native';
-import { Searchbar, FAB, Chip, useTheme, Text } from 'react-native-paper';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import {
+  Searchbar,
+  FAB,
+  Chip,
+  useTheme,
+  Text,
+  Portal,
+  Modal,
+  Button,
+  Card,
+} from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import MapView, {
-  Marker,
-  PROVIDER_DEFAULT,
-  Region,
-  UrlTile,
-} from 'react-native-maps';
-import { usePOIs, useCities, usePOICategories } from '../../src/hooks/usePOI';
-import { POIBottomSheet } from '../../src/components/poi/POIBottomSheet';
+import LeafletMap, {
+  MapMarker,
+  LeafletMapRef,
+} from '../../src/components/map/LeafletMap';
+import { usePOIs, useCities } from '../../src/hooks/usePOI';
 import type { POI, POICategory } from '../../src/types';
 import { colors } from '../../src/theme/colors';
 import { config } from '../../src/config';
-
-const { width, height } = Dimensions.get('window');
 
 // Category definitions for filtering
 const CATEGORIES: { id: POICategory; label: string; icon: string }[] = [
@@ -45,7 +50,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export default function ExploreScreen() {
   const theme = useTheme();
-  const mapRef = useRef<MapView>(null);
+  const mapRef = useRef<LeafletMapRef>(null);
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
@@ -54,6 +59,7 @@ export default function ExploreScreen() {
   >(undefined);
   const [selectedPOI, setSelectedPOI] = useState<POI | null>(null);
   const [selectedCityId, setSelectedCityId] = useState('krakow');
+  const [showPOIModal, setShowPOIModal] = useState(false);
 
   // Queries
   const { data: cities } = useCities();
@@ -61,14 +67,6 @@ export default function ExploreScreen() {
 
   // Get city config
   const cityConfig = config.cities.find((c) => c.id === selectedCityId);
-
-  // Initial region
-  const initialRegion: Region = {
-    latitude: cityConfig?.center[1] || 50.0647,
-    longitude: cityConfig?.center[0] || 19.9449,
-    latitudeDelta: 0.05,
-    longitudeDelta: 0.05,
-  };
 
   // Filter POIs by search query
   const filteredPOIs =
@@ -82,51 +80,59 @@ export default function ExploreScreen() {
       );
     }) || [];
 
+  // Convert POIs to map markers
+  const mapMarkers: MapMarker[] = filteredPOIs.map((poi) => ({
+    id: poi.id,
+    latitude: poi.coordinate[1],
+    longitude: poi.coordinate[0],
+    title: poi.name,
+    description: poi.description,
+    color: CATEGORY_COLORS[poi.category] || CATEGORY_COLORS.default,
+  }));
+
   // Handlers
-  const handlePOIPress = useCallback((poi: POI) => {
-    setSelectedPOI(poi);
-    // Center map on POI
-    mapRef.current?.animateToRegion(
-      {
-        latitude: poi.coordinate[1],
-        longitude: poi.coordinate[0],
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      },
-      500
-    );
-  }, []);
+  const handleMarkerPress = useCallback(
+    (marker: MapMarker) => {
+      const poi = filteredPOIs.find((p) => p.id === marker.id);
+      if (poi) {
+        setSelectedPOI(poi);
+        setShowPOIModal(true);
+        mapRef.current?.animateToRegion(
+          poi.coordinate[1],
+          poi.coordinate[0],
+          16
+        );
+      }
+    },
+    [filteredPOIs]
+  );
 
   const handleCategoryPress = useCallback((category: POICategory) => {
     setSelectedCategory((prev) => (prev === category ? undefined : category));
   }, []);
 
-  const handleAddToRoute = useCallback(
-    (poi: POI) => {
+  const handleAddToRoute = useCallback(() => {
+    if (selectedPOI) {
+      setShowPOIModal(false);
       router.push({
         pathname: '/route-planner',
-        params: { poiId: poi.id, cityId: selectedCityId },
+        params: { poiId: selectedPOI.id, cityId: selectedCityId },
       });
-    },
-    [selectedCityId]
-  );
+    }
+  }, [selectedPOI, selectedCityId]);
 
-  const handleNavigate = useCallback(
-    (poi: POI) => {
+  const handleNavigate = useCallback(() => {
+    if (selectedPOI) {
+      setShowPOIModal(false);
       router.push({
         pathname: '/navigation/active',
         params: {
-          destination: JSON.stringify(poi.coordinate),
+          destination: JSON.stringify(selectedPOI.coordinate),
           cityId: selectedCityId,
         },
       });
-    },
-    [selectedCityId]
-  );
-
-  const getMarkerColor = (category: string): string => {
-    return CATEGORY_COLORS[category] || CATEGORY_COLORS.default;
-  };
+    }
+  }, [selectedPOI, selectedCityId]);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -165,37 +171,17 @@ export default function ExploreScreen() {
 
       {/* Map */}
       <View style={styles.mapContainer}>
-        <MapView
+        <LeafletMap
           ref={mapRef}
-          style={styles.map}
-          provider={PROVIDER_DEFAULT}
-          initialRegion={initialRegion}
-          showsUserLocation
-          showsMyLocationButton={false}
-          showsCompass={false}
-          mapType="none">
-          {/* OSM Tiles */}
-          <UrlTile
-            urlTemplate={config.map.tileUrl}
-            maximumZ={config.map.maxZoom}
-            flipY={false}
-          />
-
-          {/* POI Markers */}
-          {filteredPOIs.map((poi) => (
-            <Marker
-              key={poi.id}
-              coordinate={{
-                latitude: poi.coordinate[1],
-                longitude: poi.coordinate[0],
-              }}
-              title={poi.name}
-              description={poi.description}
-              pinColor={getMarkerColor(poi.category)}
-              onPress={() => handlePOIPress(poi)}
-            />
-          ))}
-        </MapView>
+          center={{
+            latitude: cityConfig?.center[1] || 50.0647,
+            longitude: cityConfig?.center[0] || 19.9449,
+          }}
+          zoom={14}
+          markers={mapMarkers}
+          onMarkerPress={handleMarkerPress}
+          showUserLocation
+        />
 
         {/* City name badge */}
         <View style={styles.cityBadge}>
@@ -213,15 +199,63 @@ export default function ExploreScreen() {
         />
       </View>
 
-      {/* POI Bottom Sheet */}
-      {selectedPOI && (
-        <POIBottomSheet
-          poi={selectedPOI}
-          onClose={() => setSelectedPOI(null)}
-          onAddToRoute={handleAddToRoute}
-          onNavigate={handleNavigate}
-        />
-      )}
+      {/* POI Modal */}
+      <Portal>
+        <Modal
+          visible={showPOIModal}
+          onDismiss={() => setShowPOIModal(false)}
+          contentContainerStyle={styles.modalContent}>
+          {selectedPOI && (
+            <Card style={styles.poiCard}>
+              <Card.Title
+                title={selectedPOI.name}
+                subtitle={
+                  CATEGORIES.find((c) => c.id === selectedPOI.category)?.label
+                }
+                titleStyle={styles.poiTitle}
+              />
+              <Card.Content>
+                {selectedPOI.description && (
+                  <Text variant="bodyMedium" style={styles.poiDescription}>
+                    {selectedPOI.description}
+                  </Text>
+                )}
+                {selectedPOI.tags && selectedPOI.tags.length > 0 && (
+                  <View style={styles.tagsContainer}>
+                    {selectedPOI.tags.map((tag) => (
+                      <Chip key={tag} compact style={styles.tag}>
+                        {tag}
+                      </Chip>
+                    ))}
+                  </View>
+                )}
+              </Card.Content>
+              <Card.Actions style={styles.poiActions}>
+                <Button
+                  mode="outlined"
+                  onPress={() => setShowPOIModal(false)}
+                  style={styles.actionButton}>
+                  Zamknij
+                </Button>
+                <Button
+                  mode="contained-tonal"
+                  icon="map-marker-plus"
+                  onPress={handleAddToRoute}
+                  style={styles.actionButton}>
+                  Dodaj do trasy
+                </Button>
+                <Button
+                  mode="contained"
+                  icon="navigation"
+                  onPress={handleNavigate}
+                  style={styles.actionButton}>
+                  Nawiguj
+                </Button>
+              </Card.Actions>
+            </Card>
+          )}
+        </Modal>
+      </Portal>
     </SafeAreaView>
   );
 }
@@ -255,9 +289,6 @@ const styles = StyleSheet.create({
   mapContainer: {
     flex: 1,
   },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
   cityBadge: {
     position: 'absolute',
     top: 16,
@@ -280,5 +311,36 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     right: 16,
+  },
+  modalContent: {
+    padding: 20,
+  },
+  poiCard: {
+    backgroundColor: colors.white,
+    borderRadius: 16,
+  },
+  poiTitle: {
+    fontWeight: '700',
+  },
+  poiDescription: {
+    color: colors.gray600,
+    marginBottom: 12,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 8,
+  },
+  tag: {
+    backgroundColor: colors.gray100,
+  },
+  poiActions: {
+    justifyContent: 'flex-end',
+    paddingHorizontal: 8,
+    paddingBottom: 8,
+  },
+  actionButton: {
+    marginLeft: 8,
   },
 });

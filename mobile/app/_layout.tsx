@@ -2,11 +2,9 @@
  * WTG Routes - Root Layout
  */
 
-import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import { View, useColorScheme } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PaperProvider } from 'react-native-paper';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -27,7 +25,7 @@ export default function RootLayout() {
   const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <PaperProvider theme={theme}>
@@ -47,7 +45,7 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen
-                name="route-planner/index"
+                name="route-planner"
                 options={{
                   headerShown: true,
                   title: 'Nowa trasa',
@@ -55,7 +53,7 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen
-                name="ai-search/index"
+                name="ai-search"
                 options={{
                   headerShown: true,
                   title: 'Wyszukaj AI',
@@ -66,6 +64,6 @@ export default function RootLayout() {
           </PaperProvider>
         </QueryClientProvider>
       </SafeAreaProvider>
-    </GestureHandlerRootView>
+    </View>
   );
 }
