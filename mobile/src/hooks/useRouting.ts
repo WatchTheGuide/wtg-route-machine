@@ -1,5 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useCityStore } from '../stores/cityStore';
+import { useRoutePlannerStore } from '../stores/routePlannerStore';
 import { osrmService } from '../services/osrm.service';
 import { Coordinate, Route, RoutingProfile, Waypoint } from '../types';
 
@@ -22,13 +23,25 @@ interface UseRoutingReturn {
 
 /**
  * Hook do obliczania tras przez OSRM
+ * Używa globalnego routePlannerStore dla profilu, trasy i stanu
  */
 export const useRouting = (): UseRoutingReturn => {
   const { currentCity } = useCityStore();
-  const [route, setRoute] = useState<Route | null>(null);
-  const [isCalculating, setIsCalculating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [profile, setProfile] = useState<RoutingProfile>('foot');
+
+  // Pobierz stan z globalnego store
+  const route = useRoutePlannerStore((state) => state.route);
+  const profile = useRoutePlannerStore((state) => state.profile);
+  const isCalculating = useRoutePlannerStore((state) => state.isCalculating);
+  const error = useRoutePlannerStore((state) => state.error);
+
+  // Pobierz akcje z globalnego store
+  const storeSetRoute = useRoutePlannerStore((state) => state.setRoute);
+  const storeSetProfile = useRoutePlannerStore((state) => state.setProfile);
+  const storeSetCalculating = useRoutePlannerStore(
+    (state) => state.setCalculating
+  );
+  const storeSetError = useRoutePlannerStore((state) => state.setError);
+  const storeClearRoute = useRoutePlannerStore((state) => state.clearRoute);
 
   // Ustaw bazowy URL na podstawie aktualnego miasta
   useEffect(() => {
@@ -39,12 +52,12 @@ export const useRouting = (): UseRoutingReturn => {
   const calculateRoute = useCallback(
     async (waypoints: Waypoint[]) => {
       if (waypoints.length < 2) {
-        setError('Potrzeba minimum 2 punktów do obliczenia trasy');
+        storeSetError('Potrzeba minimum 2 punktów do obliczenia trasy');
         return;
       }
 
-      setIsCalculating(true);
-      setError(null);
+      storeSetCalculating(true);
+      storeSetError(null);
 
       try {
         const coordinates: Coordinate[] = waypoints.map((wp) => wp.coordinate);
@@ -52,22 +65,28 @@ export const useRouting = (): UseRoutingReturn => {
           coordinates,
           profile
         );
-        setRoute(calculatedRoute);
+        storeSetRoute(calculatedRoute);
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Nieznany błąd';
-        setError(message);
-        setRoute(null);
+        storeSetError(message);
+        storeSetRoute(null);
       } finally {
-        setIsCalculating(false);
+        storeSetCalculating(false);
       }
     },
-    [profile]
+    [profile, storeSetRoute, storeSetCalculating, storeSetError]
+  );
+
+  const setProfile = useCallback(
+    (newProfile: RoutingProfile) => {
+      storeSetProfile(newProfile);
+    },
+    [storeSetProfile]
   );
 
   const clearRoute = useCallback(() => {
-    setRoute(null);
-    setError(null);
-  }, []);
+    storeClearRoute();
+  }, [storeClearRoute]);
 
   return {
     route,

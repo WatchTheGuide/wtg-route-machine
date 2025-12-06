@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonSegment, IonSegmentButton, IonIcon, IonLabel } from '@ionic/react';
+import { IonSegment, IonSegmentButton, IonIcon } from '@ionic/react';
 import { walkOutline, bicycleOutline, carOutline } from 'ionicons/icons';
 import { RoutingProfile } from '../../types';
 import './ProfileSelector.css';
@@ -18,12 +18,11 @@ export interface ProfileSelectorProps {
  */
 const PROFILES: Array<{
   value: RoutingProfile;
-  label: string;
   icon: string;
 }> = [
-  { value: 'foot', label: 'Pieszo', icon: walkOutline },
-  { value: 'bicycle', label: 'Rower', icon: bicycleOutline },
-  { value: 'car', label: 'Auto', icon: carOutline },
+  { value: 'foot', icon: walkOutline },
+  { value: 'bicycle', icon: bicycleOutline },
+  { value: 'car', icon: carOutline },
 ];
 
 /**
@@ -50,7 +49,6 @@ const ProfileSelector: React.FC<ProfileSelectorProps> = ({
       {PROFILES.map((profile) => (
         <IonSegmentButton key={profile.value} value={profile.value}>
           <IonIcon icon={profile.icon} />
-          <IonLabel>{profile.label}</IonLabel>
         </IonSegmentButton>
       ))}
     </IonSegment>

@@ -24,7 +24,9 @@ describe('routePlannerStore', () => {
 
       expect(result.current.waypoints).toHaveLength(1);
       expect(result.current.waypoints[0].name).toBe('Test Point');
-      expect(result.current.waypoints[0].coordinate).toEqual([19.9449, 50.0647]);
+      expect(result.current.waypoints[0].coordinate).toEqual([
+        19.9449, 50.0647,
+      ]);
     });
 
     it('powinien usuwać waypoint', () => {
