@@ -1,31 +1,40 @@
-/**
- * WTG Route Machine - Settings Store
- * Zustand store for app settings
- */
-
 import { create } from 'zustand';
-import { AppSettings, RoutingProfile } from '../types';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { RoutingProfile } from '../types';
 
-interface SettingsState extends AppSettings {
-  setDefaultCity: (city: string) => void;
-  setTheme: (theme: 'light' | 'dark' | 'system') => void;
-  setUnits: (units: 'metric' | 'imperial') => void;
+type ThemeMode = 'light' | 'dark' | 'system';
+type Units = 'km' | 'miles';
+
+interface SettingsState {
+  theme: ThemeMode;
+  units: Units;
+  defaultProfile: RoutingProfile;
+  defaultCityId: string;
+  navigationVoice: boolean;
+  setTheme: (theme: ThemeMode) => void;
+  setUnits: (units: Units) => void;
   setDefaultProfile: (profile: RoutingProfile) => void;
+  setDefaultCityId: (cityId: string) => void;
   setNavigationVoice: (enabled: boolean) => void;
 }
 
-export const useSettingsStore = create<SettingsState>((set) => ({
-  // Default settings
-  defaultCity: 'krakow',
-  theme: 'system',
-  units: 'metric',
-  defaultProfile: 'foot',
-  navigationVoice: true,
-
-  // Actions
-  setDefaultCity: (city) => set({ defaultCity: city }),
-  setTheme: (theme) => set({ theme }),
-  setUnits: (units) => set({ units }),
-  setDefaultProfile: (profile) => set({ defaultProfile: profile }),
-  setNavigationVoice: (enabled) => set({ navigationVoice: enabled }),
-}));
+export const useSettingsStore = create<SettingsState>()(
+  persist(
+    (set) => ({
+      theme: 'system',
+      units: 'km',
+      defaultProfile: 'foot',
+      defaultCityId: 'krakow',
+      navigationVoice: true,
+      setTheme: (theme) => set({ theme }),
+      setUnits: (units) => set({ units }),
+      setDefaultProfile: (profile) => set({ defaultProfile: profile }),
+      setDefaultCityId: (cityId) => set({ defaultCityId: cityId }),
+      setNavigationVoice: (enabled) => set({ navigationVoice: enabled }),
+    }),
+    {
+      name: 'settings-storage',
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);

@@ -2,17 +2,18 @@
 
 ## Opis
 
-Stworzenie natywnej aplikacji mobilnej React Native + Expo dla iOS i Android, umożliwiającej planowanie tras pieszych, odkrywanie punktów POI oraz nawigację turn-by-turn po miastach Polski.
+Stworzenie hybrydowej aplikacji mobilnej Ionic + Capacitor dla iOS, Android i Web, umożliwiającej planowanie tras pieszych, odkrywanie punktów POI oraz nawigację turn-by-turn po miastach Polski.
 
 ## Technologie
 
-- **Framework**: React Native + Expo SDK 54
+- **Framework**: Ionic 8 + React 18
+- **Native**: Capacitor 6
 - **Język**: TypeScript
-- **UI**: React Native Paper 5.x (Material Design 3)
-- **Mapy**: React Native Maps + Leaflet (WebView fallback)
-- **Nawigacja**: Expo Router (file-based routing)
+- **UI**: Ionic Components (iOS/Material Design)
+- **Mapy**: OpenLayers 10.x
+- **Routing**: React Router 6
 - **Stan**: Zustand + TanStack Query
-- **Lokalizacja**: expo-location, expo-task-manager
+- **Storage**: Capacitor Preferences
 
 ## Kolory marki
 
@@ -25,15 +26,16 @@ Stworzenie natywnej aplikacji mobilnej React Native + Expo dla iOS i Android, um
 
 ### Opis
 
-Jako programista chcę skonfigurować podstawową strukturę aplikacji, aby mieć solidny fundament do dalszego rozwoju.
+Jako programista chcę skonfigurować podstawową strukturę aplikacji Ionic/Capacitor, aby mieć solidny fundament do dalszego rozwoju.
 
 ### Kryteria akceptacji
 
-- [ ] Expo SDK 54 z TypeScript
-- [ ] React Native Paper skonfigurowany z kolorami marki
-- [ ] Expo Router z nawigacją tab-based (4 zakładki)
-- [ ] Podstawowy theme (light/dark mode)
+- [ ] Ionic 8 + React 18 + TypeScript
+- [ ] Capacitor 6 skonfigurowany dla iOS i Android
+- [ ] Theme z kolorami marki (#ff6600, #454545)
+- [ ] Nawigacja tab-based (4 zakładki)
 - [ ] Struktura katalogów (components, hooks, services, stores, types)
+- [ ] Działa na iOS, Android i Web
 
 ### Zakładki
 
@@ -44,42 +46,70 @@ Jako programista chcę skonfigurować podstawową strukturę aplikacji, aby mie�
 
 ### Zadania
 
-- [ ] Instalacja React Native Paper
-- [ ] Instalacja Expo Router
+- [ ] Utworzenie projektu Ionic React
+- [ ] Instalacja Capacitor
 - [ ] Konfiguracja theme z kolorami marki
 - [ ] Utworzenie struktury katalogów
-- [ ] Implementacja \_layout.tsx dla Stack i Tabs
+- [ ] Implementacja IonTabs z 4 zakładkami
 - [ ] Podstawowe placeholder screens
+
+### Struktura katalogów
+
+```
+mobile/
+├── src/
+│   ├── pages/              # Strony aplikacji
+│   │   ├── ExplorePage.tsx
+│   │   ├── RoutesPage.tsx
+│   │   ├── ToursPage.tsx
+│   │   └── SettingsPage.tsx
+│   ├── components/         # Reusable components
+│   │   ├── map/
+│   │   ├── poi/
+│   │   ├── route/
+│   │   └── common/
+│   ├── hooks/              # Custom hooks
+│   ├── services/           # API services
+│   ├── stores/             # Zustand stores
+│   ├── types/              # TypeScript types
+│   └── theme/              # CSS variables, theme
+├── ios/                    # iOS native project
+├── android/                # Android native project
+└── capacitor.config.ts
+```
 
 ---
 
-## User Story 7.2: Komponent mapy
+## User Story 7.2: Komponent mapy OpenLayers
 
 ### Opis
 
-Jako użytkownik chcę widzieć interaktywną mapę, aby móc przeglądać miasto i punkty POI.
+Jako użytkownik chcę widzieć interaktywną mapę OpenLayers, aby móc przeglądać miasto i punkty POI.
 
 ### Kryteria akceptacji
 
-- [ ] Mapa wyśrodkowana na wybranym mieście (domyślnie Kraków)
-- [ ] Obsługa gestów (zoom, pan)
+- [ ] Mapa OpenLayers wyśrodkowana na wybranym mieście (domyślnie Kraków)
+- [ ] Obsługa gestów (zoom, pan) na touch i desktop
 - [ ] Markery dla punktów POI
-- [ ] Wyświetlanie trasy jako polyline
+- [ ] Wyświetlanie trasy jako LineString
 - [ ] Lokalizacja użytkownika (blue dot)
 - [ ] Działa na iOS, Android i Web
 
-### Warianty implementacji
+### Warstwy mapy
 
-1. **Native**: react-native-maps (Google Maps / Apple Maps)
-2. **WebView**: Leaflet dla fallback i web
+1. **Base**: OpenStreetMap tiles
+2. **POI**: Vector layer z markerami
+3. **Route**: Vector layer z trasą
+4. **User**: Pozycja użytkownika
 
 ### Zadania
 
-- [ ] Komponent MapView z react-native-maps
-- [ ] Fallback LeafletMap dla web
-- [ ] Hook useLocation do pobierania pozycji
-- [ ] Komponenty MapMarker i MapRoute
-- [ ] Obsługa onMapPress i onMarkerPress
+- [ ] Komponent MapView z OpenLayers
+- [ ] Hook useMap do zarządzania mapą
+- [ ] Hook useGeolocation (Capacitor Geolocation)
+- [ ] POI markers layer
+- [ ] Route line layer
+- [ ] Obsługa kliknięć na mapę i markery
 
 ---
 
@@ -100,19 +130,19 @@ Jako użytkownik chcę móc wybrać miasto, aby przeglądać POI i planować tra
 
 ```typescript
 const CITIES = {
-  krakow: { name: 'Kraków', center: [50.0647, 19.9449], port: 5001 },
-  warszawa: { name: 'Warszawa', center: [52.2297, 21.0122], port: 5002 },
-  wroclaw: { name: 'Wrocław', center: [51.1079, 17.0385], port: 5003 },
-  trojmiasto: { name: 'Trójmiasto', center: [54.352, 18.6466], port: 5004 },
+  krakow: { name: 'Kraków', center: [19.9449, 50.0647], port: 5001 },
+  warszawa: { name: 'Warszawa', center: [21.0122, 52.2297], port: 5002 },
+  wroclaw: { name: 'Wrocław', center: [17.0385, 51.1079], port: 5003 },
+  trojmiasto: { name: 'Trójmiasto', center: [18.6466, 54.352], port: 5004 },
 };
 ```
 
 ### Zadania
 
-- [ ] CitySelector component (modal lub bottom sheet)
+- [ ] CitySelector component (IonModal lub IonActionSheet)
 - [ ] useCityStore (Zustand) do przechowywania wybranego miasta
 - [ ] Integracja z MapView (zmiana centrum)
-- [ ] Persystencja w AsyncStorage
+- [ ] Persystencja w Capacitor Preferences
 
 ---
 
@@ -143,10 +173,10 @@ Jako użytkownik chcę widzieć punkty POI na mapie, aby odkrywać interesujące
 
 - [ ] POI Service (API client)
 - [ ] usePOI hook z TanStack Query
-- [ ] POIMarker component
-- [ ] POICard component (bottom sheet)
-- [ ] CategoryFilter component
-- [ ] SearchBar component
+- [ ] POI markers na OpenLayers
+- [ ] POICard component (IonModal)
+- [ ] CategoryFilter component (IonChip)
+- [ ] SearchBar component (IonSearchbar)
 
 ---
 
@@ -159,9 +189,9 @@ Jako użytkownik chcę zaplanować trasę między punktami, aby otrzymać optyma
 ### Kryteria akceptacji
 
 - [ ] Dodawanie waypoints przez kliknięcie na mapie lub POI
-- [ ] Lista waypoints z możliwością reorderowania (drag & drop)
+- [ ] Lista waypoints z możliwością reorderowania (IonReorder)
 - [ ] Obliczanie trasy przez OSRM API
-- [ ] Wyświetlanie trasy na mapie jako polyline
+- [ ] Wyświetlanie trasy na mapie jako LineString
 - [ ] Informacje o dystansie i czasie
 - [ ] Wybór profilu (pieszo, rower, auto)
 
@@ -169,9 +199,9 @@ Jako użytkownik chcę zaplanować trasę między punktami, aby otrzymać optyma
 
 - [ ] useWaypoints hook (zarządzanie punktami)
 - [ ] useRouting hook (OSRM API)
-- [ ] WaypointList component
+- [ ] WaypointList component (IonList + IonReorder)
 - [ ] RouteInfo component (dystans, czas)
-- [ ] ProfileSelector component
+- [ ] ProfileSelector component (IonSegment)
 - [ ] OSRM Service
 
 ---
@@ -194,10 +224,10 @@ Jako użytkownik chcę zapisywać swoje trasy, aby móc do nich wrócić późni
 ### Zadania
 
 - [ ] Route model (TypeScript interface)
-- [ ] useRouteStore (Zustand + AsyncStorage)
+- [ ] useRouteStore (Zustand + Capacitor Preferences)
 - [ ] SaveRouteModal component
-- [ ] RouteList screen
-- [ ] RouteDetails screen
+- [ ] RoutesPage screen
+- [ ] RouteDetails modal
 - [ ] Eksport trasy (GeoJSON, GPX)
 
 ---
@@ -221,9 +251,9 @@ Jako użytkownik chcę przeglądać gotowe wycieczki, aby odkrywać miasto wedł
 
 - [ ] Tour model (interface)
 - [ ] Tours Service (API lub lokalne JSON)
-- [ ] TourList screen
+- [ ] ToursPage screen
 - [ ] TourCard component
-- [ ] TourDetails screen
+- [ ] TourDetails modal
 - [ ] StartTour action
 
 ---
@@ -249,8 +279,8 @@ Jako użytkownik chcę otrzymywać instrukcje nawigacyjne, aby łatwo dotrzeć d
 - [ ] NavigationPanel component
 - [ ] NavigationStep component
 - [ ] StepInstructions parser (OSRM -> polski)
-- [ ] Location tracking service
-- [ ] Opcjonalnie: expo-speech dla TTS
+- [ ] Location tracking (Capacitor Geolocation watch)
+- [ ] Opcjonalnie: Capacitor Text-to-Speech
 
 ---
 
@@ -271,8 +301,8 @@ Jako użytkownik chcę dostosować aplikację do swoich preferencji.
 
 ### Zadania
 
-- [ ] useSettingsStore (Zustand + AsyncStorage)
-- [ ] Settings screen z sekcjami
+- [ ] useSettingsStore (Zustand + Capacitor Preferences)
+- [ ] SettingsPage screen z IonList
 - [ ] ThemeToggle component
 - [ ] UnitSelector component
 - [ ] About section
@@ -296,7 +326,7 @@ Jako użytkownik chcę korzystać z aplikacji offline, aby móc nawigować bez i
 ### Zadania
 
 - [ ] Offline storage strategy
-- [ ] Network status monitoring
+- [ ] Network status monitoring (Capacitor Network)
 - [ ] Sync service
 - [ ] OfflineIndicator component
 
@@ -306,8 +336,8 @@ Jako użytkownik chcę korzystać z aplikacji offline, aby móc nawigować bez i
 
 ### Faza 1: Fundament (Stories 7.1-7.2)
 
-1. ✅ Story 7.1: Podstawowa struktura
-2. Story 7.2: Komponent mapy
+1. Story 7.1: Podstawowa struktura Ionic/Capacitor
+2. Story 7.2: Komponent mapy OpenLayers
 
 ### Faza 2: Core Features (Stories 7.3-7.6)
 
@@ -339,36 +369,15 @@ Jako użytkownik chcę korzystać z aplikacji offline, aby móc nawigować bez i
 
 ```bash
 cd mobile
-npm start        # Expo DevTools
-npm run ios      # iOS Simulator
-npm run android  # Android Emulator
-npm run web      # Browser
-```
+npm start        # Ionic Dev Server
+npm run build    # Production build
 
-### Struktura katalogów
-
-```
-mobile/
-├── app/                    # Expo Router screens
-│   ├── (tabs)/            # Tab navigation
-│   │   ├── explore.tsx
-│   │   ├── routes.tsx
-│   │   ├── tours.tsx
-│   │   └── settings.tsx
-│   ├── navigation/        # Navigation screens
-│   ├── route-planner.tsx
-│   └── _layout.tsx
-├── src/
-│   ├── components/        # Reusable components
-│   │   ├── map/
-│   │   ├── poi/
-│   │   └── navigation/
-│   ├── hooks/             # Custom hooks
-│   ├── services/          # API services
-│   ├── stores/            # Zustand stores
-│   ├── types/             # TypeScript types
-│   └── theme/             # Theme configuration
-└── assets/                # Images, fonts
+# Capacitor
+npx cap add ios
+npx cap add android
+npx cap run ios
+npx cap run android
+npx cap sync
 ```
 
 ---

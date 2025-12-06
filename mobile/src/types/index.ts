@@ -1,11 +1,11 @@
 /**
- * WTG Route Machine - Type Definitions
+ * Coordinate type [longitude, latitude] for OpenLayers/OSRM compatibility
  */
-
-// Coordinate type [longitude, latitude] for OSRM compatibility
 export type Coordinate = [number, number];
 
-// City definition
+/**
+ * City definition
+ */
 export interface City {
   id: string;
   name: string;
@@ -13,7 +13,50 @@ export interface City {
   port: number;
 }
 
-// POI (Point of Interest)
+/**
+ * Available cities
+ */
+export const CITIES: Record<string, City> = {
+  krakow: {
+    id: 'krakow',
+    name: 'Kraków',
+    center: [19.9449, 50.0647],
+    port: 5001,
+  },
+  warszawa: {
+    id: 'warszawa',
+    name: 'Warszawa',
+    center: [21.0122, 52.2297],
+    port: 5002,
+  },
+  wroclaw: {
+    id: 'wroclaw',
+    name: 'Wrocław',
+    center: [17.0385, 51.1079],
+    port: 5003,
+  },
+  trojmiasto: {
+    id: 'trojmiasto',
+    name: 'Trójmiasto',
+    center: [18.6466, 54.352],
+    port: 5004,
+  },
+};
+
+/**
+ * POI Category
+ */
+export type POICategory =
+  | 'landmark'
+  | 'museum'
+  | 'park'
+  | 'restaurant'
+  | 'cafe'
+  | 'hotel';
+
+/**
+ * Point of Interest
+ */
 export interface POI {
   id: string;
   name: string;
@@ -22,95 +65,86 @@ export interface POI {
   coordinate: Coordinate;
   address?: string;
   imageUrl?: string;
-  rating?: number;
-  openingHours?: string;
 }
 
-export type POICategory =
-  | 'landmark'
-  | 'museum'
-  | 'park'
-  | 'restaurant'
-  | 'cafe'
-  | 'hotel'
-  | 'other';
-
-// Waypoint for route planning
+/**
+ * Waypoint for route planning
+ */
 export interface Waypoint {
   id: string;
   coordinate: Coordinate;
   name?: string;
   poi?: POI;
-  order: number;
 }
 
-// Route
-export interface Route {
-  id: string;
-  name: string;
-  description?: string;
-  waypoints: Waypoint[];
-  distance: number; // meters
-  duration: number; // seconds
-  coordinates: Coordinate[]; // polyline coordinates
-  profile: RoutingProfile;
-  instructions?: RouteInstruction[];
-  createdAt: string;
-  updatedAt?: string;
-  isFavorite?: boolean;
-}
+/**
+ * Routing profile
+ */
+export type RoutingProfile = 'foot' | 'bicycle' | 'car';
 
-// Route instruction for turn-by-turn navigation
-export interface RouteInstruction {
-  type: string;
-  modifier?: string;
+/**
+ * Route step (turn-by-turn instruction)
+ */
+export interface RouteStep {
   instruction: string;
   distance: number;
   duration: number;
-  name: string;
-  location: Coordinate;
+  coordinate: Coordinate;
 }
 
-export type RoutingProfile = 'walking' | 'cycling' | 'driving';
+/**
+ * Calculated route
+ */
+export interface Route {
+  coordinates: Coordinate[];
+  distance: number;
+  duration: number;
+  steps: RouteStep[];
+}
 
-// Tour (curated walking tour)
-export interface Tour {
+/**
+ * Saved route
+ */
+export interface SavedRoute {
   id: string;
   name: string;
-  description: string;
-  city: string;
-  category: TourCategory;
-  difficulty: TourDifficulty;
-  duration: number; // minutes
-  distance: number; // meters
-  pois: POI[];
-  imageUrl?: string;
+  description?: string;
+  cityId: string;
+  profile: RoutingProfile;
+  waypoints: Waypoint[];
+  route: Route;
+  isFavorite: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
+/**
+ * Tour difficulty level
+ */
+export type TourDifficulty = 'easy' | 'medium' | 'hard';
+
+/**
+ * Tour category
+ */
 export type TourCategory =
   | 'history'
   | 'art'
   | 'food'
   | 'nature'
-  | 'architecture'
-  | 'nightlife';
+  | 'architecture';
 
-export type TourDifficulty = 'easy' | 'medium' | 'hard';
-
-// Navigation step
-export interface NavigationStep {
-  instruction: string;
-  distance: number; // meters
-  duration: number; // seconds
-  maneuver: string;
-  coordinate: Coordinate;
-}
-
-// Settings
-export interface AppSettings {
-  defaultCity: string;
-  theme: 'light' | 'dark' | 'system';
-  units: 'metric' | 'imperial';
-  defaultProfile: RoutingProfile;
-  navigationVoice: boolean;
+/**
+ * Curated tour
+ */
+export interface Tour {
+  id: string;
+  name: string;
+  description: string;
+  cityId: string;
+  category: TourCategory;
+  difficulty: TourDifficulty;
+  distance: number;
+  duration: number;
+  imageUrl?: string;
+  pois: POI[];
 }
