@@ -45,7 +45,8 @@ export const useRouting = (): UseRoutingReturn => {
 
   // Ustaw bazowy URL na podstawie aktualnego miasta i profilu
   useEffect(() => {
-    const port = currentCity.ports[profile];
+    // Zabezpieczenie na wypadek starej struktury danych (migracja)
+    const port = currentCity.ports?.[profile] ?? 5001;
     const baseUrl = `http://localhost:${port}`;
     osrmService.setBaseUrl(baseUrl);
   }, [currentCity, profile]);

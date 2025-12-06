@@ -36,6 +36,17 @@ export const useCityStore = create<CityState>()(
     {
       name: 'city-storage',
       storage: createJSONStorage(() => capacitorStorage),
+      // Migracja ze starej struktury (port) do nowej (ports)
+      migrate: (persistedState: unknown) => {
+        const state = persistedState as CityState;
+        // Jeśli miasto ma starą strukturę (port zamiast ports), użyj świeżego miasta z CITIES
+        if (state?.currentCity && !state.currentCity.ports) {
+          const freshCity = CITIES[state.currentCity.id] || CITIES.krakow;
+          return { ...state, currentCity: freshCity };
+        }
+        return state;
+      },
+      version: 1, // Zwiększ wersję aby wymusić migrację
     }
   )
 );
