@@ -11,6 +11,7 @@ import {
   setupIonicReact,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import { useTranslation } from 'react-i18next';
 import {
   compassOutline,
   mapOutline,
@@ -73,6 +74,8 @@ const configureStatusBar = async () => {
 configureStatusBar();
 
 const App: React.FC = () => {
+  const { t } = useTranslation();
+
   // Inicjalizacja motywu
   useTheme();
 
@@ -103,22 +106,22 @@ const App: React.FC = () => {
           <IonTabBar slot="bottom">
             <IonTabButton tab="explore" href="/explore">
               <IonIcon icon={compassOutline} />
-              <IonLabel>Odkrywaj</IonLabel>
+              <IonLabel>{t('tabs.explore')}</IonLabel>
             </IonTabButton>
             <IonTabButton tab="routes" href="/routes">
               <IonIcon icon={mapOutline} />
-              <IonLabel>Trasy</IonLabel>
+              <IonLabel>{t('tabs.routes')}</IonLabel>
               {waypointCount > 0 && (
                 <IonBadge color="danger">{waypointCount}</IonBadge>
               )}
             </IonTabButton>
             <IonTabButton tab="tours" href="/tours">
               <IonIcon icon={walkOutline} />
-              <IonLabel>Wycieczki</IonLabel>
+              <IonLabel>{t('tabs.tours')}</IonLabel>
             </IonTabButton>
             <IonTabButton tab="settings" href="/settings">
               <IonIcon icon={settingsOutline} />
-              <IonLabel>Ustawienia</IonLabel>
+              <IonLabel>{t('tabs.settings')}</IonLabel>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { IonActionSheet, IonButton, IonIcon } from '@ionic/react';
+import { useTranslation } from 'react-i18next';
 import { locationOutline, chevronDownOutline } from 'ionicons/icons';
 import { useCityStore } from '../../stores/cityStore';
 import { CITIES, City } from '../../types';
@@ -20,6 +21,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
   compact = false,
   onCityChange,
 }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = React.useState(false);
   const { currentCity, setCity } = useCityStore();
 
@@ -35,7 +37,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
   };
 
   const actionButtons = cityList.map((city) => ({
-    text: city.name,
+    text: t(`cities.${city.id}`, city.name),
     icon: locationOutline,
     cssClass: city.id === currentCity.id ? 'city-selected' : '',
     handler: () => handleCitySelect(city.id),
@@ -48,7 +50,7 @@ const CitySelector: React.FC<CitySelectorProps> = ({
           fill="clear"
           onClick={() => setIsOpen(true)}
           data-testid="city-selector-compact"
-          aria-label="Wybierz miasto">
+          aria-label={t('cities.selectCity')}>
           <IonIcon slot="icon-only" icon={locationOutline} />
         </IonButton>
       ) : (
@@ -66,11 +68,11 @@ const CitySelector: React.FC<CitySelectorProps> = ({
       <IonActionSheet
         isOpen={isOpen}
         onDidDismiss={() => setIsOpen(false)}
-        header="Wybierz miasto"
+        header={t('cities.selectCity')}
         buttons={[
           ...actionButtons,
           {
-            text: 'Anuluj',
+            text: t('common.cancel'),
             role: 'cancel',
           },
         ]}

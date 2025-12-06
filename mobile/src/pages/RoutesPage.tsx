@@ -9,26 +9,28 @@ import {
   IonFab,
   IonFabButton,
 } from '@ionic/react';
+import { useTranslation } from 'react-i18next';
 import { mapOutline, addOutline } from 'ionicons/icons';
 import RoutePlannerPage from './RoutePlannerPage';
 import { useRoutePlannerStore } from '../stores/routePlannerStore';
 import './RoutesPage.css';
 
 const RoutesPage: React.FC = () => {
+  const { t } = useTranslation();
   const { isPlannerOpen, openPlanner, closePlanner } = useRoutePlannerStore();
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar color="primary">
-          <IonTitle>Moje trasy</IonTitle>
+          <IonTitle>{t('routes.title')}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <div className="routes-empty">
           <IonIcon icon={mapOutline} className="empty-icon" />
-          <h2>Brak zapisanych tras</h2>
-          <p>Zaplanuj trasę klikając przycisk + poniżej</p>
+          <h2>{t('routes.noRoutes')}</h2>
+          <p>{t('routes.noRoutesHint')}</p>
         </div>
 
         {/* FAB - Nowa trasa */}

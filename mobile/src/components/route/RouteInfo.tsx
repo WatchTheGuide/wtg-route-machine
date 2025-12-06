@@ -1,5 +1,6 @@
 import React from 'react';
 import { IonCard, IonCardContent, IonIcon, IonSpinner } from '@ionic/react';
+import { useTranslation } from 'react-i18next';
 import { timeOutline, walkOutline, alertCircleOutline } from 'ionicons/icons';
 import { Route } from '../../types';
 import './RouteInfo.css';
@@ -24,19 +25,6 @@ const formatDistance = (meters: number): string => {
 };
 
 /**
- * Formatuje czas (sekundy -> godziny/minuty)
- */
-const formatDuration = (seconds: number): string => {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.round((seconds % 3600) / 60);
-
-  if (hours > 0) {
-    return `${hours} godz. ${minutes} min`;
-  }
-  return `${minutes} min`;
-};
-
-/**
  * Komponent z informacjami o trasie
  */
 const RouteInfo: React.FC<RouteInfoProps> = ({
@@ -44,12 +32,26 @@ const RouteInfo: React.FC<RouteInfoProps> = ({
   isCalculating = false,
   error = null,
 }) => {
+  const { t } = useTranslation();
+
+  /**
+   * Formatuje czas (sekundy -> godziny/minuty)
+   */
+  const formatDuration = (seconds: number): string => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.round((seconds % 3600) / 60);
+
+    if (hours > 0) {
+      return `${hours} ${t('route.hours')} ${minutes} ${t('route.minutes')}`;
+    }
+    return `${minutes} ${t('route.minutes')}`;
+  };
   if (isCalculating) {
     return (
       <IonCard className="route-info route-info-loading">
         <IonCardContent>
           <IonSpinner name="crescent" />
-          <span>Obliczam trasę...</span>
+          <span>{t('route.calculating')}</span>
         </IonCardContent>
       </IonCard>
     );
@@ -79,7 +81,7 @@ const RouteInfo: React.FC<RouteInfoProps> = ({
             <span className="route-info-value">
               {formatDistance(route.distance)}
             </span>
-            <span className="route-info-label">Dystans</span>
+            <span className="route-info-label">{t('route.distance')}</span>
           </div>
         </div>
 
@@ -91,7 +93,7 @@ const RouteInfo: React.FC<RouteInfoProps> = ({
             <span className="route-info-value">
               {formatDuration(route.duration)}
             </span>
-            <span className="route-info-label">Czas</span>
+            <span className="route-info-label">{t('route.duration')}</span>
           </div>
         </div>
       </IonCardContent>

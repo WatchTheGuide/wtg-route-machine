@@ -11,6 +11,7 @@ import {
   IonButtons,
   IonToast,
 } from '@ionic/react';
+import { useTranslation } from 'react-i18next';
 import { locateOutline } from 'ionicons/icons';
 import { MapView } from '../components/map';
 import { CitySelector } from '../components/city';
@@ -55,6 +56,7 @@ const SAMPLE_POIS: POI[] = [
 ];
 
 const ExplorePage: React.FC = () => {
+  const { t } = useTranslation();
   const { center, zoom, flyTo } = useMap();
   const {
     position,
@@ -104,7 +106,7 @@ const ExplorePage: React.FC = () => {
   // Dodaj do trasy i zostań w Explore (pozwala dodać więcej POI)
   const handleAddToRoute = (poi: POI) => {
     addWaypoint(poi.coordinate, poi.name);
-    setToastMessage(`Dodano "${poi.name}" do trasy`);
+    setToastMessage(t('poi.added', { name: poi.name }));
     setShowToast(true);
     handlePoiCardClose();
   };
@@ -112,7 +114,7 @@ const ExplorePage: React.FC = () => {
   // Dodaj do trasy i przejdź do planera tras
   const handleAddToRouteAndGo = (poi: POI) => {
     addWaypoint(poi.coordinate, poi.name);
-    setToastMessage(`Dodano "${poi.name}" do trasy`);
+    setToastMessage(t('poi.added', { name: poi.name }));
     setShowToast(true);
     handlePoiCardClose();
     openPlanner();
@@ -123,7 +125,7 @@ const ExplorePage: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar color="primary">
-          <IonTitle>Odkrywaj</IonTitle>
+          <IonTitle>{t('explore.title')}</IonTitle>
           <IonButtons slot="end">
             <CitySelector compact />
           </IonButtons>

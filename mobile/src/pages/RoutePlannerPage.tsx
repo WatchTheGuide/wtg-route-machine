@@ -12,6 +12,7 @@ import {
   IonFab,
   IonFabButton,
 } from '@ionic/react';
+import { useTranslation } from 'react-i18next';
 import { closeOutline, navigateOutline, locateOutline } from 'ionicons/icons';
 import { MapView } from '../components/map';
 import { WaypointList, RouteInfo, ProfileSelector } from '../components/route';
@@ -36,6 +37,7 @@ const RoutePlannerPage: React.FC<RoutePlannerPageProps> = ({
   isOpen,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const { center, zoom, flyTo } = useMap();
   const {
     position,
@@ -95,10 +97,12 @@ const RoutePlannerPage: React.FC<RoutePlannerPageProps> = ({
                 <IonIcon icon={closeOutline} slot="icon-only" />
               </IonButton>
             </IonButtons>
-            <IonTitle>Planowanie trasy</IonTitle>
+            <IonTitle>{t('routes.planRoute')}</IonTitle>
             <IonButtons slot="end">
               {waypoints.length > 0 && (
-                <IonButton onClick={handleClearAll}>Wyczyść</IonButton>
+                <IonButton onClick={handleClearAll}>
+                  {t('routes.clearAll')}
+                </IonButton>
               )}
             </IonButtons>
           </IonToolbar>
@@ -156,7 +160,7 @@ const RoutePlannerPage: React.FC<RoutePlannerPageProps> = ({
               <div className="route-planner-actions">
                 <IonButton expand="block" color="primary">
                   <IonIcon slot="start" icon={navigateOutline} />
-                  Rozpocznij nawigację
+                  {t('routes.startNavigation')}
                 </IonButton>
               </div>
             )}

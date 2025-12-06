@@ -13,6 +13,7 @@ import {
   IonLabel,
   IonImg,
 } from '@ionic/react';
+import { useTranslation } from 'react-i18next';
 import { locationOutline, navigateOutline } from 'ionicons/icons';
 import { POI } from '../../types';
 import './POICard.css';
@@ -50,23 +51,6 @@ const getCategoryIcon = (category: string): string => {
 };
 
 /**
- * Nazwa kategorii po polsku
- */
-const getCategoryName = (category: string): string => {
-  const names: Record<string, string> = {
-    landmark: 'Zabytek',
-    museum: 'Muzeum',
-    park: 'Park',
-    restaurant: 'Restauracja',
-    cafe: 'Kawiarnia',
-    hotel: 'Hotel',
-    viewpoint: 'Punkt widokowy',
-    church: 'Kościół',
-  };
-  return names[category] || category;
-};
-
-/**
  * Modal z kartą POI
  */
 const POICard: React.FC<POICardProps> = ({
@@ -77,6 +61,7 @@ const POICard: React.FC<POICardProps> = ({
   onAddToRoute,
   onAddToRouteAndGo,
 }) => {
+  const { t } = useTranslation();
   // Suppress unused variable warning - will be used when navigation is implemented
   void _onNavigate;
 
@@ -107,7 +92,9 @@ const POICard: React.FC<POICardProps> = ({
                 <span className="poi-category-icon">
                   {getCategoryIcon(poi.category)}
                 </span>
-                <IonLabel>{getCategoryName(poi.category)}</IonLabel>
+                <IonLabel>
+                  {t(`poi.categories.${poi.category}`, poi.category)}
+                </IonLabel>
               </IonChip>
             </IonCardSubtitle>
             <IonCardTitle>{poi.name}</IonCardTitle>
@@ -135,7 +122,7 @@ const POICard: React.FC<POICardProps> = ({
               fill="solid"
               color="primary">
               <IonIcon slot="start" icon={locationOutline} />
-              Dodaj do trasy
+              {t('poi.addToRoute')}
             </IonButton>
           )}
 
@@ -146,7 +133,7 @@ const POICard: React.FC<POICardProps> = ({
               fill="solid"
               color="secondary">
               <IonIcon slot="start" icon={navigateOutline} />
-              Dodaj i przejdź do trasy
+              {t('poi.addToRouteAndGo')}
             </IonButton>
           )}
         </div>

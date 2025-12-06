@@ -11,6 +11,7 @@ import {
   IonItemOptions,
   IonItemOption,
 } from '@ionic/react';
+import { useTranslation } from 'react-i18next';
 import {
   locationOutline,
   flagOutline,
@@ -42,15 +43,6 @@ const getWaypointIcon = (index: number, total: number): string => {
 };
 
 /**
- * Etykieta dla waypointa
- */
-const getWaypointLabel = (index: number, total: number): string => {
-  if (index === 0) return 'Start';
-  if (index === total - 1) return 'Cel';
-  return `Przystanek ${index}`;
-};
-
-/**
  * Lista waypoints z możliwością reorderowania
  */
 const WaypointList: React.FC<WaypointListProps> = ({
@@ -59,6 +51,14 @@ const WaypointList: React.FC<WaypointListProps> = ({
   onReorder,
   onWaypointClick,
 }) => {
+  const { t } = useTranslation();
+
+  const getWaypointLabel = (index: number, total: number): string => {
+    if (index === 0) return t('route.start');
+    if (index === total - 1) return t('route.destination');
+    return t('route.stopover', { number: index });
+  };
+
   const handleReorder = (event: CustomEvent<ItemReorderEventDetail>) => {
     const { from, to } = event.detail;
     onReorder(from, to);
@@ -69,7 +69,7 @@ const WaypointList: React.FC<WaypointListProps> = ({
     return (
       <div className="waypoint-list-empty">
         <IonIcon icon={locationOutline} />
-        <p>Kliknij na mapę, aby dodać punkty trasy</p>
+        <p>{t('route.addWaypointsHint')}</p>
       </div>
     );
   }
@@ -124,7 +124,7 @@ const WaypointList: React.FC<WaypointListProps> = ({
             size="small"
             color="medium"
             onClick={() => waypoints.forEach((wp) => onRemove(wp.id))}>
-            Wyczyść wszystko
+            {t('route.clearAll')}
           </IonButton>
         </IonItem>
       )}

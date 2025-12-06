@@ -130,25 +130,25 @@ Jako użytkownik chcę móc wybrać miasto, aby przeglądać POI i planować tra
 
 ```typescript
 const CITIES = {
-  krakow: { 
-    name: 'Kraków', 
-    center: [19.9449, 50.0647], 
-    ports: { foot: 5001, bicycle: 5002, car: 5003 } 
+  krakow: {
+    name: 'Kraków',
+    center: [19.9449, 50.0647],
+    ports: { foot: 5001, bicycle: 5002, car: 5003 },
   },
-  warszawa: { 
-    name: 'Warszawa', 
-    center: [21.0122, 52.2297], 
-    ports: { foot: 5011, bicycle: 5012, car: 5013 } 
+  warszawa: {
+    name: 'Warszawa',
+    center: [21.0122, 52.2297],
+    ports: { foot: 5011, bicycle: 5012, car: 5013 },
   },
-  wroclaw: { 
-    name: 'Wrocław', 
-    center: [17.0385, 51.1079], 
-    ports: { foot: 5021, bicycle: 5022, car: 5023 } 
+  wroclaw: {
+    name: 'Wrocław',
+    center: [17.0385, 51.1079],
+    ports: { foot: 5021, bicycle: 5022, car: 5023 },
   },
-  trojmiasto: { 
-    name: 'Trójmiasto', 
-    center: [18.6466, 54.352], 
-    ports: { foot: 5031, bicycle: 5032, car: 5033 } 
+  trojmiasto: {
+    name: 'Trójmiasto',
+    center: [18.6466, 54.352],
+    ports: { foot: 5031, bicycle: 5032, car: 5033 },
   },
 };
 ```
@@ -394,13 +394,13 @@ Jako użytkownik chcę korzystać z aplikacji w swoim języku, aby lepiej rozumi
 
 ### Języki
 
-| Kod | Język | Status |
-|-----|--------|--------|
-| pl | Polski | Domyślny |
-| en | English | Do zaimplementowania |
-| de | Deutsch | Do zaimplementowania |
-| fr | Français | Do zaimplementowania |
-| uk | Українська | Do zaimplementowania |
+| Kod | Język      | Status               |
+| --- | ---------- | -------------------- |
+| pl  | Polski     | Domyślny             |
+| en  | English    | Do zaimplementowania |
+| de  | Deutsch    | Do zaimplementowania |
+| fr  | Français   | Do zaimplementowania |
+| uk  | Українська | Do zaimplementowania |
 
 ### Zadania
 
