@@ -43,11 +43,12 @@ export const useRouting = (): UseRoutingReturn => {
   const storeSetError = useRoutePlannerStore((state) => state.setError);
   const storeClearRoute = useRoutePlannerStore((state) => state.clearRoute);
 
-  // Ustaw bazowy URL na podstawie aktualnego miasta
+  // Ustaw bazowy URL na podstawie aktualnego miasta i profilu
   useEffect(() => {
-    const baseUrl = `http://localhost:${currentCity.port}`;
+    const port = currentCity.ports[profile];
+    const baseUrl = `http://localhost:${port}`;
     osrmService.setBaseUrl(baseUrl);
-  }, [currentCity]);
+  }, [currentCity, profile]);
 
   const calculateRoute = useCallback(
     async (waypoints: Waypoint[]) => {

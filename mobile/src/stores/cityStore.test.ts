@@ -43,10 +43,22 @@ describe('cityStore', () => {
     expect(currentCity.id).toBe('krakow');
   });
 
-  it('should have correct port for each city', () => {
-    expect(CITIES.krakow.port).toBe(5001);
-    expect(CITIES.warszawa.port).toBe(5002);
-    expect(CITIES.wroclaw.port).toBe(5003);
-    expect(CITIES.trojmiasto.port).toBe(5004);
+  it('should have correct ports for each city profile', () => {
+    // Kraków
+    expect(CITIES.krakow.ports.foot).toBe(5001);
+    expect(CITIES.krakow.ports.bicycle).toBe(5002);
+    expect(CITIES.krakow.ports.car).toBe(5003);
+    // Warszawa
+    expect(CITIES.warszawa.ports.foot).toBe(5011);
+    expect(CITIES.warszawa.ports.bicycle).toBe(5012);
+    expect(CITIES.warszawa.ports.car).toBe(5013);
+    // Wrocław
+    expect(CITIES.wroclaw.ports.foot).toBe(5021);
+    expect(CITIES.wroclaw.ports.bicycle).toBe(5022);
+    expect(CITIES.wroclaw.ports.car).toBe(5023);
+    // Trójmiasto
+    expect(CITIES.trojmiasto.ports.foot).toBe(5031);
+    expect(CITIES.trojmiasto.ports.bicycle).toBe(5032);
+    expect(CITIES.trojmiasto.ports.car).toBe(5033);
   });
 });

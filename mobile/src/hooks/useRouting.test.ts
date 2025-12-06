@@ -10,7 +10,7 @@ vi.mock('../stores/cityStore', () => ({
       id: 'krakow',
       name: 'Kraków',
       center: [19.9449, 50.0647],
-      port: 5001,
+      ports: { foot: 5001, bicycle: 5002, car: 5003 },
     },
   })),
 }));

@@ -26,7 +26,10 @@ describe('types/index', () => {
         expect(city).toHaveProperty('id');
         expect(city).toHaveProperty('name');
         expect(city).toHaveProperty('center');
-        expect(city).toHaveProperty('port');
+        expect(city).toHaveProperty('ports');
+        expect(city.ports).toHaveProperty('foot');
+        expect(city.ports).toHaveProperty('bicycle');
+        expect(city.ports).toHaveProperty('car');
         expect(city.center).toHaveLength(2);
         expect(typeof city.center[0]).toBe('number');
         expect(typeof city.center[1]).toBe('number');

@@ -4,42 +4,57 @@
 export type Coordinate = [number, number];
 
 /**
+ * Routing profile type
+ */
+export type RoutingProfile = 'foot' | 'bicycle' | 'car';
+
+/**
+ * Ports for different routing profiles
+ */
+export interface CityPorts {
+  foot: number;
+  bicycle: number;
+  car: number;
+}
+
+/**
  * City definition
  */
 export interface City {
   id: string;
   name: string;
   center: Coordinate;
-  port: number;
+  ports: CityPorts;
 }
 
 /**
- * Available cities
+ * Available cities with ports per profile
+ * Based on docker-compose.multi-city.yml configuration
  */
 export const CITIES: Record<string, City> = {
   krakow: {
     id: 'krakow',
     name: 'Kraków',
     center: [19.9449, 50.0647],
-    port: 5001,
+    ports: { foot: 5001, bicycle: 5002, car: 5003 },
   },
   warszawa: {
     id: 'warszawa',
     name: 'Warszawa',
     center: [21.0122, 52.2297],
-    port: 5002,
+    ports: { foot: 5011, bicycle: 5012, car: 5013 },
   },
   wroclaw: {
     id: 'wroclaw',
     name: 'Wrocław',
     center: [17.0385, 51.1079],
-    port: 5003,
+    ports: { foot: 5021, bicycle: 5022, car: 5023 },
   },
   trojmiasto: {
     id: 'trojmiasto',
     name: 'Trójmiasto',
     center: [18.6466, 54.352],
-    port: 5004,
+    ports: { foot: 5031, bicycle: 5032, car: 5033 },
   },
 };
 
@@ -76,11 +91,6 @@ export interface Waypoint {
   name?: string;
   poi?: POI;
 }
-
-/**
- * Routing profile
- */
-export type RoutingProfile = 'foot' | 'bicycle' | 'car';
 
 /**
  * Route step (turn-by-turn instruction)
