@@ -145,7 +145,7 @@ const CITIES = {
 
 ---
 
-## User Story 7.4: Wyświetlanie POI na mapie
+## User Story 7.4: Wyświetlanie POI na mapie ✅
 
 ### Opis
 
@@ -153,11 +153,11 @@ Jako użytkownik chcę widzieć punkty POI na mapie, aby odkrywać interesujące
 
 ### Kryteria akceptacji
 
-- [ ] Pobieranie POI z API backendu
-- [ ] Markery POI na mapie z różnymi ikonami wg kategorii
-- [ ] Kliknięcie na marker pokazuje kartę POI
-- [ ] Filtrowanie POI po kategoriach
-- [ ] Wyszukiwanie POI po nazwie
+- [x] Pobieranie POI z API backendu
+- [x] Markery POI na mapie z różnymi ikonami wg kategorii
+- [x] Kliknięcie na marker pokazuje kartę POI
+- [x] Filtrowanie POI po kategoriach
+- [ ] Wyszukiwanie POI po nazwie (do implementacji)
 
 ### Kategorie POI
 
@@ -168,14 +168,12 @@ Jako użytkownik chcę widzieć punkty POI na mapie, aby odkrywać interesujące
 - Kawiarnie (cafe)
 - Hotele (hotel)
 
-### Zadania
+### Zaimplementowane
 
-- [ ] POI Service (API client)
-- [ ] usePOI hook z TanStack Query
-- [ ] POI markers na OpenLayers
-- [ ] POICard component (IonModal)
-- [ ] CategoryFilter component (IonChip)
-- [ ] SearchBar component (IonSearchbar)
+- **poiService**: API client (fetchPOIs, fetchPOI, searchPOIs, fetchCategories)
+- **usePOI**: Hook z TanStack Query (cache 5 min)
+- **POICard**: Modal z detalami POI (breakpoints)
+- **CategoryFilter**: Chipy kategorii (scroll poziomy)
 
 ---
 
