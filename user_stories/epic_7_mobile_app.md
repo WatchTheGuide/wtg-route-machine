@@ -22,7 +22,7 @@ Stworzenie hybrydowej aplikacji mobilnej Ionic + Capacitor dla iOS, Android i We
 
 ---
 
-## User Story 7.1: Podstawowa struktura aplikacji
+## User Story 7.1: Podstawowa struktura aplikacji ✅
 
 ### Opis
 
@@ -30,12 +30,14 @@ Jako programista chcę skonfigurować podstawową strukturę aplikacji Ionic/Cap
 
 ### Kryteria akceptacji
 
-- [ ] Ionic 8 + React 18 + TypeScript
-- [ ] Capacitor 6 skonfigurowany dla iOS i Android
-- [ ] Theme z kolorami marki (#ff6600, #454545)
-- [ ] Nawigacja tab-based (4 zakładki)
-- [ ] Struktura katalogów (components, hooks, services, stores, types)
-- [ ] Działa na iOS, Android i Web
+- [x] Ionic 8 + React 18 + TypeScript
+- [x] Capacitor 6 skonfigurowany dla iOS i Android
+- [x] Theme z kolorami marki (#ff6600, #454545)
+- [x] Nawigacja tab-based (4 zakładki)
+- [x] Struktura katalogów (components, hooks, services, stores, types)
+- [x] Działa na iOS, Android i Web
+- [x] Przełączanie motywu ciemnego/jasnego
+- [x] Safe area poprawnie obsługiwane na iOS i Android
 
 ### Zakładki
 
@@ -44,14 +46,14 @@ Jako programista chcę skonfigurować podstawową strukturę aplikacji Ionic/Cap
 3. **Wycieczki** (Tours) - kuratorowane wycieczki
 4. **Ustawienia** (Settings) - preferencje użytkownika
 
-### Zadania
+### Zaimplementowane
 
-- [ ] Utworzenie projektu Ionic React
-- [ ] Instalacja Capacitor
-- [ ] Konfiguracja theme z kolorami marki
-- [ ] Utworzenie struktury katalogów
-- [ ] Implementacja IonTabs z 4 zakładkami
-- [ ] Podstawowe placeholder screens
+- **Stores**: `cityStore.ts`, `settingsStore.ts` (Zustand + persist)
+- **Types**: `City`, `POI`, `Waypoint`, `Route`, `RoutingProfile`
+- **Hooks**: `useTheme.ts` (motyw ciemny/jasny)
+- **Pages**: `ExplorePage`, `RoutesPage`, `ToursPage`, `SettingsPage`
+- **Testy**: 42 testy jednostkowe (Vitest)
+- **Native**: StatusBar plugin dla iOS/Android
 
 ### Struktura katalogów
 

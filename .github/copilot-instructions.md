@@ -22,15 +22,17 @@ wtg-route-machine/
 │   ├── osrm-profiles/         # Routing profiles (foot, bicycle, car)
 │   └── scripts/               # Backend management scripts
 ├── frontend/                   # Legacy frontend (Vanilla JS + Tailwind)
-├── frontend-ionic/            # NEW: Ionic React frontend
+├── mobile/                     # Ionic React 8 + Capacitor 6 mobile app
 │   ├── src/
 │   │   ├── components/        # UI components (Ionic)
-│   │   ├── hooks/             # React hooks (useRouting, useWaypoints, etc.)
+│   │   ├── hooks/             # React hooks (useTheme, useRouting, etc.)
 │   │   ├── services/          # API services (osrmService, exportService)
+│   │   ├── stores/            # Zustand stores (cityStore, settingsStore)
 │   │   ├── types/             # TypeScript types
-│   │   └── pages/             # Page components
-│   ├── ios/                   # iOS native project
-│   └── android/               # Android native project
+│   │   ├── pages/             # Page components (Explore, Routes, Tours, Settings)
+│   │   └── theme/             # CSS variables, theme configuration
+│   ├── ios/                   # iOS native project (Capacitor)
+│   └── android/               # Android native project (Capacitor)
 ├── project_documentation/     # Architecture docs
 └── user_stories/              # Epic & User Story definitions
 ```
@@ -128,7 +130,7 @@ find . -type l -! -exec test -e {} \; -print
 #### 5. Frontend Testing (Ionic React)
 
 ```bash
-cd frontend-ionic
+cd mobile
 
 # Run linting
 npm run lint
@@ -138,6 +140,9 @@ npm run test.unit -- --run
 
 # Build for production
 npm run build
+
+# Sync with native platforms
+npx cap sync
 
 # Run on iOS simulator
 npx cap run ios
@@ -244,33 +249,39 @@ When adding support for a new city:
 4. **Verify bbox coverage** - ensure city center + suburbs included
 5. **Update documentation** - add city to README.md
 
-### Ionic React Frontend Guidelines
+### Ionic React Mobile App Guidelines
 
-The `frontend-ionic/` directory contains the mobile app built with Ionic React 8.
+The `mobile/` directory contains the mobile app built with Ionic React 8 + Capacitor 6.
 
 #### Project Structure
 
 ```
-frontend-ionic/src/
+mobile/src/
 ├── components/              # Reusable UI components
-│   ├── AppHeader/          # IonHeader + IonToolbar
-│   ├── MapView/            # OpenLayers map wrapper
-│   ├── WaypointList/       # IonList with drag & drop
-│   ├── WaypointItem/       # Single waypoint item
-│   ├── ActionButtons/      # FAB action buttons
-│   ├── RouteInfo/          # Route info panel
-│   └── ProfileSelector/    # Routing profile selector
+│   ├── map/                # Map-related components (OpenLayers)
+│   ├── poi/                # POI markers, cards
+│   ├── route/              # Route display, waypoints
+│   └── common/             # Shared UI components
 ├── hooks/                   # Custom React hooks
-│   ├── useRouting.ts       # Route calculation
-│   ├── useWaypoints.ts     # Waypoint management
-│   ├── useExport.ts        # Export functionality
-│   └── useHistory.ts       # Route history
+│   ├── useTheme.ts         # Dark/light mode management
+│   ├── useRouting.ts       # Route calculation (planned)
+│   ├── useWaypoints.ts     # Waypoint management (planned)
+│   └── useGeolocation.ts   # User location (planned)
 ├── services/               # API services
-│   ├── osrm.service.ts     # OSRM API communication
-│   └── export.service.ts   # GeoJSON/PDF export
+│   ├── osrm.service.ts     # OSRM API communication (planned)
+│   └── export.service.ts   # GeoJSON/PDF export (planned)
+├── stores/                 # Zustand stores
+│   ├── cityStore.ts        # City selection, available cities
+│   └── settingsStore.ts    # User preferences (theme, units, etc.)
 ├── types/                  # TypeScript types
-│   └── route.types.ts      # Route, Waypoint, Coordinate types
-└── pages/                  # Page components
+│   └── index.ts            # City, POI, Waypoint, Route types
+├── pages/                  # Page components (tabs)
+│   ├── ExplorePage.tsx     # Map with POI discovery
+│   ├── RoutesPage.tsx      # Saved routes
+│   ├── ToursPage.tsx       # Curated tours
+│   └── SettingsPage.tsx    # User settings
+└── theme/
+    └── variables.css       # Brand colors, theme config
 ```
 
 #### Key Patterns
