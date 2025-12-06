@@ -9,7 +9,6 @@ import {
   IonLabel,
   IonIcon,
   IonToggle,
-  IonNote,
 } from '@ionic/react';
 import {
   moonOutline,

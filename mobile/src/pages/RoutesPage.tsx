@@ -4,9 +4,6 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  IonList,
-  IonItem,
-  IonLabel,
   IonIcon,
 } from '@ionic/react';
 import { mapOutline } from 'ionicons/icons';
