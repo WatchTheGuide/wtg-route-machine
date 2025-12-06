@@ -79,7 +79,7 @@ const POICard: React.FC<POICardProps> = ({
 }) => {
   // Suppress unused variable warning - will be used when navigation is implemented
   void _onNavigate;
-  
+
   if (!poi) return null;
 
   return (
@@ -132,7 +132,7 @@ const POICard: React.FC<POICardProps> = ({
             <IonButton
               expand="block"
               onClick={() => onAddToRoute(poi)}
-              fill="outline"
+              fill="solid"
               color="primary">
               <IonIcon slot="start" icon={locationOutline} />
               Dodaj do trasy
@@ -144,7 +144,7 @@ const POICard: React.FC<POICardProps> = ({
               expand="block"
               onClick={() => onAddToRouteAndGo(poi)}
               fill="solid"
-              color="primary">
+              color="secondary">
               <IonIcon slot="start" icon={navigateOutline} />
               Dodaj i przejdź do trasy
             </IonButton>
