@@ -48,11 +48,12 @@ import '@ionic/react/css/display.css';
  */
 
 /* import '@ionic/react/css/palettes/dark.always.css'; */
-/* import '@ionic/react/css/palettes/dark.class.css'; */
-import '@ionic/react/css/palettes/dark.system.css';
+import '@ionic/react/css/palettes/dark.class.css';
+/* import '@ionic/react/css/palettes/dark.system.css'; */
 
 /* Theme variables */
 import './theme/variables.css';
+import { useTheme } from './hooks/useTheme';
 
 setupIonicReact();
 
@@ -66,48 +67,53 @@ const configureStatusBar = async () => {
 };
 configureStatusBar();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/explore">
-            <ExplorePage />
-          </Route>
-          <Route exact path="/routes">
-            <RoutesPage />
-          </Route>
-          <Route exact path="/tours">
-            <ToursPage />
-          </Route>
-          <Route exact path="/settings">
-            <SettingsPage />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/explore" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="explore" href="/explore">
-            <IonIcon icon={compassOutline} />
-            <IonLabel>Odkrywaj</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="routes" href="/routes">
-            <IonIcon icon={mapOutline} />
-            <IonLabel>Trasy</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tours" href="/tours">
-            <IonIcon icon={walkOutline} />
-            <IonLabel>Wycieczki</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="settings" href="/settings">
-            <IonIcon icon={settingsOutline} />
-            <IonLabel>Ustawienia</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  // Inicjalizacja motywu
+  useTheme();
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <IonTabs>
+          <IonRouterOutlet>
+            <Route exact path="/explore">
+              <ExplorePage />
+            </Route>
+            <Route exact path="/routes">
+              <RoutesPage />
+            </Route>
+            <Route exact path="/tours">
+              <ToursPage />
+            </Route>
+            <Route exact path="/settings">
+              <SettingsPage />
+            </Route>
+            <Route exact path="/">
+              <Redirect to="/explore" />
+            </Route>
+          </IonRouterOutlet>
+          <IonTabBar slot="bottom">
+            <IonTabButton tab="explore" href="/explore">
+              <IonIcon icon={compassOutline} />
+              <IonLabel>Odkrywaj</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="routes" href="/routes">
+              <IonIcon icon={mapOutline} />
+              <IonLabel>Trasy</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="tours" href="/tours">
+              <IonIcon icon={walkOutline} />
+              <IonLabel>Wycieczki</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="settings" href="/settings">
+              <IonIcon icon={settingsOutline} />
+              <IonLabel>Ustawienia</IonLabel>
+            </IonTabButton>
+          </IonTabBar>
+        </IonTabs>
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;

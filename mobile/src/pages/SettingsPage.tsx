@@ -16,9 +16,12 @@ import {
   speedometerOutline,
   informationCircleOutline,
 } from 'ionicons/icons';
+import { useTheme } from '../hooks/useTheme';
 import './SettingsPage.css';
 
 const SettingsPage: React.FC = () => {
+  const { isDarkMode, toggleTheme } = useTheme();
+
   return (
     <IonPage>
       <IonHeader>
@@ -38,7 +41,11 @@ const SettingsPage: React.FC = () => {
           <IonItem>
             <IonIcon icon={moonOutline} slot="start" />
             <IonLabel>Tryb ciemny</IonLabel>
-            <IonToggle slot="end" />
+            <IonToggle
+              slot="end"
+              checked={isDarkMode}
+              onIonChange={toggleTheme}
+            />
           </IonItem>
           <IonItem>
             <IonIcon icon={speedometerOutline} slot="start" />

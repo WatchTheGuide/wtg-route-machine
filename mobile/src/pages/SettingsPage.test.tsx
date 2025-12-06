@@ -1,9 +1,19 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import SettingsPage from './SettingsPage';
+
+// Mock dla useTheme hook
+vi.mock('../hooks/useTheme', () => ({
+  useTheme: () => ({
+    theme: 'light',
+    isDarkMode: false,
+    setTheme: vi.fn(),
+    toggleTheme: vi.fn(),
+  }),
+}));
 
 const renderWithRouter = (component: React.ReactNode) => {
   return render(
