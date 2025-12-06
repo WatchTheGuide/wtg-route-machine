@@ -130,10 +130,26 @@ Jako użytkownik chcę móc wybrać miasto, aby przeglądać POI i planować tra
 
 ```typescript
 const CITIES = {
-  krakow: { name: 'Kraków', center: [19.9449, 50.0647], port: 5001 },
-  warszawa: { name: 'Warszawa', center: [21.0122, 52.2297], port: 5002 },
-  wroclaw: { name: 'Wrocław', center: [17.0385, 51.1079], port: 5003 },
-  trojmiasto: { name: 'Trójmiasto', center: [18.6466, 54.352], port: 5004 },
+  krakow: { 
+    name: 'Kraków', 
+    center: [19.9449, 50.0647], 
+    ports: { foot: 5001, bicycle: 5002, car: 5003 } 
+  },
+  warszawa: { 
+    name: 'Warszawa', 
+    center: [21.0122, 52.2297], 
+    ports: { foot: 5011, bicycle: 5012, car: 5013 } 
+  },
+  wroclaw: { 
+    name: 'Wrocław', 
+    center: [17.0385, 51.1079], 
+    ports: { foot: 5021, bicycle: 5022, car: 5023 } 
+  },
+  trojmiasto: { 
+    name: 'Trójmiasto', 
+    center: [18.6466, 54.352], 
+    ports: { foot: 5031, bicycle: 5032, car: 5033 } 
+  },
 };
 ```
 
@@ -204,7 +220,7 @@ Jako użytkownik chcę zaplanować trasę między punktami, aby otrzymać optyma
 
 ---
 
-## User Story 7.5.1: Integracja POI z planowaniem trasy
+## User Story 7.5.1: Integracja POI z planowaniem trasy ✅
 
 ### Opis
 
@@ -212,21 +228,25 @@ Jako użytkownik chcę dodawać POI do trasy z zakładki Odkrywaj, aby łatwo pl
 
 ### Kryteria akceptacji
 
-- [ ] Globalny store dla planowania trasy (routePlannerStore)
-- [ ] Przycisk "Dodaj do trasy" na POICard dodaje POI jako waypoint
-- [ ] Po dodaniu POI automatyczne przejście do zakładki Trasy
-- [ ] Modal planowania otwiera się z dodanym POI
-- [ ] Mapa nie znika po zamknięciu modalu planowania
-- [ ] Wskaźnik aktywnego planowania trasy
+- [x] Globalny store dla planowania trasy (routePlannerStore)
+- [x] Przycisk "Dodaj do trasy" na POICard dodaje POI jako waypoint
+- [x] Przycisk "Dodaj i przejdź do trasy" - dodaje i otwiera planer
+- [x] Przycisk "Dodaj do trasy" - dodaje i pozwala dodać więcej POI
+- [x] Modal planowania otwiera się z dodanym POI
+- [x] Mapa nie znika po zamknięciu modalu planowania
+- [x] Wskaźnik badge na zakładce Trasy (liczba waypoints)
+- [x] Zmiana profilu przelicza trasę automatycznie
+- [x] Każdy profil używa odpowiedniego portu OSRM
 
-### Zadania
+### Zaimplementowane
 
-- [ ] routePlannerStore (Zustand) - globalny stan waypoints
-- [ ] Refaktoryzacja useWaypoints na store
-- [ ] Hook useTabNavigation - programowe przełączanie zakładek
-- [ ] Integracja POICard z routePlannerStore
-- [ ] Wskaźnik badge na zakładce Trasy (liczba waypoints)
-- [ ] Naprawienie problemu znikającej mapy (globalny stan)
+- **routePlannerStore**: Globalny stan Zustand (waypoints, route, profile, isPlannerOpen)
+- **useWaypoints**: Refaktoryzacja na wrapper routePlannerStore
+- **useRouting**: Refaktoryzacja - używa globalnego store dla profilu i trasy
+- **useTabNavigation**: Hook programowego przełączania zakładek
+- **POICard**: Dwa przyciski - "Dodaj do trasy" i "Dodaj i przejdź do trasy"
+- **App.tsx**: Badge z liczbą waypoints na zakładce Trasy
+- **City.ports**: Struktura portów per profil (foot/bicycle/car)
 
 ---
 
@@ -356,29 +376,83 @@ Jako użytkownik chcę korzystać z aplikacji offline, aby móc nawigować bez i
 
 ---
 
+## User Story 7.11: Obsługa wielu języków (i18n)
+
+### Opis
+
+Jako użytkownik chcę korzystać z aplikacji w swoim języku, aby lepiej rozumieć interfejs i instrukcje nawigacyjne.
+
+### Kryteria akceptacji
+
+- [ ] Obsługa 5 języków: polski, niemiecki, angielski, francuski, ukraiński
+- [ ] Automatyczne wykrywanie języka urządzenia
+- [ ] Możliwość ręcznej zmiany języka w ustawieniach
+- [ ] Zapisywanie preferencji językowej
+- [ ] Tłumaczenie interfejsu użytkownika
+- [ ] Tłumaczenie instrukcji nawigacyjnych
+- [ ] Tłumaczenie komunikatów błędów i toastów
+
+### Języki
+
+| Kod | Język | Status |
+|-----|--------|--------|
+| pl | Polski | Domyślny |
+| en | English | Do zaimplementowania |
+| de | Deutsch | Do zaimplementowania |
+| fr | Français | Do zaimplementowania |
+| uk | Українська | Do zaimplementowania |
+
+### Zadania
+
+- [ ] Instalacja biblioteki i18n (react-i18next)
+- [ ] Konfiguracja i18n z Capacitor Preferences
+- [ ] Pliki tłumaczeń dla każdego języka (locales/)
+- [ ] Hook useTranslation w komponentach
+- [ ] LanguageSelector w ustawieniach
+- [ ] Tłumaczenie instrukcji OSRM
+- [ ] Testy tłumaczeń
+
+### Struktura plików tłumaczeń
+
+```
+mobile/src/locales/
+├── pl/
+│   ├── common.json      # Ogólne teksty UI
+│   ├── navigation.json  # Instrukcje nawigacyjne
+│   └── errors.json      # Komunikaty błędów
+├── en/
+├── de/
+├── fr/
+└── uk/
+```
+
+---
+
 ## Kolejność implementacji
 
-### Faza 1: Fundament (Stories 7.1-7.2)
+### Faza 1: Fundament (Stories 7.1-7.2) ✅
 
-1. Story 7.1: Podstawowa struktura Ionic/Capacitor
-2. Story 7.2: Komponent mapy OpenLayers
+1. Story 7.1: Podstawowa struktura Ionic/Capacitor ✅
+2. Story 7.2: Komponent mapy OpenLayers ✅
 
 ### Faza 2: Core Features (Stories 7.3-7.6)
 
-3. Story 7.3: Wybór miasta
-4. Story 7.4: POI na mapie
-5. Story 7.5: Planowanie trasy
-6. Story 7.6: Zapisywanie tras
+3. Story 7.3: Wybór miasta ✅
+4. Story 7.4: POI na mapie ✅
+5. Story 7.5: Planowanie trasy ✅
+6. Story 7.5.1: Integracja POI z planowaniem trasy ✅
+7. Story 7.6: Zapisywanie tras
 
 ### Faza 3: Advanced Features (Stories 7.7-7.9)
 
-7. Story 7.7: Kuratorowane wycieczki
-8. Story 7.8: Nawigacja turn-by-turn
-9. Story 7.9: Ustawienia
+8. Story 7.7: Kuratorowane wycieczki
+9. Story 7.8: Nawigacja turn-by-turn
+10. Story 7.9: Ustawienia
 
-### Faza 4: Polish (Story 7.10)
+### Faza 4: Polish (Stories 7.10-7.11)
 
-10. Story 7.10: Tryb offline
+11. Story 7.10: Tryb offline
+12. Story 7.11: Obsługa wielu języków (i18n)
 
 ---
 
