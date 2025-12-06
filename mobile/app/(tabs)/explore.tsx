@@ -13,7 +13,7 @@ import {
   IconButton,
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useCityStore } from '../../src/stores';
+import { useCityStore, useRouteStore } from '../../src/stores';
 import { colors } from '../../src/theme/colors';
 import { LeafletMap, MapMarker, MapRoute } from '../../src/components/map';
 import { CitySelector } from '../../src/components/city';
@@ -22,6 +22,7 @@ import {
   WaypointList,
   ProfileSelector,
   RouteInfo,
+  SaveRouteModal,
 } from '../../src/components/route';
 import { usePOIs, useWaypoints, useRouting } from '../../src/hooks';
 import { POI, POICategory, Coordinate } from '../../src/types';
@@ -39,10 +40,12 @@ const CATEGORY_COLORS: Record<POICategory, string> = {
 export default function ExploreScreen() {
   const theme = useTheme();
   const { selectedCity } = useCityStore();
+  const { saveRoute } = useRouteStore();
   const [cityModalVisible, setCityModalVisible] = useState(false);
   const [selectedPOI, setSelectedPOI] = useState<POI | null>(null);
   const [poiCardVisible, setPOICardVisible] = useState(false);
   const [showRoutePanel, setShowRoutePanel] = useState(false);
+  const [saveModalVisible, setSaveModalVisible] = useState(false);
 
   // Fetch POIs for selected city
   const { data: pois, isLoading } = usePOIs(selectedCity.id);
@@ -149,6 +152,18 @@ export default function ExploreScreen() {
     setShowRoutePanel(false);
   };
 
+  const handleSaveRoute = (name: string, description?: string) => {
+    if (route) {
+      saveRoute({
+        ...route,
+        name,
+        description,
+      });
+      setSaveModalVisible(false);
+      // Optionally clear the current route after saving
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
@@ -224,6 +239,7 @@ export default function ExploreScreen() {
               formatDistance={formatDistance}
               formatDuration={formatDuration}
               onStartNavigation={() => console.log('Start navigation')}
+              onSaveRoute={() => setSaveModalVisible(true)}
               onClear={handleClearRoute}
             />
           )}
@@ -251,6 +267,14 @@ export default function ExploreScreen() {
         visible={poiCardVisible}
         onDismiss={() => setPOICardVisible(false)}
         onAddToRoute={handleAddToRoute}
+      />
+
+      {/* Save Route Modal */}
+      <SaveRouteModal
+        visible={saveModalVisible}
+        route={route}
+        onDismiss={() => setSaveModalVisible(false)}
+        onSave={handleSaveRoute}
       />
     </SafeAreaView>
   );

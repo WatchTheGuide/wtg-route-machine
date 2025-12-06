@@ -2,83 +2,72 @@
  * Routes Screen - Saved routes list
  */
 
-import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
-import { Text, Card, FAB, useTheme, IconButton } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, StyleSheet, FlatList, Alert } from 'react-native';
+import { Text, FAB, useTheme, SegmentedButtons } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors } from '../../src/theme/colors';
+import { useRouteStore } from '../../src/stores';
+import { RouteCard } from '../../src/components/route';
+import { Route } from '../../src/types';
 
-// Placeholder data
-const SAMPLE_ROUTES = [
-  {
-    id: '1',
-    name: 'Spacer po Starym Mieście',
-    distance: 3200,
-    duration: 2400,
-    waypoints: 5,
-    isFavorite: true,
-  },
-  {
-    id: '2',
-    name: 'Kazimierz kulturalny',
-    distance: 4100,
-    duration: 3000,
-    waypoints: 7,
-    isFavorite: false,
-  },
-];
+type FilterType = 'all' | 'favorites';
 
 export default function RoutesScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const [filter, setFilter] = useState<FilterType>('all');
 
-  const formatDistance = (meters: number) => {
-    if (meters < 1000) return `${meters} m`;
-    return `${(meters / 1000).toFixed(1)} km`;
+  const { savedRoutes, deleteRoute, toggleFavorite, getFavoriteRoutes } =
+    useRouteStore();
+
+  const displayedRoutes =
+    filter === 'favorites' ? getFavoriteRoutes() : savedRoutes;
+
+  const handleRoutePress = (route: Route) => {
+    // TODO: Navigate to route details or load on map
+    console.log('Open route:', route.name);
+    Alert.alert(
+      route.name,
+      `Dystans: ${(route.distance / 1000).toFixed(1)} km\nCzas: ${Math.round(
+        route.duration / 60
+      )} min\nPunkty: ${route.waypoints.length}`,
+      [
+        { text: 'Anuluj', style: 'cancel' },
+        {
+          text: 'Otwórz na mapie',
+          onPress: () => {
+            // Navigate to explore with this route
+            router.push('/(tabs)/explore');
+          },
+        },
+      ]
+    );
   };
 
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    if (mins < 60) return `${mins} min`;
-    const hours = Math.floor(mins / 60);
-    const remainMins = mins % 60;
-    return `${hours}h ${remainMins}min`;
+  const handleDeleteRoute = (id: string) => {
+    Alert.alert('Usuń trasę', 'Czy na pewno chcesz usunąć tę trasę?', [
+      { text: 'Anuluj', style: 'cancel' },
+      {
+        text: 'Usuń',
+        style: 'destructive',
+        onPress: () => deleteRoute(id),
+      },
+    ]);
   };
-
-  const renderRoute = ({ item }: { item: (typeof SAMPLE_ROUTES)[0] }) => (
-    <Card
-      style={styles.card}
-      onPress={() => console.log('Open route', item.id)}>
-      <Card.Title
-        title={item.name}
-        subtitle={`${formatDistance(item.distance)} • ${formatDuration(
-          item.duration
-        )}`}
-        left={(props) => (
-          <IconButton
-            {...props}
-            icon={item.isFavorite ? 'heart' : 'heart-outline'}
-            iconColor={item.isFavorite ? colors.error : colors.gray400}
-          />
-        )}
-        right={(props) => <IconButton {...props} icon="chevron-right" />}
-      />
-      <Card.Content>
-        <Text variant="bodySmall" style={{ color: colors.gray600 }}>
-          {item.waypoints} punktów na trasie
-        </Text>
-      </Card.Content>
-    </Card>
-  );
 
   const EmptyState = () => (
     <View style={styles.emptyContainer}>
       <Text variant="headlineSmall" style={styles.emptyTitle}>
-        Brak zapisanych tras
+        {filter === 'favorites'
+          ? 'Brak ulubionych tras'
+          : 'Brak zapisanych tras'}
       </Text>
       <Text variant="bodyMedium" style={styles.emptyDescription}>
-        Zaplanuj swoją pierwszą trasę pieszą!
+        {filter === 'favorites'
+          ? 'Dodaj trasy do ulubionych, klikając ❤️'
+          : 'Zaplanuj trasę na mapie i zapisz ją tutaj!'}
       </Text>
     </View>
   );
@@ -89,11 +78,44 @@ export default function RoutesScreen() {
         <Text variant="headlineMedium" style={styles.title}>
           Moje trasy
         </Text>
+        <Text variant="bodyMedium" style={styles.subtitle}>
+          {savedRoutes.length}{' '}
+          {savedRoutes.length === 1
+            ? 'trasa'
+            : savedRoutes.length < 5
+            ? 'trasy'
+            : 'tras'}
+        </Text>
       </View>
 
+      {savedRoutes.length > 0 && (
+        <View style={styles.filterContainer}>
+          <SegmentedButtons
+            value={filter}
+            onValueChange={(v) => setFilter(v as FilterType)}
+            buttons={[
+              {
+                value: 'all',
+                label: 'Wszystkie',
+                icon: 'format-list-bulleted',
+              },
+              { value: 'favorites', label: 'Ulubione', icon: 'heart' },
+            ]}
+            style={styles.filterButtons}
+          />
+        </View>
+      )}
+
       <FlatList
-        data={SAMPLE_ROUTES}
-        renderItem={renderRoute}
+        data={displayedRoutes}
+        renderItem={({ item }) => (
+          <RouteCard
+            route={item}
+            onPress={handleRoutePress}
+            onDelete={handleDeleteRoute}
+            onToggleFavorite={toggleFavorite}
+          />
+        )}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={EmptyState}
@@ -104,7 +126,7 @@ export default function RoutesScreen() {
         label="Nowa trasa"
         style={[styles.fab, { backgroundColor: theme.colors.primary }]}
         color={colors.white}
-        onPress={() => console.log('Create new route')}
+        onPress={() => router.push('/(tabs)/explore')}
       />
     </SafeAreaView>
   );
@@ -113,22 +135,35 @@ export default function RoutesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.gray50,
   },
   header: {
     paddingHorizontal: 16,
     paddingVertical: 12,
+    backgroundColor: colors.white,
   },
   title: {
     fontWeight: 'bold',
     color: colors.gray900,
   },
-  listContent: {
-    padding: 16,
-    paddingBottom: 100,
+  subtitle: {
+    color: colors.gray600,
+    marginTop: 4,
   },
-  card: {
-    marginBottom: 12,
+  filterContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.gray100,
+  },
+  filterButtons: {
+    backgroundColor: colors.gray50,
+  },
+  listContent: {
+    paddingVertical: 16,
+    paddingBottom: 100,
+    flexGrow: 1,
   },
   emptyContainer: {
     flex: 1,
@@ -143,6 +178,7 @@ const styles = StyleSheet.create({
   emptyDescription: {
     color: colors.gray500,
     textAlign: 'center',
+    paddingHorizontal: 32,
   },
   fab: {
     position: 'absolute',
