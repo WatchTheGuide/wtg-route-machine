@@ -18,11 +18,6 @@ const RoutesPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar color="primary">
-            <IonTitle size="large">Moje trasy</IonTitle>
-          </IonToolbar>
-        </IonHeader>
         <div className="routes-empty">
           <IonIcon icon={mapOutline} className="empty-icon" />
           <h2>Brak zapisanych tras</h2>

@@ -16,11 +16,6 @@ const ExplorePage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar color="primary">
-            <IonTitle size="large">Odkrywaj</IonTitle>
-          </IonToolbar>
-        </IonHeader>
         <div className="explore-container">
           <p>Mapa z POI pojawi się tutaj</p>
         </div>

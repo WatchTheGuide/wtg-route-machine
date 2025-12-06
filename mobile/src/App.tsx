@@ -16,6 +16,8 @@ import {
   walkOutline,
   settingsOutline,
 } from 'ionicons/icons';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { Capacitor } from '@capacitor/core';
 
 import ExplorePage from './pages/ExplorePage';
 import RoutesPage from './pages/RoutesPage';
@@ -53,6 +55,16 @@ import '@ionic/react/css/palettes/dark.system.css';
 import './theme/variables.css';
 
 setupIonicReact();
+
+// Configure status bar for native platforms
+const configureStatusBar = async () => {
+  if (Capacitor.isNativePlatform()) {
+    await StatusBar.setBackgroundColor({ color: '#ff6600' });
+    await StatusBar.setStyle({ style: Style.Light });
+    await StatusBar.setOverlaysWebView({ overlay: false });
+  }
+};
+configureStatusBar();
 
 const App: React.FC = () => (
   <IonApp>

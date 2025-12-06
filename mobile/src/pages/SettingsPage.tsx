@@ -27,12 +27,6 @@ const SettingsPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar color="primary">
-            <IonTitle size="large">Ustawienia</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-
         <IonList inset>
           <IonItem>
             <IonIcon icon={locationOutline} slot="start" />

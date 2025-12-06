@@ -18,11 +18,6 @@ const ToursPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar color="primary">
-            <IonTitle size="large">Wycieczki</IonTitle>
-          </IonToolbar>
-        </IonHeader>
         <div className="tours-empty">
           <IonIcon icon={walkOutline} className="empty-icon" />
           <h2>Kuratorowane wycieczki</h2>

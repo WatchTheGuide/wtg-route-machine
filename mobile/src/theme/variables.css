@@ -134,6 +134,11 @@
   --ion-toolbar-color: var(--ion-color-primary-contrast);
 }
 
+/* Extend header background to safe area on iOS */
+.ios ion-header {
+  background: var(--ion-color-primary);
+}
+
 /* Material Design specific */
 .md {
   --ion-toolbar-background: var(--ion-color-primary);
