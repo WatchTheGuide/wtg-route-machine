@@ -101,18 +101,20 @@ const ExplorePage: React.FC = () => {
     handlePoiCardClose();
   };
 
+  // Dodaj do trasy i zostań w Explore (pozwala dodać więcej POI)
   const handleAddToRoute = (poi: POI) => {
-    // Dodaj POI jako waypoint do globalnego store
     addWaypoint(poi.coordinate, poi.name);
-
-    // Pokaż toast
     setToastMessage(`Dodano "${poi.name}" do trasy`);
     setShowToast(true);
-
-    // Zamknij kartę POI
     handlePoiCardClose();
+  };
 
-    // Otwórz planer i przejdź do zakładki Trasy
+  // Dodaj do trasy i przejdź do planera tras
+  const handleAddToRouteAndGo = (poi: POI) => {
+    addWaypoint(poi.coordinate, poi.name);
+    setToastMessage(`Dodano "${poi.name}" do trasy`);
+    setShowToast(true);
+    handlePoiCardClose();
     openPlanner();
     goToRoutes();
   };
@@ -154,6 +156,7 @@ const ExplorePage: React.FC = () => {
           onClose={handlePoiCardClose}
           onNavigate={handleNavigate}
           onAddToRoute={handleAddToRoute}
+          onAddToRouteAndGo={handleAddToRouteAndGo}
         />
 
         {/* Toast notification */}

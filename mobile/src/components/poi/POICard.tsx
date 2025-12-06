@@ -26,8 +26,10 @@ export interface POICardProps {
   onClose: () => void;
   /** Callback nawigacji do POI */
   onNavigate?: (poi: POI) => void;
-  /** Callback dodania do trasy */
+  /** Callback dodania do trasy (zostaje w Explore) */
   onAddToRoute?: (poi: POI) => void;
+  /** Callback dodania do trasy i przejścia do planera */
+  onAddToRouteAndGo?: (poi: POI) => void;
 }
 
 /**
@@ -71,9 +73,13 @@ const POICard: React.FC<POICardProps> = ({
   poi,
   isOpen,
   onClose,
-  onNavigate,
+  onNavigate: _onNavigate, // Reserved for future navigation feature
   onAddToRoute,
+  onAddToRouteAndGo,
 }) => {
+  // Suppress unused variable warning - will be used when navigation is implemented
+  void _onNavigate;
+  
   if (!poi) return null;
 
   return (
@@ -122,24 +128,25 @@ const POICard: React.FC<POICardProps> = ({
         </IonCard>
 
         <div className="poi-card-actions">
-          {onNavigate && (
-            <IonButton
-              expand="block"
-              onClick={() => onNavigate(poi)}
-              color="primary">
-              <IonIcon slot="start" icon={navigateOutline} />
-              Nawiguj
-            </IonButton>
-          )}
-
           {onAddToRoute && (
             <IonButton
               expand="block"
               onClick={() => onAddToRoute(poi)}
-              fill="solid"
-              color="secondary">
+              fill="outline"
+              color="primary">
               <IonIcon slot="start" icon={locationOutline} />
               Dodaj do trasy
+            </IonButton>
+          )}
+
+          {onAddToRouteAndGo && (
+            <IonButton
+              expand="block"
+              onClick={() => onAddToRouteAndGo(poi)}
+              fill="solid"
+              color="primary">
+              <IonIcon slot="start" icon={navigateOutline} />
+              Dodaj i przejdź do trasy
             </IonButton>
           )}
         </div>

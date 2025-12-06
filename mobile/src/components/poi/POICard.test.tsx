@@ -107,22 +107,22 @@ describe('POICard', () => {
     expect(getByText('This is a test POI')).toBeDefined();
   });
 
-  it('should show navigate button when onNavigate is provided', () => {
-    const onNavigate = vi.fn();
+  it('should show add to route and go button when onAddToRouteAndGo is provided', () => {
+    const onAddToRouteAndGo = vi.fn();
     const { getByText } = render(
       <POICard
         poi={mockPOI}
         isOpen={true}
         onClose={() => {}}
-        onNavigate={onNavigate}
+        onAddToRouteAndGo={onAddToRouteAndGo}
       />
     );
 
-    const navigateButton = getByText('Nawiguj');
-    expect(navigateButton).toBeDefined();
+    const addAndGoButton = getByText('Dodaj i przejdź do trasy');
+    expect(addAndGoButton).toBeDefined();
 
-    fireEvent.click(navigateButton);
-    expect(onNavigate).toHaveBeenCalledWith(mockPOI);
+    fireEvent.click(addAndGoButton);
+    expect(onAddToRouteAndGo).toHaveBeenCalledWith(mockPOI);
   });
 
   it('should show add to route button when onAddToRoute is provided', () => {
