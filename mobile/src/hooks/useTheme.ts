@@ -38,8 +38,8 @@ export const useTheme = () => {
         isDark = themeMode === 'dark';
       }
 
-      // Dodaj/usuń klasę 'dark' na body
-      document.body.classList.toggle('dark', isDark);
+      // Ionic wymaga klasy 'ion-palette-dark' na elemencie html
+      document.documentElement.classList.toggle('ion-palette-dark', isDark);
 
       // Aktualizuj StatusBar
       updateStatusBar(isDark);

@@ -50,8 +50,8 @@ describe('useTheme', () => {
       value: matchMediaMock,
     });
 
-    // Wyczyść klasę 'dark' z body przed każdym testem
-    document.body.classList.remove('dark');
+    // Wyczyść klasę 'ion-palette-dark' z html przed każdym testem
+    document.documentElement.classList.remove('ion-palette-dark');
   });
 
   afterEach(() => {
@@ -77,7 +77,7 @@ describe('useTheme', () => {
     expect(typeof result.current.toggleTheme).toBe('function');
   });
 
-  it('should add dark class to body when dark mode is applied', async () => {
+  it('should add ion-palette-dark class to html when dark mode is applied', async () => {
     const mockSetTheme = vi.fn();
     vi.mocked(useSettingsStore).mockReturnValue({
       theme: 'dark',
@@ -95,12 +95,14 @@ describe('useTheme', () => {
     renderHook(() => useTheme());
 
     // Po renderowaniu z theme: 'dark', klasa powinna być dodana
-    expect(document.body.classList.contains('dark')).toBe(true);
+    expect(
+      document.documentElement.classList.contains('ion-palette-dark')
+    ).toBe(true);
   });
 
-  it('should remove dark class from body when light mode is applied', async () => {
-    // Najpierw dodaj klasę dark
-    document.body.classList.add('dark');
+  it('should remove ion-palette-dark class from html when light mode is applied', async () => {
+    // Najpierw dodaj klasę ion-palette-dark
+    document.documentElement.classList.add('ion-palette-dark');
 
     vi.mocked(useSettingsStore).mockReturnValue({
       theme: 'light',
@@ -117,7 +119,9 @@ describe('useTheme', () => {
 
     renderHook(() => useTheme());
 
-    expect(document.body.classList.contains('dark')).toBe(false);
+    expect(
+      document.documentElement.classList.contains('ion-palette-dark')
+    ).toBe(false);
   });
 
   it('should respect system preference when theme is set to system', async () => {
