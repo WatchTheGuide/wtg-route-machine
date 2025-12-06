@@ -1,0 +1,17 @@
+.profile-selector {
+  margin: 8px 16px;
+}
+
+.profile-selector ion-segment-button {
+  --indicator-color: var(--ion-color-primary);
+  min-width: 80px;
+}
+
+.profile-selector ion-segment-button ion-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.profile-selector ion-segment-button ion-label {
+  font-size: 12px;
+}

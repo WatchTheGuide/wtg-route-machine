@@ -34,6 +34,8 @@ describe('RoutesPage', () => {
 
   it('should show instruction for creating routes', () => {
     renderWithRouter(<RoutesPage />);
-    expect(screen.getByText(/Zaplanuj trasę w zakładce/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Zaplanuj trasę klikając przycisk/i)
+    ).toBeInTheDocument();
   });
 });
