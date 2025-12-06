@@ -7,7 +7,7 @@ You are working on **WTG Route Machine** - a lightweight OSRM (Open Source Routi
 - **Purpose**: City walking tour routing service
 - **Tech Stack**:
   - **Backend**: OSRM Backend (C++/Docker), Bash scripts, osmium-tool
-  - **Frontend**: Ionic React 8 + TypeScript + Capacitor 7 (mobile apps)
+  - **Frontend**: Ionic React 8 + TypeScript + Capacitor 6 (mobile apps)
 - **Profiles**: Pedestrian (`foot`), Bicycle (`bicycle`), Car (`car`)
 - **Deployment**: AWS (EC2/ECS) with minimal resource footprint (2GB RAM target)
 
@@ -258,28 +258,42 @@ The `mobile/` directory contains the mobile app built with Ionic React 8 + Capac
 ```
 mobile/src/
 ├── components/              # Reusable UI components
-│   ├── map/                # Map-related components (OpenLayers)
-│   ├── poi/                # POI markers, cards
-│   ├── route/              # Route display, waypoints
+│   ├── map/
+│   │   └── MapView.tsx     # OpenLayers map with waypoint markers
+│   ├── poi/                # POI markers, cards (planned)
+│   ├── route/
+│   │   ├── WaypointList.tsx        # Reorderable waypoint list
+│   │   ├── RouteInfo.tsx           # Route stats display
+│   │   ├── ProfileSelector.tsx     # Foot/bicycle/car selector
+│   │   ├── SaveRouteModal.tsx      # Save route dialog
+│   │   ├── DraftRouteCard.tsx      # Unsaved route card
+│   │   ├── SavedRouteCard.tsx      # Saved route card
+│   │   └── RouteDetailsModal.tsx   # Route details view
 │   └── common/             # Shared UI components
 ├── hooks/                   # Custom React hooks
-│   ├── useTheme.ts         # Dark/light mode management
-│   ├── useRouting.ts       # Route calculation (planned)
-│   ├── useWaypoints.ts     # Waypoint management (planned)
-│   └── useGeolocation.ts   # User location (planned)
+│   ├── useTheme.ts         # Dark/light mode management ✅
+│   ├── useRouting.ts       # Route calculation with OSRM ✅
+│   ├── useWaypoints.ts     # Waypoint management ✅
+│   ├── useGeolocation.ts   # User location tracking ✅
+│   └── useMap.ts           # Map center/zoom control ✅
 ├── services/               # API services
-│   ├── osrm.service.ts     # OSRM API communication (planned)
-│   └── export.service.ts   # GeoJSON/PDF export (planned)
-├── stores/                 # Zustand stores
-│   ├── cityStore.ts        # City selection, available cities
-│   └── settingsStore.ts    # User preferences (theme, units, etc.)
+│   ├── osrm.service.ts     # OSRM API communication ✅
+│   └── export.service.ts   # GeoJSON/GPX export (partial)
+├── stores/                 # Zustand stores (with Capacitor Preferences)
+│   ├── cityStore.ts            # City selection, available cities ✅
+│   ├── settingsStore.ts        # User preferences (theme, units, etc.) ✅
+│   ├── routePlannerStore.ts    # Route planning state ✅
+│   └── savedRoutesStore.ts     # Saved routes with persistence ✅
 ├── types/                  # TypeScript types
-│   └── index.ts            # City, POI, Waypoint, Route types
+│   └── index.ts            # City, POI, Waypoint, Route, SavedRoute types
+├── utils/                  # Utility functions
+│   └── format.ts           # formatDistance, formatDuration, formatDate
 ├── pages/                  # Page components (tabs)
-│   ├── ExplorePage.tsx     # Map with POI discovery
-│   ├── RoutesPage.tsx      # Saved routes
-│   ├── ToursPage.tsx       # Curated tours
-│   └── SettingsPage.tsx    # User settings
+│   ├── ExplorePage.tsx         # Map with POI discovery
+│   ├── RoutesPage.tsx          # Saved routes list ✅
+│   ├── RoutePlannerPage.tsx    # Route planning modal ✅
+│   ├── ToursPage.tsx           # Curated tours
+│   └── SettingsPage.tsx        # User settings
 └── theme/
     └── variables.css       # Brand colors, theme config
 ```
@@ -295,18 +309,38 @@ mobile/src/
 2. **Hooks Pattern**: Business logic in custom hooks, components for UI only
 
    ```typescript
-   const { waypoints, addWaypoint, removeWaypoint } = useWaypoints();
-   const { route, calculateRoute, isLoading } = useRouting();
+   // Waypoint management
+   const { waypoints, addWaypoint, removeWaypoint, reorderWaypoints } = useWaypoints();
+   
+   // Route calculation
+   const { route, calculateRoute, isCalculating, error } = useRouting();
+   
+   // User location
+   const { position, getCurrentPosition, isLoading } = useGeolocation();
+   
+   // Map control
+   const { center, zoom, flyTo } = useMap();
    ```
 
-3. **Service Pattern**: API calls in singleton services
+3. **Store Pattern**: Zustand stores with Capacitor Preferences persistence
+
+   ```typescript
+   // Route planner state (in-memory)
+   const { waypoints, route, profile, addWaypoint, clearWaypoints } = useRoutePlannerStore();
+   
+   // Saved routes (persisted)
+   const routes = useSavedRoutesStore(selectRoutes);
+   const { saveRoute, toggleFavorite, deleteRoute } = useSavedRoutesStore();
+   ```
+
+4. **Service Pattern**: API calls in singleton services
 
    ```typescript
    import { osrmService } from '@/services/osrm.service';
    const route = await osrmService.calculateRoute(waypoints, 'foot');
    ```
 
-4. **Testing**: Vitest + React Testing Library
+5. **Testing**: Vitest + React Testing Library
    ```bash
    npm run test.unit -- --run           # Run all tests
    npm run test.unit -- --watch         # Watch mode
@@ -323,6 +357,32 @@ const CITIES = {
   trojmiasto: { name: 'Trójmiasto', center: [18.6466, 54.352] },
 };
 ```
+
+#### Implemented Features (US 7.6 Complete)
+
+**Route Planning:**
+- ✅ Interactive map with waypoint placement
+- ✅ Reorderable waypoint list with drag & drop
+- ✅ Profile selector (foot/bicycle/car)
+- ✅ Real-time route calculation with OSRM
+- ✅ Route info display (distance, duration)
+- ✅ Numbered waypoint markers on map (green start, orange intermediate, red destination)
+
+**Route Saving:**
+- ✅ Save route with name and description
+- ✅ Draft route card (unsaved routes)
+- ✅ Saved routes list with filtering (all/favorites)
+- ✅ Route details modal with map view
+- ✅ Edit/delete/favorite actions
+- ✅ Persistent storage with Capacitor Preferences
+
+**UX Improvements:**
+- ✅ Back button in planner (arrowBackOutline + text)
+- ✅ Save button always visible (disabled when calculating)
+- ✅ Toast notifications for all actions
+- ✅ Dark mode support throughout
+- ✅ Consistent ProfileSelector styling
+- ✅ 5 language support (PL, EN, DE, FR, UK)
 
 ### Docker Best Practices
 
