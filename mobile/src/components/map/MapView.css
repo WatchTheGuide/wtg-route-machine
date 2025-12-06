@@ -1,0 +1,15 @@
+.map-view {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Ukryj attribution OpenLayers */
+.map-view .ol-attribution {
+  display: none;
+}
+
+/* Poprawki dla touch na urządzeniach mobilnych */
+.map-view .ol-viewport {
+  touch-action: none;
+}

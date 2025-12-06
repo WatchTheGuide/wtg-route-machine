@@ -5,10 +5,19 @@
 import '@testing-library/jest-dom/extend-expect';
 
 // Mock matchmedia
-window.matchMedia = window.matchMedia || function() {
-  return {
+window.matchMedia =
+  window.matchMedia ||
+  function () {
+    return {
       matches: false,
-      addListener: function() {},
-      removeListener: function() {}
+      addListener: function () {},
+      removeListener: function () {},
+    };
   };
+
+// Mock ResizeObserver dla OpenLayers
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
 };

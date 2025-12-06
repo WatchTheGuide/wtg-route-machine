@@ -13,6 +13,36 @@ vi.mock('./hooks/useTheme', () => ({
   }),
 }));
 
+// Mock dla MapView - unikamy inicjalizacji OpenLayers
+vi.mock('./components/map', () => ({
+  MapView: () => <div data-testid="map-view">Mocked Map</div>,
+}));
+
+// Mock dla useMap
+vi.mock('./hooks/useMap', () => ({
+  useMap: () => ({
+    center: [19.9449, 50.0647],
+    zoom: 14,
+    setCenter: vi.fn(),
+    setZoom: vi.fn(),
+    flyTo: vi.fn(),
+    goToCurrentCity: vi.fn(),
+  }),
+}));
+
+// Mock dla useGeolocation
+vi.mock('./hooks/useGeolocation', () => ({
+  useGeolocation: () => ({
+    position: null,
+    isLoading: false,
+    error: null,
+    accuracy: null,
+    getCurrentPosition: vi.fn(),
+    startWatching: vi.fn(),
+    stopWatching: vi.fn(),
+  }),
+}));
+
 test('renders without crashing', () => {
   const { baseElement } = render(<App />);
   expect(baseElement).toBeDefined();
