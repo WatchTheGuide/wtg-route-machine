@@ -13,8 +13,40 @@ import { MapView } from '../components/map';
 import { useMap } from '../hooks/useMap';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { useCityStore } from '../stores/cityStore';
-import { Coordinate } from '../types';
+import { Coordinate, POI } from '../types';
 import './ExplorePage.css';
+
+// Przykładowe POI do testowania mapy
+const SAMPLE_POIS: POI[] = [
+  {
+    id: 'wawel',
+    name: 'Wawel',
+    description: 'Zamek Królewski na Wawelu',
+    coordinate: [19.9353, 50.0543],
+    category: 'landmark',
+  },
+  {
+    id: 'sukiennice',
+    name: 'Sukiennice',
+    description: 'Historyczny budynek handlowy',
+    coordinate: [19.9373, 50.0619],
+    category: 'landmark',
+  },
+  {
+    id: 'kosciol-mariacki',
+    name: 'Kościół Mariacki',
+    description: 'Bazylika Mariacka w Krakowie',
+    coordinate: [19.9393, 50.0617],
+    category: 'landmark',
+  },
+  {
+    id: 'kazimierz',
+    name: 'Kazimierz',
+    description: 'Historyczna dzielnica żydowska',
+    coordinate: [19.9445, 50.0513],
+    category: 'landmark',
+  },
+];
 
 const ExplorePage: React.FC = () => {
   const { center, zoom, flyTo } = useMap();
@@ -36,6 +68,14 @@ const ExplorePage: React.FC = () => {
     }
   };
 
+  const handlePoiClick = (poiId: string) => {
+    const poi = SAMPLE_POIS.find((p) => p.id === poiId);
+    if (poi) {
+      console.log('Kliknięto POI:', poi.name);
+      flyTo(poi.coordinate, 17);
+    }
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -47,8 +87,10 @@ const ExplorePage: React.FC = () => {
         <MapView
           center={center}
           zoom={zoom}
+          pois={SAMPLE_POIS}
           userPosition={position || undefined}
           onMapClick={handleMapClick}
+          onPoiClick={handlePoiClick}
         />
 
         {/* FAB - Lokalizuj mnie */}

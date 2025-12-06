@@ -4,6 +4,12 @@
   position: relative;
 }
 
+/* Przesuń kontrolkę zoom niżej - żeby nie była zasłonięta przez header */
+.map-view .ol-zoom {
+  top: 60px;
+  left: 10px;
+}
+
 /* Ukryj attribution OpenLayers */
 .map-view .ol-attribution {
   display: none;

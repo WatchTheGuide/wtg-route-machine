@@ -22,7 +22,7 @@ export interface MapViewProps {
   /** Punkty POI do wyświetlenia */
   pois?: Array<{
     id: string;
-    position: Coordinate;
+    coordinate: Coordinate;
     name: string;
     category?: string;
   }>;
@@ -109,8 +109,10 @@ const MapView: React.FC<MapViewProps> = ({
       view: new View({
         center: fromLonLat(center),
         zoom: zoom,
+        minZoom: 3,
+        maxZoom: 19,
       }),
-      controls: [], // Ukryj domyślne kontrolki
+      // Domyślne kontrolki (zoom, attribution) są włączone
     });
 
     mapRef.current = map;
@@ -162,7 +164,7 @@ const MapView: React.FC<MapViewProps> = ({
 
     pois.forEach((poi) => {
       const feature = new Feature({
-        geometry: new Point(fromLonLat(poi.position)),
+        geometry: new Point(fromLonLat(poi.coordinate)),
         poiId: poi.id,
         name: poi.name,
         category: poi.category,
