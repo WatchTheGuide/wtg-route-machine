@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   IonContent,
   IonHeader,
@@ -11,10 +11,11 @@ import {
 } from '@ionic/react';
 import { mapOutline, addOutline } from 'ionicons/icons';
 import RoutePlannerPage from './RoutePlannerPage';
+import { useRoutePlannerStore } from '../stores/routePlannerStore';
 import './RoutesPage.css';
 
 const RoutesPage: React.FC = () => {
-  const [isPlannerOpen, setIsPlannerOpen] = useState(false);
+  const { isPlannerOpen, openPlanner, closePlanner } = useRoutePlannerStore();
 
   return (
     <IonPage>
@@ -32,16 +33,13 @@ const RoutesPage: React.FC = () => {
 
         {/* FAB - Nowa trasa */}
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton onClick={() => setIsPlannerOpen(true)} color="primary">
+          <IonFabButton onClick={openPlanner} color="primary">
             <IonIcon icon={addOutline} />
           </IonFabButton>
         </IonFab>
 
         {/* Modal planowania trasy */}
-        <RoutePlannerPage
-          isOpen={isPlannerOpen}
-          onClose={() => setIsPlannerOpen(false)}
-        />
+        <RoutePlannerPage isOpen={isPlannerOpen} onClose={closePlanner} />
       </IonContent>
     </IonPage>
   );

@@ -1,4 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
+import {
+  useRoutePlannerStore,
+  selectCanCalculateRoute,
+} from '../stores/routePlannerStore';
 import { Coordinate, Waypoint } from '../types';
 
 interface UseWaypointsReturn {
@@ -19,54 +23,58 @@ interface UseWaypointsReturn {
 }
 
 /**
- * Generuje unikalne ID dla waypointa
- */
-const generateId = (): string => {
-  return `wp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-};
-
-/**
  * Hook do zarządzania waypoints trasy
+ * Wrapper na globalny routePlannerStore dla kompatybilności wstecznej
  */
 export const useWaypoints = (): UseWaypointsReturn => {
-  const [waypoints, setWaypoints] = useState<Waypoint[]>([]);
+  const waypoints = useRoutePlannerStore((state) => state.waypoints);
+  const canCalculateRoute = useRoutePlannerStore(selectCanCalculateRoute);
 
-  const addWaypoint = useCallback((coordinate: Coordinate, name?: string) => {
-    setWaypoints((prev) => {
-      const newWaypoint: Waypoint = {
-        id: generateId(),
-        coordinate,
-        name: name || `Punkt ${prev.length + 1}`,
-      };
-      return [...prev, newWaypoint];
-    });
-  }, []);
+  const storeAddWaypoint = useRoutePlannerStore((state) => state.addWaypoint);
+  const storeRemoveWaypoint = useRoutePlannerStore(
+    (state) => state.removeWaypoint
+  );
+  const storeReorderWaypoints = useRoutePlannerStore(
+    (state) => state.reorderWaypoints
+  );
+  const storeUpdateWaypoint = useRoutePlannerStore(
+    (state) => state.updateWaypoint
+  );
+  const storeClearWaypoints = useRoutePlannerStore(
+    (state) => state.clearWaypoints
+  );
 
-  const removeWaypoint = useCallback((id: string) => {
-    setWaypoints((prev) => prev.filter((wp) => wp.id !== id));
-  }, []);
+  const addWaypoint = useCallback(
+    (coordinate: Coordinate, name?: string) => {
+      storeAddWaypoint(coordinate, name);
+    },
+    [storeAddWaypoint]
+  );
 
-  const reorderWaypoints = useCallback((fromIndex: number, toIndex: number) => {
-    setWaypoints((prev) => {
-      const result = [...prev];
-      const [removed] = result.splice(fromIndex, 1);
-      result.splice(toIndex, 0, removed);
-      return result;
-    });
-  }, []);
+  const removeWaypoint = useCallback(
+    (id: string) => {
+      storeRemoveWaypoint(id);
+    },
+    [storeRemoveWaypoint]
+  );
+
+  const reorderWaypoints = useCallback(
+    (fromIndex: number, toIndex: number) => {
+      storeReorderWaypoints(fromIndex, toIndex);
+    },
+    [storeReorderWaypoints]
+  );
 
   const updateWaypoint = useCallback(
     (id: string, updates: Partial<Omit<Waypoint, 'id'>>) => {
-      setWaypoints((prev) =>
-        prev.map((wp) => (wp.id === id ? { ...wp, ...updates } : wp))
-      );
+      storeUpdateWaypoint(id, updates);
     },
-    []
+    [storeUpdateWaypoint]
   );
 
   const clearWaypoints = useCallback(() => {
-    setWaypoints([]);
-  }, []);
+    storeClearWaypoints();
+  }, [storeClearWaypoints]);
 
   return {
     waypoints,
@@ -75,6 +83,6 @@ export const useWaypoints = (): UseWaypointsReturn => {
     reorderWaypoints,
     updateWaypoint,
     clearWaypoints,
-    canCalculateRoute: waypoints.length >= 2,
+    canCalculateRoute,
   };
 };

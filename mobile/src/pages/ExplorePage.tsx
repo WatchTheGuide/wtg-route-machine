@@ -9,6 +9,7 @@ import {
   IonFabButton,
   IonIcon,
   IonButtons,
+  IonToast,
 } from '@ionic/react';
 import { locateOutline } from 'ionicons/icons';
 import { MapView } from '../components/map';
@@ -16,6 +17,8 @@ import { CitySelector } from '../components/city';
 import { POICard } from '../components/poi';
 import { useMap } from '../hooks/useMap';
 import { useGeolocation } from '../hooks/useGeolocation';
+import { useTabNavigation } from '../hooks/useTabNavigation';
+import { useRoutePlannerStore } from '../stores/routePlannerStore';
 import { Coordinate, POI } from '../types';
 import './ExplorePage.css';
 
@@ -58,10 +61,14 @@ const ExplorePage: React.FC = () => {
     getCurrentPosition,
     isLoading: isLocating,
   } = useGeolocation();
+  const { goToRoutes } = useTabNavigation();
+  const { addWaypoint, openPlanner } = useRoutePlannerStore();
 
   // Stan dla wybranego POI
   const [selectedPoi, setSelectedPoi] = useState<POI | null>(null);
   const [isPoiCardOpen, setIsPoiCardOpen] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   const handleMapClick = (coordinate: Coordinate) => {
     console.log('Kliknięto na mapie:', coordinate);
@@ -95,9 +102,19 @@ const ExplorePage: React.FC = () => {
   };
 
   const handleAddToRoute = (poi: POI) => {
-    console.log('Dodaj do trasy:', poi.name);
-    // TODO: Implementacja dodawania do trasy
+    // Dodaj POI jako waypoint do globalnego store
+    addWaypoint(poi.coordinate, poi.name);
+
+    // Pokaż toast
+    setToastMessage(`Dodano "${poi.name}" do trasy`);
+    setShowToast(true);
+
+    // Zamknij kartę POI
     handlePoiCardClose();
+
+    // Otwórz planer i przejdź do zakładki Trasy
+    openPlanner();
+    goToRoutes();
   };
 
   return (
@@ -137,6 +154,16 @@ const ExplorePage: React.FC = () => {
           onClose={handlePoiCardClose}
           onNavigate={handleNavigate}
           onAddToRoute={handleAddToRoute}
+        />
+
+        {/* Toast notification */}
+        <IonToast
+          isOpen={showToast}
+          onDidDismiss={() => setShowToast(false)}
+          message={toastMessage}
+          duration={2000}
+          position="bottom"
+          color="success"
         />
       </IonContent>
     </IonPage>

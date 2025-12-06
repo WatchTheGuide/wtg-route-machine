@@ -177,7 +177,7 @@ Jako użytkownik chcę widzieć punkty POI na mapie, aby odkrywać interesujące
 
 ---
 
-## User Story 7.5: Planowanie trasy
+## User Story 7.5: Planowanie trasy ✅
 
 ### Opis
 
@@ -185,21 +185,48 @@ Jako użytkownik chcę zaplanować trasę między punktami, aby otrzymać optyma
 
 ### Kryteria akceptacji
 
-- [ ] Dodawanie waypoints przez kliknięcie na mapie lub POI
-- [ ] Lista waypoints z możliwością reorderowania (IonReorder)
-- [ ] Obliczanie trasy przez OSRM API
-- [ ] Wyświetlanie trasy na mapie jako LineString
-- [ ] Informacje o dystansie i czasie
-- [ ] Wybór profilu (pieszo, rower, auto)
+- [x] Dodawanie waypoints przez kliknięcie na mapie
+- [x] Lista waypoints z możliwością reorderowania (IonReorder)
+- [x] Obliczanie trasy przez OSRM API
+- [x] Wyświetlanie trasy na mapie jako LineString
+- [x] Informacje o dystansie i czasie
+- [x] Wybór profilu (pieszo, rower, auto)
+
+### Zaimplementowane
+
+- **useWaypoints**: Hook zarządzania punktami (add/remove/reorder)
+- **useRouting**: Hook obliczania trasy przez OSRM
+- **osrmService**: Klient OSRM API z polskimi instrukcjami
+- **WaypointList**: Lista z drag-and-drop (IonReorder)
+- **RouteInfo**: Dystans i czas trasy
+- **ProfileSelector**: Wybór profilu (IonSegment)
+- **RoutePlannerPage**: Pełnoekranowy modal planowania
+
+---
+
+## User Story 7.5.1: Integracja POI z planowaniem trasy
+
+### Opis
+
+Jako użytkownik chcę dodawać POI do trasy z zakładki Odkrywaj, aby łatwo planować trasy przez interesujące miejsca.
+
+### Kryteria akceptacji
+
+- [ ] Globalny store dla planowania trasy (routePlannerStore)
+- [ ] Przycisk "Dodaj do trasy" na POICard dodaje POI jako waypoint
+- [ ] Po dodaniu POI automatyczne przejście do zakładki Trasy
+- [ ] Modal planowania otwiera się z dodanym POI
+- [ ] Mapa nie znika po zamknięciu modalu planowania
+- [ ] Wskaźnik aktywnego planowania trasy
 
 ### Zadania
 
-- [ ] useWaypoints hook (zarządzanie punktami)
-- [ ] useRouting hook (OSRM API)
-- [ ] WaypointList component (IonList + IonReorder)
-- [ ] RouteInfo component (dystans, czas)
-- [ ] ProfileSelector component (IonSegment)
-- [ ] OSRM Service
+- [ ] routePlannerStore (Zustand) - globalny stan waypoints
+- [ ] Refaktoryzacja useWaypoints na store
+- [ ] Hook useTabNavigation - programowe przełączanie zakładek
+- [ ] Integracja POICard z routePlannerStore
+- [ ] Wskaźnik badge na zakładce Trasy (liczba waypoints)
+- [ ] Naprawienie problemu znikającej mapy (globalny stan)
 
 ---
 

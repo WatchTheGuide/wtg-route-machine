@@ -1,8 +1,16 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useWaypoints } from './useWaypoints';
+import { useRoutePlannerStore } from '../stores/routePlannerStore';
 
 describe('useWaypoints', () => {
+  // Reset store przed każdym testem
+  beforeEach(() => {
+    act(() => {
+      useRoutePlannerStore.getState().reset();
+    });
+  });
+
   it('should start with empty waypoints', () => {
     const { result } = renderHook(() => useWaypoints());
     expect(result.current.waypoints).toEqual([]);

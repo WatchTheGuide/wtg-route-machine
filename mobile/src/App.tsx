@@ -1,6 +1,7 @@
 import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
+  IonBadge,
   IonIcon,
   IonLabel,
   IonRouterOutlet,
@@ -23,6 +24,10 @@ import ExplorePage from './pages/ExplorePage';
 import RoutesPage from './pages/RoutesPage';
 import ToursPage from './pages/ToursPage';
 import SettingsPage from './pages/SettingsPage';
+import {
+  useRoutePlannerStore,
+  selectWaypointCount,
+} from './stores/routePlannerStore';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -71,6 +76,9 @@ const App: React.FC = () => {
   // Inicjalizacja motywu
   useTheme();
 
+  // Liczba waypoints dla badge
+  const waypointCount = useRoutePlannerStore(selectWaypointCount);
+
   return (
     <IonApp>
       <IonReactRouter>
@@ -100,6 +108,9 @@ const App: React.FC = () => {
             <IonTabButton tab="routes" href="/routes">
               <IonIcon icon={mapOutline} />
               <IonLabel>Trasy</IonLabel>
+              {waypointCount > 0 && (
+                <IonBadge color="danger">{waypointCount}</IonBadge>
+              )}
             </IonTabButton>
             <IonTabButton tab="tours" href="/tours">
               <IonIcon icon={walkOutline} />
