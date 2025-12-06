@@ -250,7 +250,7 @@ Jako użytkownik chcę dodawać POI do trasy z zakładki Odkrywaj, aby łatwo pl
 
 ---
 
-## User Story 7.6: Zapisywanie tras
+## User Story 7.6: Zapisywanie tras ✅
 
 ### Opis
 
@@ -258,21 +258,79 @@ Jako użytkownik chcę zapisywać swoje trasy, aby móc do nich wrócić późni
 
 ### Kryteria akceptacji
 
-- [ ] Zapisywanie trasy z nazwą i opisem
-- [ ] Lista zapisanych tras
-- [ ] Szczegóły trasy (mapa, waypoints, info)
-- [ ] Edycja nazwy/opisu trasy
-- [ ] Usuwanie tras
-- [ ] Oznaczanie ulubionych
+- [x] Zapisywanie trasy z nazwą i opisem
+- [x] Lista zapisanych tras
+- [x] Szczegóły trasy (mapa, waypoints, info)
+- [x] Edycja nazwy/opisu trasy
+- [x] Usuwanie tras
+- [x] Oznaczanie ulubionych
+- [x] Filtrowanie tras (wszystkie/ulubione)
+- [x] Karta trasy roboczej (draft route)
+- [x] Walidacja przed zapisaniem
+- [x] Toast potwierdzenia akcji
 
 ### Zadania
 
-- [ ] Route model (TypeScript interface)
-- [ ] useRouteStore (Zustand + Capacitor Preferences)
-- [ ] SaveRouteModal component
-- [ ] RoutesPage screen
-- [ ] RouteDetails modal
-- [ ] Eksport trasy (GeoJSON, GPX)
+- [x] Route model (TypeScript interface: `SavedRoute`)
+- [x] useSavedRoutesStore (Zustand + Capacitor Preferences)
+- [x] SaveRouteModal component z walidacją
+- [x] RoutesPage screen z filtrowaniem
+- [x] RouteDetailsModal component
+- [x] SavedRouteCard component
+- [x] DraftRouteCard component
+- [x] Formatowanie dystansu i czasu (`format.ts`)
+- [x] Tłumaczenia (PL, EN, DE, FR, UK)
+
+### Zaimplementowane komponenty
+
+#### SaveRouteModal
+- Formularz z nazwą (wymagana, 3-50 znaków)
+- Opis (opcjonalny, max 200 znaków)
+- Podgląd statystyk (profil, waypoints, dystans, czas)
+- Walidacja przed zapisaniem
+- Toast potwierdzenia
+
+#### DraftRouteCard
+- Wyświetla trasę roboczą (niezapisaną)
+- Statystyki: profil, liczba punktów, dystans, czas
+- Akcje: kontynuuj edycję, zapisz, odrzuć
+- Neutralny styl z subtelnym cieniem
+
+#### RoutesPage
+- Lista zapisanych tras
+- Filtr: wszystkie / ulubione (ikona serca w nagłówku)
+- Integracja z DraftRouteCard
+- FAB do tworzenia nowej trasy
+- Toast dla akcji (zapisano, usunięto, odrzucono)
+
+#### SavedRouteCard
+- Nazwa, opis, data utworzenia
+- Ikona profilu (foot/bicycle/car)
+- Statystyki: waypoints, dystans, czas
+- Akcje: ulubione, edycja, usuwanie
+- Swipe actions na iOS/Android
+
+#### RouteDetailsModal
+- Mapa z trasą i waypoints
+- Lista waypoints z adresami
+- Statystyki: dystans, czas, wzniesienia
+- Eksport (przygotowane do US 7.10)
+
+### Persystencja
+- Capacitor Preferences do przechowywania tras
+- Auto-save przy każdej zmianie
+- Unikalne ID generowane przez `crypto.randomUUID()`
+
+### UX Improvements
+- Numerowane markery na mapie (1, 2, 3...)
+- Kolorowe ikony waypoints (zielony start, pomarańczowe pośrednie, czerwony koniec)
+- Przycisk "Zapisz trasę" w plannerze (disabled gdy brak trasy)
+- Przycisk "Wróć" zamiast "Zamknij" w plannerze
+- Ikony waypoints w liście (flag, radio button, location)
+
+### Eksport trasy (przygotowane)
+- GeoJSON export (częściowo zaimplementowany)
+- GPX export (do implementacji w US 7.10)
 
 ---
 

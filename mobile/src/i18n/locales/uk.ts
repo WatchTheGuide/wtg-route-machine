@@ -4,15 +4,16 @@ const uk = {
     // Common
     common: {
       loading: 'Завантаження...',
-      error: 'Сталася помилка',
+      error: 'Виникла помилка',
       cancel: 'Скасувати',
       save: 'Зберегти',
       delete: 'Видалити',
       edit: 'Редагувати',
       close: 'Закрити',
       clear: 'Очистити',
-      search: 'Пошук',
+      search: 'Шукати',
       ok: 'OK',
+      back: 'Назад',
     },
 
     // Tabs
@@ -60,6 +61,17 @@ const uk = {
       updatedAt: 'Оновлено',
       showOnMap: 'Показати на карті',
       loadRoute: 'Завантажити маршрут',
+      draftRoute: 'Чернетка маршруту',
+      newRoute: 'Новий маршрут',
+      unsaved: 'Не збережено',
+      continueEditing: 'Продовжити редагування',
+      discard: 'Відхилити',
+      draftDiscarded: 'Чернетку маршруту відхилено',
+      profiles: {
+        foot: 'Пішки',
+        bicycle: 'Велосипед',
+        car: 'Автомобіль',
+      },
     },
 
     // Tours page

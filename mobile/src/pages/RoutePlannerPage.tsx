@@ -15,7 +15,7 @@ import {
 } from '@ionic/react';
 import { useTranslation } from 'react-i18next';
 import {
-  closeOutline,
+  arrowBackOutline,
   navigateOutline,
   locateOutline,
   saveOutline,
@@ -117,7 +117,8 @@ const RoutePlannerPage: React.FC<RoutePlannerPageProps> = ({
           <IonToolbar color="primary">
             <IonButtons slot="start">
               <IonButton onClick={onClose}>
-                <IonIcon icon={closeOutline} slot="icon-only" />
+                <IonIcon icon={arrowBackOutline} slot="start" />
+                {t('common.back')}
               </IonButton>
             </IonButtons>
             <IonTitle>{t('routes.planRoute')}</IonTitle>
@@ -138,6 +139,7 @@ const RoutePlannerPage: React.FC<RoutePlannerPageProps> = ({
               center={center}
               zoom={zoom}
               route={route?.coordinates}
+              waypoints={waypoints}
               userPosition={position || undefined}
               onMapClick={handleMapClick}
             />
@@ -179,16 +181,17 @@ const RoutePlannerPage: React.FC<RoutePlannerPageProps> = ({
             />
 
             {/* Przyciski akcji */}
-            {route && (
+            {waypoints.length >= 2 && (
               <div className="route-planner-actions">
                 <IonButton
                   expand="block"
-                  color="secondary"
-                  onClick={handleSaveRoute}>
+                  color="success"
+                  onClick={handleSaveRoute}
+                  disabled={!route}>
                   <IonIcon slot="start" icon={saveOutline} />
                   {t('routes.saveRoute')}
                 </IonButton>
-                <IonButton expand="block" color="primary">
+                <IonButton expand="block" color="primary" disabled={!route}>
                   <IonIcon slot="start" icon={navigateOutline} />
                   {t('routes.startNavigation')}
                 </IonButton>

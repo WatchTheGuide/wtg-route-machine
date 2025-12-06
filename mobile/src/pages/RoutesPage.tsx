@@ -14,17 +14,15 @@ import {
   IonList,
   IonAlert,
   IonToast,
+  IonButton,
+  IonButtons,
 } from '@ionic/react';
 import { useTranslation } from 'react-i18next';
-import {
-  mapOutline,
-  addOutline,
-  heartOutline,
-  listOutline,
-} from 'ionicons/icons';
+import { mapOutline, addOutline, heartOutline, heart } from 'ionicons/icons';
 import RoutePlannerPage from './RoutePlannerPage';
 import RouteDetailsModal from '../components/route/RouteDetailsModal';
 import SavedRouteCard from '../components/route/SavedRouteCard';
+import { DraftRouteCard, SaveRouteModal } from '../components/route';
 import { useRoutePlannerStore } from '../stores/routePlannerStore';
 import { useSavedRoutesStore, selectRoutes } from '../stores/savedRoutesStore';
 import { SavedRoute } from '../types';
@@ -32,7 +30,15 @@ import './RoutesPage.css';
 
 const RoutesPage: React.FC = () => {
   const { t } = useTranslation();
-  const { isPlannerOpen, openPlanner, closePlanner } = useRoutePlannerStore();
+  const {
+    isPlannerOpen,
+    openPlanner,
+    closePlanner,
+    waypoints,
+    route,
+    profile,
+    clearWaypoints,
+  } = useRoutePlannerStore();
   const routes = useSavedRoutesStore(selectRoutes);
   const { toggleFavorite, deleteRoute } = useSavedRoutesStore();
 
@@ -41,6 +47,9 @@ const RoutesPage: React.FC = () => {
   const [routeToDelete, setRouteToDelete] = useState<SavedRoute | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+
+  const hasDraftRoute = waypoints.length > 0;
 
   const filteredRoutes =
     filter === 'favorites' ? routes.filter((r) => r.isFavorite) : routes;
@@ -66,32 +75,58 @@ const RoutesPage: React.FC = () => {
     }
   };
 
+  const handleDiscardDraft = () => {
+    clearWaypoints();
+    setToastMessage(t('routes.draftDiscarded'));
+    setShowToast(true);
+  };
+
+  const handleSaveDraft = () => {
+    if (route) {
+      setIsSaveModalOpen(true);
+    }
+  };
+
+  const handleRouteSaved = () => {
+    setIsSaveModalOpen(false);
+    clearWaypoints();
+    setToastMessage(t('routes.savedSuccessfully'));
+    setShowToast(true);
+  };
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar color="primary">
           <IonTitle>{t('routes.title')}</IonTitle>
+          {routes.length > 0 && (
+            <IonButtons slot="end">
+              <IonButton
+                onClick={() =>
+                  setFilter(filter === 'all' ? 'favorites' : 'all')
+                }>
+                <IonIcon
+                  slot="icon-only"
+                  icon={filter === 'favorites' ? heart : heartOutline}
+                />
+              </IonButton>
+            </IonButtons>
+          )}
         </IonToolbar>
-        {routes.length > 0 && (
-          <IonToolbar>
-            <IonSegment
-              value={filter}
-              onIonChange={(e) =>
-                setFilter(e.detail.value as 'all' | 'favorites')
-              }>
-              <IonSegmentButton value="all">
-                <IonIcon icon={listOutline} />
-                <IonLabel>{t('routes.allRoutes')}</IonLabel>
-              </IonSegmentButton>
-              <IonSegmentButton value="favorites">
-                <IonIcon icon={heartOutline} />
-                <IonLabel>{t('routes.favorites')}</IonLabel>
-              </IonSegmentButton>
-            </IonSegment>
-          </IonToolbar>
-        )}
       </IonHeader>
       <IonContent fullscreen>
+        {/* Karta roboczej trasy */}
+        {hasDraftRoute && (
+          <DraftRouteCard
+            waypoints={waypoints}
+            route={route}
+            profile={profile}
+            onContinueEditing={openPlanner}
+            onSave={handleSaveDraft}
+            onDiscard={handleDiscardDraft}
+          />
+        )}
+
         {filteredRoutes.length === 0 ? (
           <div className="routes-empty">
             <IonIcon icon={mapOutline} className="empty-icon" />
@@ -128,6 +163,18 @@ const RoutesPage: React.FC = () => {
           isOpen={selectedRoute !== null}
           onClose={() => setSelectedRoute(null)}
         />
+
+        {/* Modal zapisywania roboczej trasy */}
+        {route && (
+          <SaveRouteModal
+            isOpen={isSaveModalOpen}
+            onClose={() => setIsSaveModalOpen(false)}
+            waypoints={waypoints}
+            route={route}
+            profile={profile}
+            onSaved={handleRouteSaved}
+          />
+        )}
 
         {/* Alert usuwania */}
         <IonAlert

@@ -9,8 +9,8 @@ import { fromLonLat, toLonLat } from 'ol/proj';
 import { Feature } from 'ol';
 import { FeatureLike } from 'ol/Feature';
 import { Point, LineString } from 'ol/geom';
-import { Style, Stroke, Fill, Circle as CircleStyle } from 'ol/style';
-import { Coordinate } from '../../types';
+import { Style, Stroke, Fill, Circle as CircleStyle, Text } from 'ol/style';
+import { Coordinate, Waypoint } from '../../types';
 import 'ol/ol.css';
 import './MapView.css';
 
@@ -28,6 +28,8 @@ export interface MapViewProps {
   }>;
   /** Trasa do wyświetlenia jako tablica współrzędnych */
   route?: Coordinate[];
+  /** Waypoints do wyświetlenia */
+  waypoints?: Waypoint[];
   /** Pozycja użytkownika [lon, lat] */
   userPosition?: Coordinate;
   /** Callback przy kliknięciu na mapę */
@@ -47,6 +49,7 @@ const MapView: React.FC<MapViewProps> = ({
   zoom = 14,
   pois = [],
   route,
+  waypoints = [],
   userPosition,
   onMapClick,
   onPoiClick,
@@ -56,6 +59,7 @@ const MapView: React.FC<MapViewProps> = ({
   const mapRef = useRef<Map | null>(null);
   const poiLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
   const routeLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
+  const waypointLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
   const userLayerRef = useRef<VectorLayer<VectorSource> | null>(null);
 
   // Inicjalizacja mapy
@@ -88,6 +92,15 @@ const MapView: React.FC<MapViewProps> = ({
     });
     routeLayerRef.current = routeLayer;
 
+    // Warstwa waypoints (nad trasą)
+    const waypointSource = new VectorSource();
+    const waypointLayer = new VectorLayer({
+      source: waypointSource,
+      style: createWaypointStyle,
+      zIndex: 10, // Nad trasą
+    });
+    waypointLayerRef.current = waypointLayer;
+
     // Warstwa pozycji użytkownika
     const userSource = new VectorSource();
     const userLayer = new VectorLayer({
@@ -105,7 +118,7 @@ const MapView: React.FC<MapViewProps> = ({
     // Tworzenie mapy
     const map = new Map({
       target: mapContainer.current,
-      layers: [osmLayer, routeLayer, poiLayer, userLayer],
+      layers: [osmLayer, routeLayer, poiLayer, waypointLayer, userLayer],
       view: new View({
         center: fromLonLat(center),
         zoom: zoom,
@@ -190,6 +203,25 @@ const MapView: React.FC<MapViewProps> = ({
     }
   }, [route]);
 
+  // Aktualizacja waypoints
+  useEffect(() => {
+    if (!waypointLayerRef.current) return;
+    const source = waypointLayerRef.current.getSource();
+    if (!source) return;
+
+    source.clear();
+
+    waypoints.forEach((waypoint, index) => {
+      const feature = new Feature({
+        geometry: new Point(fromLonLat(waypoint.coordinate)),
+        waypointIndex: index,
+        waypointTotal: waypoints.length,
+        waypointName: waypoint.name,
+      });
+      source.addFeature(feature);
+    });
+  }, [waypoints]);
+
   // Aktualizacja pozycji użytkownika
   useEffect(() => {
     if (!userLayerRef.current) return;
@@ -239,6 +271,47 @@ function createPoiStyle(feature: FeatureLike): Style {
       radius: 10,
       fill: new Fill({ color }),
       stroke: new Stroke({ color: '#ffffff', width: 2 }),
+    }),
+  });
+}
+
+/**
+ * Styl dla waypoints na trasie
+ */
+function createWaypointStyle(feature: FeatureLike): Style {
+  const index = (feature as Feature).get('waypointIndex');
+  const total = (feature as Feature).get('waypointTotal');
+  const name = (feature as Feature).get('waypointName') || '';
+
+  // Kolory: Start (zielony), Cel (czerwony), Pośrednie (pomarańczowy)
+  let fillColor = '#ff6600'; // primary (pomarańczowy)
+  let strokeColor = '#ffffff';
+  let radius = 12;
+
+  if (index === 0) {
+    // Start
+    fillColor = '#2dd36f'; // success (zielony)
+    radius = 14;
+  } else if (index === total - 1) {
+    // Cel
+    fillColor = '#eb445a'; // danger (czerwony)
+    radius = 14;
+  }
+
+  return new Style({
+    image: new CircleStyle({
+      radius: radius,
+      fill: new Fill({ color: fillColor }),
+      stroke: new Stroke({
+        color: strokeColor,
+        width: 3,
+      }),
+    }),
+    text: new Text({
+      text: (index + 1).toString(),
+      font: 'bold 12px sans-serif',
+      fill: new Fill({ color: '#ffffff' }),
+      offsetY: 0,
     }),
   });
 }

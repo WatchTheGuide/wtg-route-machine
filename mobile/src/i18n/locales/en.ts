@@ -13,6 +13,7 @@ const en = {
       clear: 'Clear',
       search: 'Search',
       ok: 'OK',
+      back: 'Back',
     },
 
     // Tabs
@@ -60,6 +61,17 @@ const en = {
       updatedAt: 'Updated',
       showOnMap: 'Show on map',
       loadRoute: 'Load route',
+      draftRoute: 'Draft route',
+      newRoute: 'New route',
+      unsaved: 'Unsaved',
+      continueEditing: 'Continue editing',
+      discard: 'Discard',
+      draftDiscarded: 'Draft route discarded',
+      profiles: {
+        foot: 'Walking',
+        bicycle: 'Cycling',
+        car: 'Driving',
+      },
     },
 
     // Tours page

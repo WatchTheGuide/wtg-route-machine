@@ -13,6 +13,7 @@ const fr = {
       clear: 'Effacer',
       search: 'Rechercher',
       ok: 'OK',
+      back: 'Retour',
     },
 
     // Tabs
@@ -60,6 +61,17 @@ const fr = {
       updatedAt: 'Mis à jour le',
       showOnMap: 'Afficher sur la carte',
       loadRoute: "Charger l'itinéraire",
+      draftRoute: 'Itinéraire brouillon',
+      newRoute: 'Nouvel itinéraire',
+      unsaved: 'Non enregistré',
+      continueEditing: "Continuer l'édition",
+      discard: 'Rejeter',
+      draftDiscarded: 'Itinéraire brouillon rejeté',
+      profiles: {
+        foot: 'À pied',
+        bicycle: 'Vélo',
+        car: 'Voiture',
+      },
     },
 
     // Tours page

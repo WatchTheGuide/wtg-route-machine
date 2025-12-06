@@ -13,6 +13,7 @@ const pl = {
       clear: 'Wyczyść',
       search: 'Szukaj',
       ok: 'OK',
+      back: 'Wróć',
     },
 
     // Tabs
@@ -60,6 +61,17 @@ const pl = {
       updatedAt: 'Zaktualizowano',
       showOnMap: 'Pokaż na mapie',
       loadRoute: 'Wczytaj trasę',
+      draftRoute: 'Trasa robocza',
+      newRoute: 'Nowa trasa',
+      unsaved: 'Niezapisana',
+      continueEditing: 'Kontynuuj edycję',
+      discard: 'Odrzuć',
+      draftDiscarded: 'Trasa robocza odrzucona',
+      profiles: {
+        foot: 'Pieszo',
+        bicycle: 'Rower',
+        car: 'Samochód',
+      },
     },
 
     // Tours page

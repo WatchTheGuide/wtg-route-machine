@@ -17,6 +17,8 @@ import {
   flagOutline,
   closeCircleOutline,
   reorderThreeOutline,
+  ellipseOutline,
+  radioButtonOnOutline,
 } from 'ionicons/icons';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { Waypoint } from '../../types';
@@ -37,9 +39,9 @@ export interface WaypointListProps {
  * Ikona dla waypointa w zależności od pozycji
  */
 const getWaypointIcon = (index: number, total: number): string => {
-  if (index === 0) return flagOutline; // Start
-  if (index === total - 1) return locationOutline; // Cel
-  return reorderThreeOutline; // Pośredni
+  if (index === 0) return flagOutline; // Start - flaga
+  if (index === total - 1) return locationOutline; // Cel - pinezka
+  return radioButtonOnOutline; // Punkt pośredni - wypełnione kółko
 };
 
 /**
@@ -91,7 +93,7 @@ const WaypointList: React.FC<WaypointListProps> = ({
                     ? 'success'
                     : index === waypoints.length - 1
                     ? 'danger'
-                    : 'medium'
+                    : 'primary'
                 }
               />
               <IonLabel>

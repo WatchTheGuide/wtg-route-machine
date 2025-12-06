@@ -1,14 +1,25 @@
 .profile-selector {
   margin: 8px 16px;
   width: calc(100% - 32px);
+  --background: var(--ion-color-light);
 }
 
 .profile-selector ion-segment-button {
   --indicator-color: var(--ion-color-primary);
+  --indicator-color-checked: var(--ion-color-primary);
+  --color: var(--ion-color-medium);
+  --color-checked: var(--ion-color-primary);
   flex: 1;
   min-width: 0;
 }
 
 .profile-selector ion-segment-button ion-icon {
-  font-size: 20px;
+  font-size: 24px;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .profile-selector {
+    --background: var(--ion-color-step-100);
+  }
 }

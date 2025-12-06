@@ -13,6 +13,7 @@ const de = {
       clear: 'Löschen',
       search: 'Suchen',
       ok: 'OK',
+      back: 'Zurück',
     },
 
     // Tabs
@@ -60,6 +61,17 @@ const de = {
       updatedAt: 'Aktualisiert',
       showOnMap: 'Auf Karte anzeigen',
       loadRoute: 'Route laden',
+      draftRoute: 'Entwurfsroute',
+      newRoute: 'Neue Route',
+      unsaved: 'Nicht gespeichert',
+      continueEditing: 'Weiter bearbeiten',
+      discard: 'Verwerfen',
+      draftDiscarded: 'Entwurfsroute verworfen',
+      profiles: {
+        foot: 'Zu Fuß',
+        bicycle: 'Fahrrad',
+        car: 'Auto',
+      },
     },
 
     // Tours page
