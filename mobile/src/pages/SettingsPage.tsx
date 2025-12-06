@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   IonContent,
   IonHeader,
@@ -9,6 +10,7 @@ import {
   IonLabel,
   IonIcon,
   IonToggle,
+  IonActionSheet,
 } from '@ionic/react';
 import {
   moonOutline,
@@ -17,10 +19,26 @@ import {
   informationCircleOutline,
 } from 'ionicons/icons';
 import { useTheme } from '../hooks/useTheme';
+import { useCityStore } from '../stores/cityStore';
+import { CITIES } from '../types';
 import './SettingsPage.css';
 
 const SettingsPage: React.FC = () => {
   const { isDarkMode, toggleTheme } = useTheme();
+  const { currentCity, setCity } = useCityStore();
+  const [isCitySelectorOpen, setIsCitySelectorOpen] = useState(false);
+
+  const cityList = Object.values(CITIES);
+
+  const cityActionButtons = cityList.map((city) => ({
+    text: city.name,
+    icon: locationOutline,
+    cssClass: city.id === currentCity.id ? 'city-selected' : '',
+    handler: () => {
+      setCity(city.id);
+      setIsCitySelectorOpen(false);
+    },
+  }));
 
   return (
     <IonPage>
@@ -31,11 +49,11 @@ const SettingsPage: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         <IonList inset>
-          <IonItem>
+          <IonItem button onClick={() => setIsCitySelectorOpen(true)} detail>
             <IonIcon icon={locationOutline} slot="start" />
             <IonLabel>
               <h2>Domyślne miasto</h2>
-              <p>Kraków</p>
+              <p>{currentCity.name}</p>
             </IonLabel>
           </IonItem>
           <IonItem>
@@ -65,6 +83,19 @@ const SettingsPage: React.FC = () => {
             </IonLabel>
           </IonItem>
         </IonList>
+
+        <IonActionSheet
+          isOpen={isCitySelectorOpen}
+          onDidDismiss={() => setIsCitySelectorOpen(false)}
+          header="Wybierz miasto"
+          buttons={[
+            ...cityActionButtons,
+            {
+              text: 'Anuluj',
+              role: 'cancel',
+            },
+          ]}
+        />
       </IonContent>
     </IonPage>
   );

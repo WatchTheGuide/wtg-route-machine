@@ -67,9 +67,9 @@ describe('ExplorePage', () => {
     expect(baseElement).toBeDefined();
   });
 
-  it('should display city name in header', () => {
+  it('should display page title in header', () => {
     renderWithRouter(<ExplorePage />);
-    const titles = screen.getAllByText('Kraków');
+    const titles = screen.getAllByText('Odkrywaj');
     expect(titles.length).toBeGreaterThan(0);
   });
 

@@ -1,12 +1,8 @@
 import React from 'react';
 import {
   IonModal,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
   IonButton,
-  IonButtons,
   IonIcon,
   IonCard,
   IonCardHeader,
@@ -17,7 +13,7 @@ import {
   IonLabel,
   IonImg,
 } from '@ionic/react';
-import { closeOutline, locationOutline, navigateOutline } from 'ionicons/icons';
+import { locationOutline, navigateOutline } from 'ionicons/icons';
 import { POI } from '../../types';
 import './POICard.css';
 
@@ -84,21 +80,11 @@ const POICard: React.FC<POICardProps> = ({
     <IonModal
       isOpen={isOpen}
       onDidDismiss={onClose}
-      initialBreakpoint={0.5}
-      breakpoints={[0, 0.5, 0.75, 1]}
+      initialBreakpoint={0.6}
+      breakpoints={[0, 0.6, 1]}
+      handle={true}
       className="poi-card-modal"
       data-testid="poi-card-modal">
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>{poi.name}</IonTitle>
-          <IonButtons slot="end">
-            <IonButton onClick={onClose}>
-              <IonIcon icon={closeOutline} />
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-
       <IonContent className="poi-card-content">
         <IonCard>
           {poi.imageUrl && (
@@ -150,8 +136,8 @@ const POICard: React.FC<POICardProps> = ({
             <IonButton
               expand="block"
               onClick={() => onAddToRoute(poi)}
-              fill="outline"
-              color="primary">
+              fill="solid"
+              color="secondary">
               <IonIcon slot="start" icon={locationOutline} />
               Dodaj do trasy
             </IonButton>

@@ -1,10 +1,25 @@
 .poi-card-modal {
-  --height: auto;
-  --max-height: 90%;
+  --background: var(--ion-background-color);
+}
+
+.poi-card-modal::part(content) {
+  border-radius: 16px 16px 0 0;
+}
+
+.poi-card-modal::part(handle) {
+  background: var(--ion-color-medium);
+  width: 40px;
+  height: 4px;
 }
 
 .poi-card-content {
+  --background: var(--ion-background-color);
   --padding-bottom: env(safe-area-inset-bottom);
+}
+
+.poi-card-content .ion-card {
+  margin: 0;
+  box-shadow: none;
 }
 
 .poi-card-image {

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useCityStore } from '../stores/cityStore';
 import { Coordinate } from '../types';
 
@@ -36,6 +36,21 @@ export const useMap = (initialZoom = 14): UseMapReturn => {
     center: defaultCenter,
     zoom: initialZoom,
   });
+
+  // Ref do śledzenia poprzedniego miasta (aby nie reagować na pierwszą inicjalizację)
+  const prevCityIdRef = React.useRef(currentCity?.id);
+
+  // Reaguj na zmiany miasta (np. z ActionSheet lub po hydratacji z Preferences)
+  useEffect(() => {
+    if (currentCity && prevCityIdRef.current !== currentCity.id) {
+      prevCityIdRef.current = currentCity.id;
+      setState({
+        center: currentCity.center,
+        zoom: 14,
+      });
+    }
+  }, [currentCity]);
+
   const setCenter = useCallback((center: Coordinate) => {
     setState((prev) => ({ ...prev, center }));
   }, []);

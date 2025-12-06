@@ -107,19 +107,6 @@ describe('POICard', () => {
     expect(getByText('This is a test POI')).toBeDefined();
   });
 
-  it('should call onClose when close button is clicked', () => {
-    const onClose = vi.fn();
-    const { getAllByRole } = render(
-      <POICard poi={mockPOI} isOpen={true} onClose={onClose} />
-    );
-
-    // Pierwszy przycisk to close button
-    const buttons = getAllByRole('button');
-    fireEvent.click(buttons[0]);
-
-    expect(onClose).toHaveBeenCalled();
-  });
-
   it('should show navigate button when onNavigate is provided', () => {
     const onNavigate = vi.fn();
     const { getByText } = render(
