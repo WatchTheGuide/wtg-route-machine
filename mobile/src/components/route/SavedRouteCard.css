@@ -1,0 +1,70 @@
+.saved-route-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --background: transparent;
+}
+
+.saved-route-card {
+  margin: 8px 16px;
+  width: calc(100% - 32px);
+}
+
+.saved-route-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.saved-route-title-section {
+  flex: 1;
+}
+
+.saved-route-title-section ion-card-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.saved-route-title-section ion-card-subtitle ion-icon {
+  font-size: 14px;
+}
+
+.saved-route-description {
+  color: var(--ion-color-medium);
+  margin-bottom: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.saved-route-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.saved-route-stats ion-chip {
+  margin: 0;
+  height: 28px;
+}
+
+.saved-route-stats ion-chip ion-icon {
+  font-size: 16px;
+}
+
+.saved-route-stats ion-chip ion-label {
+  font-size: 12px;
+}
+
+.saved-route-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--ion-color-medium);
+}
+
+/* Dark mode */
+.dark .saved-route-card {
+  --background: var(--ion-color-step-100);
+}

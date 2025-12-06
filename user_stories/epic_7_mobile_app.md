@@ -376,7 +376,7 @@ Jako użytkownik chcę korzystać z aplikacji offline, aby móc nawigować bez i
 
 ---
 
-## User Story 7.11: Obsługa wielu języków (i18n)
+## User Story 7.11: Obsługa wielu języków (i18n) ✅
 
 ### Opis
 
@@ -384,46 +384,44 @@ Jako użytkownik chcę korzystać z aplikacji w swoim języku, aby lepiej rozumi
 
 ### Kryteria akceptacji
 
-- [ ] Obsługa 5 języków: polski, niemiecki, angielski, francuski, ukraiński
-- [ ] Automatyczne wykrywanie języka urządzenia
-- [ ] Możliwość ręcznej zmiany języka w ustawieniach
-- [ ] Zapisywanie preferencji językowej
-- [ ] Tłumaczenie interfejsu użytkownika
-- [ ] Tłumaczenie instrukcji nawigacyjnych
-- [ ] Tłumaczenie komunikatów błędów i toastów
+- [x] Obsługa 5 języków: polski, niemiecki, angielski, francuski, ukraiński
+- [x] Automatyczne wykrywanie języka urządzenia
+- [x] Możliwość ręcznej zmiany języka w ustawieniach
+- [x] Zapisywanie preferencji językowej
+- [x] Tłumaczenie interfejsu użytkownika
+- [x] Tłumaczenie instrukcji nawigacyjnych
+- [x] Tłumaczenie komunikatów błędów i toastów
 
 ### Języki
 
-| Kod | Język      | Status               |
-| --- | ---------- | -------------------- |
-| pl  | Polski     | Domyślny             |
-| en  | English    | Do zaimplementowania |
-| de  | Deutsch    | Do zaimplementowania |
-| fr  | Français   | Do zaimplementowania |
-| uk  | Українська | Do zaimplementowania |
+| Kod | Język      | Status      |
+| --- | ---------- | ----------- |
+| pl  | Polski     | ✅ Domyślny |
+| en  | English    | ✅ Gotowe   |
+| de  | Deutsch    | ✅ Gotowe   |
+| fr  | Français   | ✅ Gotowe   |
+| uk  | Українська | ✅ Gotowe   |
 
-### Zadania
+### Zaimplementowane
 
-- [ ] Instalacja biblioteki i18n (react-i18next)
-- [ ] Konfiguracja i18n z Capacitor Preferences
-- [ ] Pliki tłumaczeń dla każdego języka (locales/)
-- [ ] Hook useTranslation w komponentach
-- [ ] LanguageSelector w ustawieniach
-- [ ] Tłumaczenie instrukcji OSRM
-- [ ] Testy tłumaczeń
+- **Pakiety**: react-i18next, i18next, i18next-browser-languagedetector
+- **Konfiguracja**: `src/i18n/index.ts` z automatycznym wykrywaniem języka
+- **Tłumaczenia**: `src/i18n/locales/{pl,en,de,fr,uk}.ts`
+- **LanguageSelector**: Komponent z ActionSheet i flagami emoji
+- **Przetłumaczono**: Zakładki, strony, komponenty, POI, nawigację, błędy
+- **Testy**: i18n zainicjalizowany w setupTests.ts, 119 testów przechodzi
 
 ### Struktura plików tłumaczeń
 
 ```
-mobile/src/locales/
-├── pl/
-│   ├── common.json      # Ogólne teksty UI
-│   ├── navigation.json  # Instrukcje nawigacyjne
-│   └── errors.json      # Komunikaty błędów
-├── en/
-├── de/
-├── fr/
-└── uk/
+mobile/src/i18n/
+├── index.ts           # Konfiguracja i18next
+└── locales/
+    ├── pl.ts          # Polski (domyślny)
+    ├── en.ts          # English
+    ├── de.ts          # Deutsch
+    ├── fr.ts          # Français
+    └── uk.ts          # Українська
 ```
 
 ---
@@ -452,7 +450,7 @@ mobile/src/locales/
 ### Faza 4: Polish (Stories 7.10-7.11)
 
 11. Story 7.10: Tryb offline
-12. Story 7.11: Obsługa wielu języków (i18n)
+12. Story 7.11: Obsługa wielu języków (i18n) ✅
 
 ---
 

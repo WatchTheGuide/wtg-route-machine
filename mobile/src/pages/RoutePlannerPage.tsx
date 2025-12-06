@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   IonContent,
   IonHeader,
@@ -11,11 +11,22 @@ import {
   IonModal,
   IonFab,
   IonFabButton,
+  IonToast,
 } from '@ionic/react';
 import { useTranslation } from 'react-i18next';
-import { closeOutline, navigateOutline, locateOutline } from 'ionicons/icons';
+import {
+  closeOutline,
+  navigateOutline,
+  locateOutline,
+  saveOutline,
+} from 'ionicons/icons';
 import { MapView } from '../components/map';
-import { WaypointList, RouteInfo, ProfileSelector } from '../components/route';
+import {
+  WaypointList,
+  RouteInfo,
+  ProfileSelector,
+  SaveRouteModal,
+} from '../components/route';
 import { useMap } from '../hooks/useMap';
 import { useWaypoints } from '../hooks/useWaypoints';
 import { useRouting } from '../hooks/useRouting';
@@ -62,6 +73,9 @@ const RoutePlannerPage: React.FC<RoutePlannerPageProps> = ({
     clearRoute,
   } = useRouting();
 
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [showSavedToast, setShowSavedToast] = useState(false);
+
   // Przelicz trasę gdy zmienią się waypoints lub profil
   useEffect(() => {
     if (canCalculateRoute) {
@@ -82,6 +96,15 @@ const RoutePlannerPage: React.FC<RoutePlannerPageProps> = ({
     }
   };
 
+  const handleSaveRoute = () => {
+    setIsSaveModalOpen(true);
+  };
+
+  const handleRouteSaved = () => {
+    setShowSavedToast(true);
+    // Opcjonalnie: wyczyść trasę po zapisaniu
+    // handleClearAll();
+  };
   const handleClearAll = () => {
     clearWaypoints();
     clearRoute();
@@ -155,9 +178,16 @@ const RoutePlannerPage: React.FC<RoutePlannerPageProps> = ({
               onWaypointClick={(wp) => flyTo(wp.coordinate, 16)}
             />
 
-            {/* Przycisk nawigacji */}
+            {/* Przyciski akcji */}
             {route && (
               <div className="route-planner-actions">
+                <IonButton
+                  expand="block"
+                  color="secondary"
+                  onClick={handleSaveRoute}>
+                  <IonIcon slot="start" icon={saveOutline} />
+                  {t('routes.saveRoute')}
+                </IonButton>
                 <IonButton expand="block" color="primary">
                   <IonIcon slot="start" icon={navigateOutline} />
                   {t('routes.startNavigation')}
@@ -166,6 +196,28 @@ const RoutePlannerPage: React.FC<RoutePlannerPageProps> = ({
             )}
           </div>
         </IonContent>
+
+        {/* Modal zapisywania trasy */}
+        {route && (
+          <SaveRouteModal
+            isOpen={isSaveModalOpen}
+            onClose={() => setIsSaveModalOpen(false)}
+            waypoints={waypoints}
+            route={route}
+            profile={profile}
+            onSaved={handleRouteSaved}
+          />
+        )}
+
+        {/* Toast potwierdzający zapis */}
+        <IonToast
+          isOpen={showSavedToast}
+          onDidDismiss={() => setShowSavedToast(false)}
+          message={t('routes.routeSaved')}
+          duration={2000}
+          position="bottom"
+          color="success"
+        />
       </IonPage>
     </IonModal>
   );
