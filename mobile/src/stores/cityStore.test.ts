@@ -1,6 +1,15 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useCityStore } from './cityStore';
 import { CITIES } from '../types';
+
+// Mock Capacitor Preferences
+vi.mock('@capacitor/preferences', () => ({
+  Preferences: {
+    get: vi.fn().mockResolvedValue({ value: null }),
+    set: vi.fn().mockResolvedValue(undefined),
+    remove: vi.fn().mockResolvedValue(undefined),
+  },
+}));
 
 describe('cityStore', () => {
   beforeEach(() => {

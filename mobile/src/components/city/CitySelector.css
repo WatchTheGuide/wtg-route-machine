@@ -1,0 +1,16 @@
+.city-selector-button {
+  --color: var(--ion-color-light);
+  text-transform: none;
+  font-weight: 500;
+}
+
+.city-selector-button ion-icon[slot='end'] {
+  margin-left: 4px;
+  font-size: 14px;
+}
+
+/* Podświetl wybrane miasto w ActionSheet */
+ion-action-sheet .city-selected {
+  font-weight: 700;
+  color: var(--ion-color-primary);
+}

@@ -2,18 +2,18 @@ import {
   IonContent,
   IonHeader,
   IonPage,
-  IonTitle,
   IonToolbar,
   IonFab,
   IonFabButton,
   IonIcon,
+  IonButtons,
 } from '@ionic/react';
 import { locateOutline } from 'ionicons/icons';
 import { MapView } from '../components/map';
+import { CitySelector } from '../components/city';
 import { useMap } from '../hooks/useMap';
 import { useGeolocation } from '../hooks/useGeolocation';
-import { useCityStore } from '../stores/cityStore';
-import { Coordinate, POI } from '../types';
+import { Coordinate, POI, City } from '../types';
 import './ExplorePage.css';
 
 // Przykładowe POI do testowania mapy
@@ -55,7 +55,6 @@ const ExplorePage: React.FC = () => {
     getCurrentPosition,
     isLoading: isLocating,
   } = useGeolocation();
-  const { currentCity } = useCityStore();
 
   const handleMapClick = (coordinate: Coordinate) => {
     console.log('Kliknięto na mapie:', coordinate);
@@ -76,11 +75,17 @@ const ExplorePage: React.FC = () => {
     }
   };
 
+  const handleCityChange = (city: City) => {
+    flyTo(city.center, 14);
+  };
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar color="primary">
-          <IonTitle>{currentCity?.name || 'Odkrywaj'}</IonTitle>
+          <IonButtons slot="start">
+            <CitySelector onCityChange={handleCityChange} />
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen className="explore-content">
