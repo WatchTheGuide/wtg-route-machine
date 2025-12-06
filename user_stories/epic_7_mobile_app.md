@@ -82,7 +82,7 @@ mobile/
 
 ---
 
-## User Story 7.2: Komponent mapy OpenLayers
+## User Story 7.2: Komponent mapy OpenLayers ✅
 
 ### Opis
 
@@ -90,12 +90,12 @@ Jako użytkownik chcę widzieć interaktywną mapę OpenLayers, aby móc przegl�
 
 ### Kryteria akceptacji
 
-- [ ] Mapa OpenLayers wyśrodkowana na wybranym mieście (domyślnie Kraków)
-- [ ] Obsługa gestów (zoom, pan) na touch i desktop
-- [ ] Markery dla punktów POI
-- [ ] Wyświetlanie trasy jako LineString
-- [ ] Lokalizacja użytkownika (blue dot)
-- [ ] Działa na iOS, Android i Web
+- [x] Mapa OpenLayers wyśrodkowana na wybranym mieście (domyślnie Kraków)
+- [x] Obsługa gestów (zoom, pan) na touch i desktop
+- [x] Markery dla punktów POI
+- [x] Wyświetlanie trasy jako LineString
+- [x] Lokalizacja użytkownika (blue dot)
+- [x] Działa na iOS, Android i Web
 
 ### Warstwy mapy
 
@@ -104,18 +104,16 @@ Jako użytkownik chcę widzieć interaktywną mapę OpenLayers, aby móc przegl�
 3. **Route**: Vector layer z trasą
 4. **User**: Pozycja użytkownika
 
-### Zadania
+### Zaimplementowane
 
-- [ ] Komponent MapView z OpenLayers
-- [ ] Hook useMap do zarządzania mapą
-- [ ] Hook useGeolocation (Capacitor Geolocation)
-- [ ] POI markers layer
-- [ ] Route line layer
-- [ ] Obsługa kliknięć na mapę i markery
+- **MapView**: Komponent OpenLayers z 4 warstwami
+- **useMap**: Hook do zarządzania centrum i zoomem
+- **useGeolocation**: Hook Capacitor Geolocation
+- Kontrolki zoom przesunięte pod header Ionic
 
 ---
 
-## User Story 7.3: Wybór miasta
+## User Story 7.3: Wybór miasta ✅
 
 ### Opis
 
@@ -123,10 +121,10 @@ Jako użytkownik chcę móc wybrać miasto, aby przeglądać POI i planować tra
 
 ### Kryteria akceptacji
 
-- [ ] Lista dostępnych miast (Kraków, Warszawa, Wrocław, Trójmiasto)
-- [ ] Przełączanie miasta zmienia centrum mapy
-- [ ] Zapisywanie ostatnio wybranego miasta
-- [ ] Dynamiczne ładowanie POI dla wybranego miasta
+- [x] Lista dostępnych miast (Kraków, Warszawa, Wrocław, Trójmiasto)
+- [x] Przełączanie miasta zmienia centrum mapy
+- [x] Zapisywanie ostatnio wybranego miasta
+- [ ] Dynamiczne ładowanie POI dla wybranego miasta (Story 7.4)
 
 ### Miasta i centra
 
@@ -139,12 +137,11 @@ const CITIES = {
 };
 ```
 
-### Zadania
+### Zaimplementowane
 
-- [ ] CitySelector component (IonModal lub IonActionSheet)
-- [ ] useCityStore (Zustand) do przechowywania wybranego miasta
-- [ ] Integracja z MapView (zmiana centrum)
-- [ ] Persystencja w Capacitor Preferences
+- **CitySelector**: Komponent z IonActionSheet
+- **cityStore**: Zustand z persystencją Capacitor Preferences
+- Integracja z MapView (flyTo przy zmianie miasta)
 
 ---
 

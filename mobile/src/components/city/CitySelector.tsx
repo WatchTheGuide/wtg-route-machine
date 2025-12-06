@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  IonActionSheet,
-  IonButton,
-  IonIcon,
-} from '@ionic/react';
+import { IonActionSheet, IonButton, IonIcon } from '@ionic/react';
 import { locationOutline, chevronDownOutline } from 'ionicons/icons';
 import { useCityStore } from '../../stores/cityStore';
 import { CITIES, City } from '../../types';
