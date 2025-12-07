@@ -93,21 +93,21 @@
 
 ### Kryteria akceptacji:
 
-- [ ] Karty z podsumowaniem:
+- [x] Karty z podsumowaniem:
   - Liczba wycieczek (total, per city)
   - Liczba POI (total, per city)
   - Najpopularniejsze wycieczki (top 5)
   - Ostatnio dodane wycieczki (last 10)
-- [ ] Wykres liniowy: dodane wycieczki w czasie (Chart.js / Recharts)
-- [ ] Tabela "Recent activity" z timeline zmian
-- [ ] Quick actions: "Add new tour", "Manage POIs", "View reports"
-- [ ] City selector dropdown (filtrowanie statystyk)
+- [x] Wykres liniowy: dodane wycieczki w czasie (Recharts)
+- [x] Tabela "Recent activity" z timeline zmian
+- [x] Quick actions: "Add new tour", "Manage POIs", "View reports"
+- [x] City selector dropdown (filtrowanie statystyk)
 
 ### Komponenty shadcn/ui:
 
 - `Card`, `Badge`, `Table`, `Select`, `Tabs`
 
-### Estymacja: 1.5 dnia
+### Estymacja: 1.5 dnia ✅ COMPLETED (mock data, pending real API)
 
 ---
 
