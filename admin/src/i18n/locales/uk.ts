@@ -12,6 +12,67 @@ const uk = {
       close: 'Закрити',
       search: 'Пошук',
       back: 'Назад',
+      comingSoon: 'Скоро буде...',
+    },
+
+    // Dashboard
+    dashboard: {
+      title: 'Адмін-панель',
+      subtitle: 'Керування екскурсіями та визначними місцями',
+      nav: {
+        dashboard: 'Головна',
+        tours: 'Екскурсії',
+        pois: 'POI',
+        settings: 'Налаштування',
+        logout: 'Вийти',
+      },
+      stats: {
+        tours: 'Екскурсії',
+        pois: 'POI',
+        cities: 'Міста',
+        views: 'Перегляди',
+        thisMonth: 'цього місяця',
+      },
+      status: {
+        published: 'Опубліковано',
+        draft: 'Чернетка',
+      },
+      recentTours: {
+        title: 'Останні екскурсії',
+        subtitle: 'Нещодавно додані та відредаговані екскурсії',
+        name: 'Назва',
+        city: 'Місто',
+        status: 'Статус',
+      },
+      activity: {
+        title: 'Остання активність',
+        subtitle: 'Історія змін у системі',
+        created: 'створив',
+        updated: 'оновив',
+        published: 'опублікував',
+        deleted: 'видалив',
+      },
+    },
+
+    // Tours page
+    tours: {
+      title: 'Екскурсії',
+      subtitle: 'Керування пішохідними екскурсіями',
+      listTitle: 'Список екскурсій',
+    },
+
+    // POIs page
+    pois: {
+      title: 'Визначні місця',
+      subtitle: 'Керування туристичними визначними місцями',
+      listTitle: 'Список POI',
+    },
+
+    // Settings page
+    settings: {
+      title: 'Налаштування',
+      subtitle: 'Конфігурація адмін-панелі',
+      generalTitle: 'Загальні налаштування',
     },
 
     // Navbar

@@ -12,6 +12,67 @@ const fr = {
       close: 'Fermer',
       search: 'Rechercher',
       back: 'Retour',
+      comingSoon: 'Bientôt disponible...',
+    },
+
+    // Dashboard
+    dashboard: {
+      title: 'Tableau de bord Admin',
+      subtitle: "Gérer les circuits et points d'intérêt",
+      nav: {
+        dashboard: 'Tableau de bord',
+        tours: 'Circuits',
+        pois: 'POIs',
+        settings: 'Paramètres',
+        logout: 'Déconnexion',
+      },
+      stats: {
+        tours: 'Circuits',
+        pois: 'POIs',
+        cities: 'Villes',
+        views: 'Vues',
+        thisMonth: 'ce mois-ci',
+      },
+      status: {
+        published: 'Publié',
+        draft: 'Brouillon',
+      },
+      recentTours: {
+        title: 'Circuits récents',
+        subtitle: 'Circuits récemment ajoutés et modifiés',
+        name: 'Nom',
+        city: 'Ville',
+        status: 'Statut',
+      },
+      activity: {
+        title: 'Activité récente',
+        subtitle: 'Historique des modifications',
+        created: 'a créé',
+        updated: 'a mis à jour',
+        published: 'a publié',
+        deleted: 'a supprimé',
+      },
+    },
+
+    // Tours page
+    tours: {
+      title: 'Circuits',
+      subtitle: 'Gérer les circuits pédestres',
+      listTitle: 'Liste des circuits',
+    },
+
+    // POIs page
+    pois: {
+      title: "Points d'intérêt",
+      subtitle: "Gérer les points d'intérêt touristiques",
+      listTitle: 'Liste des POIs',
+    },
+
+    // Settings page
+    settings: {
+      title: 'Paramètres',
+      subtitle: 'Configuration du panneau admin',
+      generalTitle: 'Paramètres généraux',
     },
 
     // Navbar

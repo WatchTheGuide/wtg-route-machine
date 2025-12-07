@@ -12,6 +12,67 @@ const pl = {
       close: 'Zamknij',
       search: 'Szukaj',
       back: 'Wróć',
+      comingSoon: 'Wkrótce dostępne...',
+    },
+
+    // Dashboard
+    dashboard: {
+      title: 'Panel administracyjny',
+      subtitle: 'Zarządzaj wycieczkami i punktami POI',
+      nav: {
+        dashboard: 'Dashboard',
+        tours: 'Wycieczki',
+        pois: 'Punkty POI',
+        settings: 'Ustawienia',
+        logout: 'Wyloguj',
+      },
+      stats: {
+        tours: 'Wycieczki',
+        pois: 'Punkty POI',
+        cities: 'Miasta',
+        views: 'Wyświetlenia',
+        thisMonth: 'w tym miesiącu',
+      },
+      status: {
+        published: 'Opublikowana',
+        draft: 'Szkic',
+      },
+      recentTours: {
+        title: 'Ostatnie wycieczki',
+        subtitle: 'Ostatnio dodane i edytowane wycieczki',
+        name: 'Nazwa',
+        city: 'Miasto',
+        status: 'Status',
+      },
+      activity: {
+        title: 'Ostatnia aktywność',
+        subtitle: 'Historia zmian w systemie',
+        created: 'utworzył',
+        updated: 'zaktualizował',
+        published: 'opublikował',
+        deleted: 'usunął',
+      },
+    },
+
+    // Tours page
+    tours: {
+      title: 'Wycieczki',
+      subtitle: 'Zarządzaj kuratorowanymi wycieczkami',
+      listTitle: 'Lista wycieczek',
+    },
+
+    // POIs page
+    pois: {
+      title: 'Punkty POI',
+      subtitle: 'Zarządzaj punktami turystycznymi',
+      listTitle: 'Lista punktów POI',
+    },
+
+    // Settings page
+    settings: {
+      title: 'Ustawienia',
+      subtitle: 'Konfiguracja panelu administracyjnego',
+      generalTitle: 'Ustawienia ogólne',
     },
 
     // Navbar

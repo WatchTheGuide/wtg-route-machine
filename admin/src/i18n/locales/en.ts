@@ -12,6 +12,67 @@ const en = {
       close: 'Close',
       search: 'Search',
       back: 'Back',
+      comingSoon: 'Coming soon...',
+    },
+
+    // Dashboard
+    dashboard: {
+      title: 'Admin Dashboard',
+      subtitle: 'Manage tours and points of interest',
+      nav: {
+        dashboard: 'Dashboard',
+        tours: 'Tours',
+        pois: 'POIs',
+        settings: 'Settings',
+        logout: 'Log out',
+      },
+      stats: {
+        tours: 'Tours',
+        pois: 'POIs',
+        cities: 'Cities',
+        views: 'Views',
+        thisMonth: 'this month',
+      },
+      status: {
+        published: 'Published',
+        draft: 'Draft',
+      },
+      recentTours: {
+        title: 'Recent Tours',
+        subtitle: 'Recently added and edited tours',
+        name: 'Name',
+        city: 'City',
+        status: 'Status',
+      },
+      activity: {
+        title: 'Recent Activity',
+        subtitle: 'System change history',
+        created: 'created',
+        updated: 'updated',
+        published: 'published',
+        deleted: 'deleted',
+      },
+    },
+
+    // Tours page
+    tours: {
+      title: 'Tours',
+      subtitle: 'Manage curated walking tours',
+      listTitle: 'Tours List',
+    },
+
+    // POIs page
+    pois: {
+      title: 'Points of Interest',
+      subtitle: 'Manage tourist points of interest',
+      listTitle: 'POI List',
+    },
+
+    // Settings page
+    settings: {
+      title: 'Settings',
+      subtitle: 'Admin panel configuration',
+      generalTitle: 'General Settings',
     },
 
     // Navbar
