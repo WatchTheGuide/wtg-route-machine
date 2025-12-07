@@ -579,58 +579,59 @@
 
 #### Backend (tours-server) - rozszerzenie:
 
-- [ ] **Auth Endpoints**:
+- [x] **Auth Endpoints**:
 
-  - [ ] `POST /api/admin/auth/login` - logowanie (email + hasło)
-  - [ ] `POST /api/admin/auth/logout` - wylogowanie (invalidate token)
-  - [ ] `POST /api/admin/auth/refresh` - odświeżenie tokenu
-  - [ ] `GET /api/admin/auth/me` - dane zalogowanego użytkownika
-  - [ ] JWT token z expiration (1h access, 7d refresh)
-  - [ ] Bcrypt password hashing
-  - [ ] Rate limiting na auth endpoints
+  - [x] `POST /api/admin/auth/login` - logowanie (email + hasło)
+  - [x] `POST /api/admin/auth/logout` - wylogowanie (invalidate token)
+  - [x] `POST /api/admin/auth/refresh` - odświeżenie tokenu
+  - [x] `GET /api/admin/auth/me` - dane zalogowanego użytkownika
+  - [x] JWT token z expiration (1h access, 7d refresh)
+  - [x] Bcrypt password hashing
+  - [x] Rate limiting na auth endpoints
 
-- [ ] **Tours CRUD Endpoints**:
+- [x] **Tours CRUD Endpoints**:
 
-  - [ ] `POST /api/admin/tours` - tworzenie nowej wycieczki
-  - [ ] `PUT /api/admin/tours/:id` - aktualizacja wycieczki
-  - [ ] `DELETE /api/admin/tours/:id` - usuwanie wycieczki
-  - [ ] `POST /api/admin/tours/:id/duplicate` - duplikowanie wycieczki
-  - [ ] `POST /api/admin/tours/:id/publish` - publikacja (draft → published)
-  - [ ] `POST /api/admin/tours/bulk-delete` - masowe usuwanie
+  - [x] `POST /api/admin/tours` - tworzenie nowej wycieczki
+  - [x] `PUT /api/admin/tours/:id` - aktualizacja wycieczki
+  - [x] `DELETE /api/admin/tours/:id` - usuwanie wycieczki
+  - [x] `POST /api/admin/tours/:id/duplicate` - duplikowanie wycieczki
+  - [x] `POST /api/admin/tours/:id/publish` - publikacja (draft → published)
+  - [x] `POST /api/admin/tours/:id/archive` - archiwizacja wycieczki
+  - [x] `POST /api/admin/tours/bulk-delete` - masowe usuwanie
 
-- [ ] **Middleware**:
+- [x] **Middleware**:
 
-  - [ ] `authMiddleware` - weryfikacja JWT token
-  - [ ] `roleMiddleware` - sprawdzanie uprawnień (admin/editor)
-  - [ ] Error handling z proper HTTP status codes
+  - [x] `authMiddleware` - weryfikacja JWT token
+  - [x] `roleMiddleware` - sprawdzanie uprawnień (admin/editor)
+  - [x] Error handling z proper HTTP status codes
 
-- [ ] **Baza danych**:
+- [ ] **Baza danych** (pending - obecnie in-memory storage):
   - [ ] Tabela `users` (id, email, password_hash, role, created_at)
   - [ ] Tabela `refresh_tokens` (id, user_id, token, expires_at)
   - [ ] Migracje SQLite/PostgreSQL
 
 #### Frontend (admin) - integracja:
 
-- [ ] **Services**:
+- [x] **Services**:
 
-  - [ ] `authService.ts` - login, logout, refresh, getCurrentUser
-  - [ ] `toursService.ts` - CRUD operations (create, update, delete, duplicate)
-  - [ ] `apiClient.ts` - axios/fetch wrapper z interceptors
+  - [x] `authService.ts` - login, logout, refresh, getCurrentUser, checkAuth
+  - [x] `toursService.ts` - CRUD operations (create, update, delete, duplicate, publish, archive, bulkDelete)
+  - [x] `apiClient.ts` - fetch wrapper z interceptors, auto-refresh, error handling
 
-- [ ] **Token Management**:
+- [x] **Token Management**:
 
-  - [ ] Przechowywanie access token (memory) i refresh token (httpOnly cookie lub localStorage)
-  - [ ] Auto-refresh przed wygaśnięciem
-  - [ ] Logout przy 401 Unauthorized
+  - [x] Przechowywanie access token (localStorage)
+  - [x] Auto-refresh przy 401 (automatic retry)
+  - [x] Logout przy 401 Unauthorized (po nieudanym refresh)
 
-- [ ] **Podmiana mock data**:
+- [ ] **Podmiana mock data** (pending):
 
   - [ ] `ToursPage.tsx` - pobieranie listy z API
   - [ ] `TourEditorPage.tsx` - zapis/aktualizacja przez API
   - [ ] `DashboardPage.tsx` - statystyki z API
   - [ ] Loading states i error handling
 
-- [ ] **TanStack Query integration**:
+- [ ] **TanStack Query integration** (pending):
   - [ ] `useQuery` dla pobierania danych
   - [ ] `useMutation` dla operacji CRUD
   - [ ] Optimistic updates
@@ -700,38 +701,202 @@ admin/src/
 
 ### Fazy implementacji:
 
-1. **Faza 1 (1.5 dnia)**: Backend Auth (login, JWT, middleware)
-2. **Faza 2 (1.5 dnia)**: Backend Tours CRUD (POST, PUT, DELETE)
-3. **Faza 3 (1 dzień)**: Frontend services i token management
-4. **Faza 4 (1 dzień)**: Podmiana mock data, TanStack Query, testy
+1. **Faza 1 (1.5 dnia)**: Backend Auth (login, JWT, middleware) ✅ COMPLETED
+2. **Faza 2 (1.5 dnia)**: Backend Tours CRUD (POST, PUT, DELETE) ✅ COMPLETED
+3. **Faza 3 (1 dzień)**: Frontend services i token management ✅ COMPLETED
+4. **Faza 4 (1 dzień)**: Podmiana mock data, TanStack Query, testy 🔄 IN PROGRESS
+
+### Status: 🔄 IN PROGRESS (Fazy 1-3 ukończone)
+
+---
+
+## US 8.18: Integracja POI i Tours Server w Unified API
+
+**Jako** deweloper  
+**Chcę** skonsolidować poi-server i tours-server w jeden serwis API  
+**Aby** uprościć deployment, zmniejszyć zużycie zasobów i ułatwić maintenance
+
+### Motywacja:
+
+Obecnie mamy dwa oddzielne serwery Express:
+
+- `poi-server` (port 3001) - publiczne API dla POI
+- `tours-server` (port 3002) - Tours API + Admin Auth
+
+Konsolidacja pozwoli na:
+
+- Jeden kontener Docker zamiast dwóch
+- Współdzielone middleware (CORS, rate limiting, logging, auth)
+- Łatwiejsze zarządzanie w nginx (jeden upstream)
+- Przyszła rozbudowa o Admin POI CRUD
+
+### Zależności:
+
+- US 8.17 (Backend API Integration) - auth middleware do współdzielenia
+- Epic 4 (Points of Interest) - POI service do przeniesienia
+
+### Kryteria akceptacji:
+
+#### Struktura unified API:
+
+- [ ] Utworzenie katalogu `backend/api-server/` z połączoną konfiguracją
+- [ ] Migracja kodu z `poi-server/src/` do nowej struktury
+- [ ] Migracja kodu z `tours-server/src/` do nowej struktury
+- [ ] Usunięcie zbędnych duplikatów (package.json, tsconfig, etc.)
+
+#### Endpointy (prefixed):
+
+- [ ] **POI (publiczne)**:
+
+  - [ ] `GET /api/poi/cities` - lista miast
+  - [ ] `GET /api/poi/categories` - kategorie POI
+  - [ ] `GET /api/poi/:cityId` - POI dla miasta
+  - [ ] `GET /api/poi/:cityId/:poiId` - szczegóły POI
+  - [ ] `GET /api/poi/:cityId/search` - wyszukiwanie
+  - [ ] `GET /api/poi/:cityId/nearby` - pobliskie POI
+
+- [ ] **Tours (publiczne)**:
+
+  - [ ] `GET /api/tours/:cityId` - wycieczki dla miasta
+  - [ ] `GET /api/tours/:cityId/:tourId` - szczegóły wycieczki
+
+- [ ] **Admin Auth**:
+
+  - [ ] `POST /api/admin/auth/login`
+  - [ ] `POST /api/admin/auth/logout`
+  - [ ] `POST /api/admin/auth/refresh`
+  - [ ] `GET /api/admin/auth/me`
+
+- [ ] **Admin Tours (chronione)**:
+
+  - [ ] `GET /api/admin/tours` - lista wszystkich wycieczek
+  - [ ] `POST /api/admin/tours` - tworzenie
+  - [ ] `PUT /api/admin/tours/:id` - aktualizacja
+  - [ ] `DELETE /api/admin/tours/:id` - usuwanie
+  - [ ] Pozostałe endpointy CRUD
+
+- [ ] **Admin POI (chronione, przyszłość)**:
+  - [ ] `GET /api/admin/poi` - lista POI do zarządzania
+  - [ ] `POST /api/admin/poi` - dodawanie POI
+  - [ ] `PUT /api/admin/poi/:id` - edycja POI
+  - [ ] `DELETE /api/admin/poi/:id` - usuwanie POI
+
+#### Współdzielone middleware:
+
+- [ ] CORS configuration (unified)
+- [ ] Rate limiting (różne limity dla public/admin)
+- [ ] Request logging
+- [ ] Error handling middleware
+- [ ] Health check endpoint (`/health`)
+
+#### Docker & Deployment:
+
+- [ ] Nowy `Dockerfile` dla api-server
+- [ ] Aktualizacja `docker-compose.yml`
+- [ ] Aktualizacja nginx config (jeden upstream)
+- [ ] Environment variables (PORT, JWT_SECRET, etc.)
+
+#### Migracja danych:
+
+- [ ] Przeniesienie `poi-server/src/data/` do `api-server/src/data/poi/`
+- [ ] Przeniesienie `tours-server/src/data/` do `api-server/src/data/tours/`
+
+#### Aktualizacja frontendów:
+
+- [ ] `mobile/` - aktualizacja URL w osrmService i poiService
+- [ ] `admin/` - aktualizacja baseUrl w apiClient
+- [ ] `frontend/` - aktualizacja API URLs
+
+### Struktura plików (docelowa):
+
+```
+backend/api-server/
+├── src/
+│   ├── app.ts                    # Główna aplikacja Express
+│   ├── config.ts                 # Konfiguracja
+│   ├── index.ts                  # Entry point
+│   ├── middleware/
+│   │   ├── auth.middleware.ts    # JWT verification
+│   │   ├── rate-limit.ts         # Rate limiters
+│   │   └── error-handler.ts      # Global error handler
+│   ├── routes/
+│   │   ├── index.ts              # Route aggregator
+│   │   ├── poi.routes.ts         # GET /api/poi/*
+│   │   ├── tours.routes.ts       # GET /api/tours/*
+│   │   ├── admin.auth.routes.ts  # /api/admin/auth/*
+│   │   ├── admin.tours.routes.ts # /api/admin/tours/*
+│   │   └── admin.poi.routes.ts   # /api/admin/poi/* (przyszłość)
+│   ├── services/
+│   │   ├── poi.service.ts
+│   │   ├── tours.service.ts
+│   │   └── auth.service.ts
+│   ├── types/
+│   │   ├── poi.types.ts
+│   │   ├── tours.types.ts
+│   │   └── auth.types.ts
+│   └── data/
+│       ├── poi/
+│       │   ├── krakow.json
+│       │   └── categories.json
+│       └── tours/
+│           └── krakow.json
+├── package.json
+├── tsconfig.json
+├── Dockerfile
+└── README.md
+```
+
+### Cleanup po migracji:
+
+- [ ] Usunięcie `backend/poi-server/` (po weryfikacji)
+- [ ] Usunięcie `backend/tours-server/` (po weryfikacji)
+- [ ] Aktualizacja dokumentacji (README, API docs)
+
+### Testy:
+
+- [ ] Unit testy dla wszystkich services
+- [ ] Integration testy dla API endpoints
+- [ ] E2E test: login → create tour → fetch tour → delete tour
+
+### Estymacja: 2-3 dni
+
+### Fazy implementacji:
+
+1. **Faza 1 (0.5 dnia)**: Setup api-server, migracja shared code
+2. **Faza 2 (0.5 dnia)**: Migracja POI routes i services
+3. **Faza 3 (0.5 dnia)**: Migracja Tours routes, services, auth
+4. **Faza 4 (0.5 dnia)**: Docker, nginx, environment config
+5. **Faza 5 (0.5 dnia)**: Aktualizacja frontendów, testy
+6. **Faza 6 (0.5 dnia)**: Cleanup, dokumentacja
 
 ---
 
 ## Estymacje Podsumowanie
 
-| User Story | Estymacja |
-| ---------- | --------- |
-| US 8.1     | 0.5 dnia  |
-| US 8.2     | 2 dni     |
-| US 8.3     | 1.5 dnia  |
-| US 8.4     | 2 dni     |
-| US 8.5     | 3 dni     |
-| US 8.6     | 4 dni     |
-| US 8.7     | 2 dni     |
-| US 8.8     | 3 dni     |
-| US 8.9     | 1.5 dnia  |
-| US 8.10    | 2.5 dnia  |
-| US 8.11    | 1.5 dnia  |
-| US 8.12    | 2 dni     |
-| US 8.13    | 1 dzień   |
-| US 8.14    | 2 dni     |
-| US 8.15    | 1.5 dnia  |
-| US 8.16    | 1 dzień   |
-| US 8.17    | 4.5 dnia  |
+| User Story | Estymacja | Status               |
+| ---------- | --------- | -------------------- |
+| US 8.1     | 0.5 dnia  | ✅ DONE              |
+| US 8.2     | 2 dni     | ✅ DONE              |
+| US 8.3     | 1.5 dnia  | ✅ DONE (mock)       |
+| US 8.4     | 2 dni     | ✅ DONE (mock)       |
+| US 8.5     | 3 dni     | ✅ DONE (mock)       |
+| US 8.6     | 4 dni     | ✅ DONE              |
+| US 8.7     | 2 dni     |                      |
+| US 8.8     | 3 dni     |                      |
+| US 8.9     | 1.5 dnia  |                      |
+| US 8.10    | 2.5 dnia  |                      |
+| US 8.11    | 1.5 dnia  |                      |
+| US 8.12    | 2 dni     |                      |
+| US 8.13    | 1 dzień   |                      |
+| US 8.14    | 2 dni     |                      |
+| US 8.15    | 1.5 dnia  |                      |
+| US 8.16    | 1 dzień   |                      |
+| US 8.17    | 4.5 dnia  | 🔄 IN PROGRESS (75%) |
+| US 8.18    | 2.5 dnia  | ⏳ PLANNED           |
 
-**Łączna estymacja:** ~34.5 dni robocze (~7 tygodni)
+**Łączna estymacja:** ~37 dni roboczych (~7.5 tygodnia)
 
-**MVP (bez US 8.14):** ~32.5 dni robocze
+**MVP (bez US 8.14):** ~35 dni roboczych
 
 ---
 
@@ -791,42 +956,47 @@ admin/src/
 
 ## Kolejność realizacji (rekomendowana)
 
-### Faza 1: MVP Admin Panel (2 tygodnie)
+### Faza 1: MVP Admin Panel (2 tygodnie) ✅ COMPLETED
 
-1. US 8.1 - Projekt i struktura
-2. US 8.2 - Autentykacja
-3. US 8.4 - Lista wycieczek
-4. US 8.5 - Edytor wycieczek (basic)
+1. US 8.1 - Projekt i struktura ✅
+2. US 8.2 - Autentykacja ✅
+3. US 8.4 - Lista wycieczek ✅
+4. US 8.5 - Edytor wycieczek (basic) ✅
 
-### Faza 2: Advanced Editor (1.5 tygodnia)
+### Faza 2: Advanced Editor (1.5 tygodnia) ✅ COMPLETED
 
-5. US 8.6 - Edytor z mapą
+5. US 8.6 - Edytor z mapą ✅
 6. US 8.7 - Zarządzanie POI w edytorze
 
-### Faza 3: POI Management (1 tydzień)
+### Faza 3: Backend Integration (1 tydzień) 🔄 IN PROGRESS
 
-7. US 8.8 - POI Manager
-8. US 8.9 - Multi-language
+7. US 8.17 - Integracja z Backend API 🔄
+8. US 8.18 - Unifikacja POI i Tours Server ⏳
 
-### Faza 4: Media & Testing (1 tydzień)
+### Faza 4: POI Management (1 tydzień)
 
-9. US 8.10 - Media Manager
-10. US 8.11 - Preview & Testing
+9. US 8.8 - POI Manager
+10. US 8.9 - Multi-language
 
-### Faza 5: Public Website (1 tydzień)
+### Faza 5: Media & Testing (1 tydzień)
 
-11. US 8.12 - Landing Page
-12. US 8.13 - About Page
+11. US 8.10 - Media Manager
+12. US 8.11 - Preview & Testing
 
-### Faza 6: Monitoring & Deploy (0.5 tygodnia)
+### Faza 6: Public Website (1 tydzień)
 
-13. US 8.3 - Dashboard
-14. US 8.15 - Analytics
-15. US 8.16 - CI/CD
+13. US 8.12 - Landing Page
+14. US 8.13 - About Page
 
-### Faza 7: Opcjonalne (future)
+### Faza 7: Dashboard & Monitoring (0.5 tygodnia)
 
-16. US 8.14 - Blog/News
+15. US 8.3 - Dashboard (real data)
+16. US 8.15 - Analytics
+17. US 8.16 - CI/CD
+
+### Faza 8: Opcjonalne (future)
+
+18. US 8.14 - Blog/News
 
 ---
 

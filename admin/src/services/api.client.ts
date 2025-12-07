@@ -3,7 +3,7 @@
  * Handles authentication, token refresh, and error handling
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3002';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 // Token storage keys
 const ACCESS_TOKEN_KEY = 'wtg_access_token';

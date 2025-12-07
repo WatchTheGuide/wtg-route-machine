@@ -1,0 +1,148 @@
+[
+  {
+    "id": "trojmiasto-landmarks",
+    "cityId": "trojmiasto",
+    "name": {
+      "pl": "Najważniejsze zabytki Trójmiasta",
+      "en": "Tri-City Main Landmarks",
+      "de": "Wichtigste Sehenswürdigkeiten der Dreistadt",
+      "fr": "Principaux monuments de la Tricité",
+      "uk": "Головні пам'ятки Труймяста"
+    },
+    "description": {
+      "pl": "Odkryj najważniejsze zabytki Gdańska: Ulicę Długą, Dwór Artusa, Złotą Bramę, Bazylikę Mariacką, Żuraw i Westerplatte.",
+      "en": "Discover Gdańsk's main landmarks: Long Street, Artus Court, Golden Gate, St. Mary's Basilica, Crane and Westerplatte.",
+      "de": "Entdecken Sie Danzigs wichtigste Sehenswürdigkeiten: Lange Gasse, Artushof, Goldenes Tor, Marienkirche, Krantor und Westerplatte.",
+      "fr": "Découvrez les principaux monuments de Gdańsk : la Rue Longue, la Cour d'Artus, la Porte Dorée, la Basilique Sainte-Marie, la Grue et Westerplatte.",
+      "uk": "Відкрийте для себе головні пам'ятки Гданська: вулицю Длуга, Двір Артуса, Золоті ворота, Маріацьку базиліку, Журав і Вестерплятте."
+    },
+    "category": "history",
+    "difficulty": "easy",
+    "distance": 5000,
+    "duration": 10800,
+    "imageUrl": "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=800&q=80&auto=format&fit=crop",
+    "pois": [
+      {
+        "id": "gdansk-dluga",
+        "name": "Ulica Długa",
+        "description": "Główny trakt reprezentacyjny Gdańska",
+        "category": "landmark",
+        "coordinate": [18.6486, 54.3487],
+        "address": "Długa, Gdańsk"
+      },
+      {
+        "id": "gdansk-dwor-artusa",
+        "name": "Dwór Artusa",
+        "description": "Historyczne miejsce spotkań kupców",
+        "category": "landmark",
+        "coordinate": [18.6535, 54.3487],
+        "address": "Długi Targ 43/44, Gdańsk"
+      },
+      {
+        "id": "gdansk-zlota-brama",
+        "name": "Złota Brama",
+        "description": "Renesansowa brama miejska",
+        "category": "landmark",
+        "coordinate": [18.6464, 54.3489],
+        "address": "Długa 1, Gdańsk"
+      },
+      {
+        "id": "gdansk-mariacka",
+        "name": "Bazylika Mariacka",
+        "description": "Największa ceglana świątynia w Europie",
+        "category": "landmark",
+        "coordinate": [18.6543, 54.3483],
+        "address": "Podkramarska 5, Gdańsk"
+      },
+      {
+        "id": "gdansk-zuraw",
+        "name": "Żuraw",
+        "description": "Średniowieczny dźwig portowy - symbol Gdańska",
+        "category": "landmark",
+        "coordinate": [18.6573, 54.3486],
+        "address": "Szeroka 67/68, Gdańsk"
+      },
+      {
+        "id": "gdansk-westerplatte",
+        "name": "Westerplatte",
+        "description": "Miejsce wybuchu II wojny światowej",
+        "category": "landmark",
+        "coordinate": [18.6783, 54.4061],
+        "address": "Westerplatte, Gdańsk"
+      }
+    ]
+  },
+  {
+    "id": "trojmiasto-churches",
+    "cityId": "trojmiasto",
+    "name": {
+      "pl": "Najważniejsze kościoły Trójmiasta",
+      "en": "Tri-City Main Churches",
+      "de": "Wichtigste Kirchen der Dreistadt",
+      "fr": "Principales églises de la Tricité",
+      "uk": "Головні костели Труймяста"
+    },
+    "description": {
+      "pl": "Trasa po najpiękniejszych świątyniach Gdańska: Bazylika Mariacka, Kościół św. Mikołaja, Kościół św. Katarzyny, Katedra Oliwska.",
+      "en": "Route through Gdańsk's most beautiful churches: St. Mary's Basilica, St. Nicholas Church, St. Catherine's Church, Oliwa Cathedral.",
+      "de": "Route durch Danzigs schönste Kirchen: Marienbasilika, Nikolaikirche, Katharinenkirche, Oliwaer Kathedrale.",
+      "fr": "Route à travers les plus belles églises de Gdańsk : Basilique Sainte-Marie, Église Saint-Nicolas, Église Sainte-Catherine, Cathédrale d'Oliwa.",
+      "uk": "Маршрут найкрасивішими костелами Гданська: Маріацька базиліка, Костел св. Миколая, Костел св. Катерини, Олівський собор."
+    },
+    "category": "architecture",
+    "difficulty": "medium",
+    "distance": 6200,
+    "duration": 14400,
+    "imageUrl": "https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=800&q=80&auto=format&fit=crop",
+    "pois": [
+      {
+        "id": "gdansk-mariacka-church",
+        "name": "Bazylika Mariacka",
+        "description": "Największa ceglana świątynia świata",
+        "category": "landmark",
+        "coordinate": [18.6543, 54.3483],
+        "address": "Podkramarska 5, Gdańsk"
+      },
+      {
+        "id": "gdansk-sw-mikolaja",
+        "name": "Kościół św. Mikołaja",
+        "description": "Gotycka świątynia z organami barokowymi",
+        "category": "landmark",
+        "coordinate": [18.6524, 54.3495],
+        "address": "Świętego Ducha 2, Gdańsk"
+      },
+      {
+        "id": "gdansk-sw-katarzyny",
+        "name": "Kościół św. Katarzyny",
+        "description": "Najstarsza świątynia Gdańska",
+        "category": "landmark",
+        "coordinate": [18.6549, 54.3501],
+        "address": "Profesorska 1, Gdańsk"
+      },
+      {
+        "id": "gdansk-sw-jana",
+        "name": "Kościół św. Jana",
+        "description": "Gotycka świątynia z kamiennymi sklepieniami",
+        "category": "landmark",
+        "coordinate": [18.652, 54.35],
+        "address": "Świętojańska 2, Gdańsk"
+      },
+      {
+        "id": "gdansk-brygidy",
+        "name": "Kościół św. Brygidy",
+        "description": "Miejsce działalności Solidarności",
+        "category": "landmark",
+        "coordinate": [18.6508, 54.3516],
+        "address": "Profesorska 17, Gdańsk"
+      },
+      {
+        "id": "gdansk-oliwa",
+        "name": "Katedra Oliwska",
+        "description": "Barokowa katedra ze słynnymi organami",
+        "category": "landmark",
+        "coordinate": [18.5576, 54.4031],
+        "address": "biskupa Edmunda Nowickiego 5, Gdańsk"
+      }
+    ]
+  }
+]

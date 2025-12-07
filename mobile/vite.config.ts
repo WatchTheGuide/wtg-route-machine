@@ -10,7 +10,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api/tours': {
-        target: 'http://localhost:3002',
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/poi': {
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
       },
