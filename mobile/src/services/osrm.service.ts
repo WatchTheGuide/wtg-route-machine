@@ -1,4 +1,5 @@
 import { Coordinate, Route, RoutingProfile, RouteStep } from '../types';
+import { API_CONFIG } from '../config/api';
 
 /**
  * Konfiguracja OSRM
@@ -103,9 +104,9 @@ class OSRMService {
   private config: OSRMConfig;
 
   constructor() {
-    // Domyślny URL - zostanie zaktualizowany przed użyciem
+    // Użyj API_CONFIG - automatycznie wykrywa platformę (Android: 10.0.2.2, iOS/Web: localhost)
     this.config = {
-      baseUrl: 'http://localhost:5001',
+      baseUrl: API_CONFIG.osrmBaseUrl,
     };
   }
 
