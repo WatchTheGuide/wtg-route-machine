@@ -178,6 +178,32 @@ const pl = {
       fr: 'Français',
       uk: 'Українська',
     },
+
+    // Authentication
+    auth: {
+      login: {
+        title: 'Zaloguj się',
+        subtitle:
+          'Wprowadź dane logowania, aby uzyskać dostęp do panelu administracyjnego',
+        email: 'Email',
+        emailPlaceholder: 'admin@example.com',
+        password: 'Hasło',
+        rememberMe: 'Zapamiętaj mnie',
+        forgotPassword: 'Zapomniałeś hasła?',
+        submit: 'Zaloguj się',
+        signingIn: 'Logowanie...',
+        backToHome: 'Powrót do strony głównej',
+        error: 'Nieprawidłowy email lub hasło',
+        demoCredentials: 'Użyj testowych danych logowania:',
+      },
+      logout: 'Wyloguj',
+      validation: {
+        emailRequired: 'Email jest wymagany',
+        emailInvalid: 'Nieprawidłowy adres email',
+        passwordRequired: 'Hasło jest wymagane',
+        passwordMinLength: 'Hasło musi mieć co najmniej 6 znaków',
+      },
+    },
   },
 };
 

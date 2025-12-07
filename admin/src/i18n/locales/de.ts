@@ -179,6 +179,32 @@ const de = {
       fr: 'Français',
       uk: 'Українська',
     },
+
+    // Authentication
+    auth: {
+      login: {
+        title: 'Anmelden',
+        subtitle:
+          'Geben Sie Ihre Anmeldedaten ein, um auf das Admin-Panel zuzugreifen',
+        email: 'E-Mail',
+        emailPlaceholder: 'admin@example.com',
+        password: 'Passwort',
+        rememberMe: 'Angemeldet bleiben',
+        forgotPassword: 'Passwort vergessen?',
+        submit: 'Anmelden',
+        signingIn: 'Anmeldung...',
+        backToHome: 'Zurück zur Startseite',
+        error: 'Ungültige E-Mail oder Passwort',
+        demoCredentials: 'Demo-Anmeldedaten verwenden:',
+      },
+      logout: 'Abmelden',
+      validation: {
+        emailRequired: 'E-Mail ist erforderlich',
+        emailInvalid: 'Ungültige E-Mail-Adresse',
+        passwordRequired: 'Passwort ist erforderlich',
+        passwordMinLength: 'Das Passwort muss mindestens 6 Zeichen lang sein',
+      },
+    },
   },
 };
 

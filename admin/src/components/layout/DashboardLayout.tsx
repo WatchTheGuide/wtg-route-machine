@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard,
@@ -12,6 +12,7 @@ import {
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -32,7 +33,14 @@ const navItems = [
 export function DashboardLayout() {
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const logout = useAuthStore((state) => state.logout);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -97,9 +105,12 @@ export function DashboardLayout() {
 
         {/* Sidebar footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t">
-          <Button variant="ghost" className="w-full justify-start gap-3">
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3"
+            onClick={handleLogout}>
             <LogOut className="h-5 w-5" />
-            {t('dashboard.nav.logout')}
+            {t('auth.logout')}
           </Button>
         </div>
       </aside>

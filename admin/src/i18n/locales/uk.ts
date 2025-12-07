@@ -178,6 +178,32 @@ const uk = {
       fr: 'Français',
       uk: 'Українська',
     },
+
+    // Authentication
+    auth: {
+      login: {
+        title: 'Увійти',
+        subtitle:
+          'Введіть свої облікові дані для доступу до панелі адміністратора',
+        email: 'Email',
+        emailPlaceholder: 'admin@example.com',
+        password: 'Пароль',
+        rememberMe: "Запам'ятати мене",
+        forgotPassword: 'Забули пароль?',
+        submit: 'Увійти',
+        signingIn: 'Вхід...',
+        backToHome: 'Повернутися на головну',
+        error: 'Невірний email або пароль',
+        demoCredentials: 'Використовуйте демо-дані:',
+      },
+      logout: 'Вийти',
+      validation: {
+        emailRequired: "Email обов'язковий",
+        emailInvalid: 'Невірна адреса email',
+        passwordRequired: "Пароль обов'язковий",
+        passwordMinLength: 'Пароль повинен містити принаймні 6 символів',
+      },
+    },
   },
 };
 

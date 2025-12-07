@@ -180,6 +180,33 @@ const fr = {
       fr: 'Français',
       uk: 'Українська',
     },
+
+    // Authentication
+    auth: {
+      login: {
+        title: 'Connexion',
+        subtitle:
+          "Entrez vos identifiants pour accéder au panneau d'administration",
+        email: 'E-mail',
+        emailPlaceholder: 'admin@example.com',
+        password: 'Mot de passe',
+        rememberMe: 'Se souvenir de moi',
+        forgotPassword: 'Mot de passe oublié ?',
+        submit: 'Se connecter',
+        signingIn: 'Connexion en cours...',
+        backToHome: "Retour à l'accueil",
+        error: 'E-mail ou mot de passe incorrect',
+        demoCredentials: 'Utilisez les identifiants de démonstration :',
+      },
+      logout: 'Déconnexion',
+      validation: {
+        emailRequired: "L'e-mail est requis",
+        emailInvalid: 'Adresse e-mail invalide',
+        passwordRequired: 'Le mot de passe est requis',
+        passwordMinLength:
+          'Le mot de passe doit contenir au moins 6 caractères',
+      },
+    },
   },
 };
 
