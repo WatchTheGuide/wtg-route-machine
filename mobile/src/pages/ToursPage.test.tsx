@@ -9,7 +9,10 @@ import ToursPage from './ToursPage';
 // Mock toursService
 vi.mock('../services/tours.service', () => ({
   toursService: {
+    getCities: vi.fn().mockResolvedValue([]),
     getToursByCity: vi.fn().mockResolvedValue([]),
+    getTourById: vi.fn().mockResolvedValue(null),
+    searchTours: vi.fn().mockResolvedValue([]),
   },
 }));
 

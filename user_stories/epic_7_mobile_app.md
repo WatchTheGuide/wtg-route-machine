@@ -569,7 +569,7 @@ mobile/src/i18n/
 
 ---
 
-## User Story 7.12: Integracja z backend API tours
+## User Story 7.12: Integracja z backend API tours ✅
 
 ### Opis
 
@@ -577,20 +577,46 @@ Jako użytkownik chcę, aby dane kuratorowanych wycieczek były pobierane z back
 
 ### Zależności
 
-- **Wymaga**: Epic 5.1 - Tours Backend API (US 5.1.1-5.1.7)
-- **Bazuje na**: US 7.7 - Kuratorowane wycieczki (UI już zaimplementowane)
+- **Wymaga**: Epic 5.1 - Tours Backend API (US 5.1.1-5.1.7) ✅
+- **Bazuje na**: US 7.7 - Kuratorowane wycieczki (UI już zaimplementowane) ✅
 
 ### Kryteria akceptacji
 
-- [ ] Serwis `tours.service.ts` komunikuje się z backend API zamiast lokalnych danych
-- [ ] Obsługa API key w produkcji (X-API-Key header)
-- [ ] Brak wymogu API key w developmencie (localhost)
-- [ ] Wszystkie endpointy tours zaimplementowane
-- [ ] Loading states podczas pobierania danych
-- [ ] Error handling z komunikatami użytkownikowi
-- [ ] Cache danych z TanStack Query (stale time 5 min)
-- [ ] Offline fallback do ostatnich załadowanych danych
-- [ ] Migracja danych z `tours.ts` do backendu zakończona
+- [x] Serwis `tours.service.ts` komunikuje się z backend API zamiast lokalnych danych
+- [x] Obsługa API key w produkcji (X-API-Key header)
+- [x] Brak wymogu API key w developmencie (localhost)
+- [x] Wszystkie endpointy tours zaimplementowane
+- [x] Loading states podczas pobierania danych
+- [x] Error handling z komunikatami użytkownikowi
+- [x] Cache danych z TanStack Query (stale time 10 min)
+- [x] Offline fallback do ostatnich załadowanych danych (React Query cache)
+- [x] Migracja danych z `tours.ts` do backendu zakończona
+
+### Zaimplementowane pliki
+
+**Konfiguracja API:**
+
+- `mobile/src/config/api.ts` - Centralna konfiguracja API z environment variables
+- `mobile/.env.development` - Development config (localhost, no API key)
+- `mobile/.env.production` - Production config (https://api.wtg.pl, API key required)
+
+**Serwisy:**
+
+- `mobile/src/services/tours.service.ts` - Axios HTTP client z 4 metodami
+- `mobile/src/hooks/useTours.ts` - React Query hooks z cache i error handling
+
+**Testy:**
+
+- `mobile/src/pages/ToursPage.test.tsx` - Zaktualizowane mocki axios
+- Wszystkie 119 testów jednostkowych przechodzą ✅
+
+**Proxy:**
+
+- `mobile/vite.config.ts` - Vite proxy dla `/api/tours` i `/api/osrm`
+
+**Usunięte:**
+
+- `mobile/src/data/tours.ts` - Stare hardcoded dane (migracja zakończona)
 
 ### Endpointy API
 
