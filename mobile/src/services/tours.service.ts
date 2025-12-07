@@ -1,5 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
-import type { Tour, TourSummary, TourCategory, TourDifficulty } from '../types';
+import type {
+  Tour,
+  TourSummary,
+  TourCategory,
+  TourDifficulty,
+  LocalizedString,
+} from '../types';
 import { API_CONFIG, getApiHeaders } from '../config/api';
 
 /**
@@ -14,18 +20,7 @@ interface CitiesResponse {
 }
 
 interface ToursResponse {
-  tours: Array<{
-    id: string;
-    cityId: string;
-    name: Record<string, string>;
-    description: Record<string, string>;
-    category: TourCategory;
-    difficulty: TourDifficulty;
-    distance: number;
-    duration: number;
-    imageUrl: string;
-    poisCount: number;
-  }>;
+  tours: TourSummary[];
 }
 
 interface TourResponse {
@@ -33,18 +28,7 @@ interface TourResponse {
 }
 
 interface SearchResponse {
-  tours: Array<{
-    id: string;
-    cityId: string;
-    name: Record<string, string>;
-    description: Record<string, string>;
-    category: TourCategory;
-    difficulty: TourDifficulty;
-    distance: number;
-    duration: number;
-    imageUrl: string;
-    poisCount: number;
-  }>;
+  tours: TourSummary[];
   query: string;
   count: number;
 }
@@ -77,7 +61,7 @@ class ToursService {
    */
   async getToursByCity(cityId: string): Promise<TourSummary[]> {
     const { data } = await this.client.get<ToursResponse>(`/${cityId}`);
-    return data.tours as TourSummary[];
+    return data.tours;
   }
 
   /**
@@ -150,7 +134,7 @@ class ToursService {
       }
     );
 
-    return data.tours as TourSummary[];
+    return data.tours;
   }
 }
 
