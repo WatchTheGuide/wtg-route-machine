@@ -65,7 +65,8 @@ export const useRouting = (): UseRoutingReturn => {
         const coordinates: Coordinate[] = waypoints.map((wp) => wp.coordinate);
         const calculatedRoute = await osrmService.calculateRoute(
           coordinates,
-          profile
+          profile,
+          currentCity.id // Pass city ID for production multi-city support
         );
         storeSetRoute(calculatedRoute);
       } catch (err) {
@@ -76,7 +77,7 @@ export const useRouting = (): UseRoutingReturn => {
         storeSetCalculating(false);
       }
     },
-    [profile, storeSetRoute, storeSetCalculating, storeSetError]
+    [profile, currentCity.id, storeSetRoute, storeSetCalculating, storeSetError]
   );
 
   const setProfile = useCallback(

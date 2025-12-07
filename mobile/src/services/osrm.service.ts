@@ -119,28 +119,49 @@ class OSRMService {
 
   /**
    * Buduje URL dla OSRM Route API
+   * @param waypoints - Lista współrzędnych
+   * @param profile - Profil routingu (foot, bicycle, car)
+   * @param cityId - ID miasta (opcjonalne, domyślnie 'krakow')
+   * @returns URL do OSRM API
    */
   private buildRouteUrl(
     waypoints: Coordinate[],
-    profile: RoutingProfile
+    profile: RoutingProfile,
+    cityId: string = 'krakow'
   ): string {
     const coordinates = waypoints.map((wp) => `${wp[0]},${wp[1]}`).join(';');
 
-    return `${this.config.baseUrl}/route/v1/${profile}/${coordinates}?overview=full&geometries=geojson&steps=true`;
+    // Production URL format: https://osrm.watchtheguide.com/{city}/{profile}/route/v1/{profile}/{coordinates}
+    // Development URL format: http://localhost:5001/route/v1/{profile}/{coordinates} (backwards compatible)
+    const isProduction = this.config.baseUrl.includes('osrm.watchtheguide.com');
+
+    if (isProduction) {
+      return `${this.config.baseUrl}/${cityId}/${profile}/route/v1/${profile}/${coordinates}?overview=full&geometries=geojson&steps=true`;
+    } else {
+      // Development: legacy format (single city server)
+      return `${this.config.baseUrl}/route/v1/${profile}/${coordinates}?overview=full&geometries=geojson&steps=true`;
+    }
   }
 
   /**
    * Oblicza trasę między waypoints
+   * @param waypoints - Lista współrzędnych
+   * @param profile - Profil routingu (foot, bicycle, car)
+   * @param cityId - ID miasta (opcjonalne, jeśli brak użyje domyślne 'krakow')
+   * @returns Obliczona trasa
    */
   async calculateRoute(
     waypoints: Coordinate[],
-    profile: RoutingProfile = 'foot'
+    profile: RoutingProfile = 'foot',
+    cityId?: string
   ): Promise<Route> {
     if (waypoints.length < 2) {
       throw new Error('Potrzeba minimum 2 punktów do obliczenia trasy');
     }
 
-    const url = this.buildRouteUrl(waypoints, profile);
+    // Use provided cityId or default to 'krakow'
+    const city = cityId || 'krakow';
+    const url = this.buildRouteUrl(waypoints, profile, city);
 
     try {
       const response = await fetch(url);
@@ -190,12 +211,22 @@ class OSRMService {
 
   /**
    * Znajduje najbliższy punkt na sieci dróg
+   * @param coordinate - Współrzędne punktu
+   * @param profile - Profil routingu (foot, bicycle, car)
+   * @param cityId - ID miasta (opcjonalne)
+   * @returns Najbliższy punkt na sieci lub null
    */
   async findNearest(
     coordinate: Coordinate,
-    profile: RoutingProfile = 'foot'
+    profile: RoutingProfile = 'foot',
+    cityId?: string
   ): Promise<Coordinate | null> {
-    const url = `${this.config.baseUrl}/nearest/v1/${profile}/${coordinate[0]},${coordinate[1]}`;
+    const city = cityId || 'krakow';
+    const isProduction = this.config.baseUrl.includes('osrm.watchtheguide.com');
+
+    const url = isProduction
+      ? `${this.config.baseUrl}/${city}/${profile}/nearest/v1/${profile}/${coordinate[0]},${coordinate[1]}`
+      : `${this.config.baseUrl}/nearest/v1/${profile}/${coordinate[0]},${coordinate[1]}`;
 
     try {
       const response = await fetch(url);
