@@ -37,7 +37,7 @@ GET  /api/tours/:cityId/search?q=query    - Szukaj wycieczek
 
 ---
 
-## US 5.1.1: Tours Service - Struktura projektu
+## US 5.1.1: Tours Service - Struktura projektu ✅
 
 **Jako** deweloper  
 **Chcę** stworzyć Tours Service zgodny z architekturą POI Server  
@@ -174,7 +174,7 @@ export interface ErrorResponse {
 
 ---
 
-## US 5.1.2: Tours Data Structure
+## US 5.1.2: Tours Data Structure ✅
 
 **Jako** content manager  
 **Chcę** przechowywać wycieczki w JSON files poza kodem aplikacji  
@@ -317,7 +317,7 @@ export interface ErrorResponse {
 
 ---
 
-## US 5.1.3: Tours Service - Business Logic
+## US 5.1.3: Tours Service - Business Logic ✅
 
 **Jako** deweloper  
 **Chcę** zaimplementować logikę biznesową Tours Service  
@@ -517,7 +517,7 @@ export function getFeaturedTours(cityId: string): Tour[] | null {
 
 ---
 
-## US 5.1.4: Tours API Routes
+## US 5.1.4: Tours API Routes ✅
 
 **Jako** deweloper  
 **Chcę** zdefiniować Express routes dla Tours API  
@@ -704,7 +704,7 @@ export const toursRoutes = router;
 
 ---
 
-## US 5.1.5: Nginx Configuration dla Tours API
+## US 5.1.5: Nginx Configuration dla Tours API ✅
 
 **Jako** devops engineer  
 **Chcę** skonfigurować Nginx do routingu Tours API z ochroną API key  
@@ -818,7 +818,7 @@ API keys są **współdzielone** z OSRM i POI API z pliku `/etc/nginx/api-keys.m
 
 ---
 
-## US 5.1.6: Docker Configuration dla Tours Server
+## US 5.1.6: Docker Configuration dla Tours Server ✅
 
 **Jako** devops engineer  
 **Chcę** skonteneryzować Tours Server  
@@ -941,7 +941,7 @@ curl http://localhost:3002/api/tours/cities
 
 ---
 
-## US 5.1.7: Migracja Danych z Mobile App
+## US 5.1.7: Migracja Danych z Mobile App ✅
 
 **Jako** deweloper  
 **Chcę** przenieść dane wycieczek z `mobile/src/data/tours.ts` do Tours Server  

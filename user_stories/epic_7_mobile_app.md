@@ -606,8 +606,8 @@ Pobiera listę miast z liczbą dostępnych wycieczek.
     { id: 'krakow', name: 'Kraków', toursCount: 2 },
     { id: 'warszawa', name: 'Warszawa', toursCount: 2 },
     { id: 'wroclaw', name: 'Wrocław', toursCount: 2 },
-    { id: 'trojmiasto', name: 'Trójmiasto', toursCount: 2 }
-  ]
+    { id: 'trojmiasto', name: 'Trójmiasto', toursCount: 2 },
+  ];
 }
 ```
 
@@ -699,7 +699,8 @@ export const API_CONFIG = {
 ```typescript
 // mobile/src/config/api.ts (via env variables)
 export const API_CONFIG = {
-  toursBaseUrl: import.meta.env.VITE_TOURS_API_URL || 'https://api.wtg.pl/tours',
+  toursBaseUrl:
+    import.meta.env.VITE_TOURS_API_URL || 'https://api.wtg.pl/tours',
   apiKey: import.meta.env.VITE_API_KEY,
   requireApiKey: true,
 };
@@ -730,9 +731,7 @@ import axios from 'axios';
 export class ToursService {
   private client = axios.create({
     baseURL: API_CONFIG.toursBaseUrl,
-    headers: API_CONFIG.requireApiKey
-      ? { 'X-API-Key': API_CONFIG.apiKey }
-      : {},
+    headers: API_CONFIG.requireApiKey ? { 'X-API-Key': API_CONFIG.apiKey } : {},
   });
 
   async getCities() {

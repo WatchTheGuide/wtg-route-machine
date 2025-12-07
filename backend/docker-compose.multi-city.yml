@@ -177,6 +177,35 @@ services:
         reservations:
           memory: 64M
 
+  # ============================================
+  # TOURS SERVER - Curated Tours API
+  # ============================================
+  tours-server:
+    build:
+      context: ./tours-server
+      dockerfile: Dockerfile
+    container_name: wtg-tours-server
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+    networks:
+      - osrm-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+
 networks:
   osrm-network:
     driver: bridge

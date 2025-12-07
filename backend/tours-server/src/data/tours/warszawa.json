@@ -1,0 +1,148 @@
+[
+  {
+    "id": "warszawa-landmarks",
+    "cityId": "warszawa",
+    "name": {
+      "pl": "Najważniejsze zabytki Warszawy",
+      "en": "Warsaw Main Landmarks",
+      "de": "Warschaus wichtigste Sehenswürdigkeiten",
+      "fr": "Principaux monuments de Varsovie",
+      "uk": "Головні пам'ятки Варшави"
+    },
+    "description": {
+      "pl": "Odkryj najważniejsze zabytki Warszawy: Stare Miasto (UNESCO), Zamek Królewski, Łazienki Królewskie, Pałac Kultury i Nauki oraz Pałac w Wilanowie.",
+      "en": "Discover Warsaw's main landmarks: Old Town (UNESCO), Royal Castle, Royal Łazienki Park, Palace of Culture and Science, and Wilanów Palace.",
+      "de": "Entdecken Sie Warschaus wichtigste Sehenswürdigkeiten: Altstadt (UNESCO), Königsschloss, Königliche Łazienki, Kulturpalast und Wilanów-Palast.",
+      "fr": "Découvrez les principaux monuments de Varsovie : la Vieille Ville (UNESCO), le Château Royal, le Parc Royal Łazienki, le Palais de la Culture et de la Science, et le Palais de Wilanów.",
+      "uk": "Відкрийте для себе головні пам'ятки Варшави: Старе місто (ЮНЕСКО), Королівський замок, Королівські Лазєнки, Палац культури і науки та Віланівський палац."
+    },
+    "category": "history",
+    "difficulty": "easy",
+    "distance": 5500,
+    "duration": 10800,
+    "imageUrl": "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=800&q=80&auto=format&fit=crop",
+    "pois": [
+      {
+        "id": "warszawa-stare-miasto",
+        "name": "Stare Miasto",
+        "description": "Odbudowane historyczne centrum Warszawy (UNESCO)",
+        "category": "landmark",
+        "coordinate": [21.0122, 52.2496],
+        "address": "Rynek Starego Miasta, Warszawa"
+      },
+      {
+        "id": "warszawa-zamek",
+        "name": "Zamek Królewski",
+        "description": "Dawna rezydencja królewska, obecnie muzeum",
+        "category": "landmark",
+        "coordinate": [21.0145, 52.2477],
+        "address": "plac Zamkowy 4, Warszawa"
+      },
+      {
+        "id": "warszawa-kolumna-zygmunta",
+        "name": "Kolumna Zygmunta",
+        "description": "Najstarszy pomnik świecki w Warszawie",
+        "category": "landmark",
+        "coordinate": [21.014, 52.2478],
+        "address": "plac Zamkowy, Warszawa"
+      },
+      {
+        "id": "warszawa-lazienki",
+        "name": "Łazienki Królewskie",
+        "description": "Najpiękniejszy park w Warszawie z pałacem",
+        "category": "park",
+        "coordinate": [21.0356, 52.2154],
+        "address": "Agrykoli 1, Warszawa"
+      },
+      {
+        "id": "warszawa-palac-kultury",
+        "name": "Pałac Kultury i Nauki",
+        "description": "Najwyższy budynek w Polsce, symbol Warszawy",
+        "category": "landmark",
+        "coordinate": [21.0061, 52.2319],
+        "address": "plac Defilad 1, Warszawa"
+      },
+      {
+        "id": "warszawa-wilanow",
+        "name": "Pałac w Wilanowie",
+        "description": "Barokowa rezydencja króla Jana III Sobieskiego",
+        "category": "landmark",
+        "coordinate": [21.0909, 52.1654],
+        "address": "Stanisława Kostki Potockiego 10/16, Warszawa"
+      }
+    ]
+  },
+  {
+    "id": "warszawa-churches",
+    "cityId": "warszawa",
+    "name": {
+      "pl": "Najważniejsze kościoły Warszawy",
+      "en": "Warsaw Main Churches",
+      "de": "Warschaus wichtigste Kirchen",
+      "fr": "Principales églises de Varsovie",
+      "uk": "Головні костели Варшави"
+    },
+    "description": {
+      "pl": "Trasa po najpiękniejszych świątyniach Warszawy: Archikatedra św. Jana, Kościół św. Krzyża z sercem Chopina, świątynie Krakowskiego Przedmieścia.",
+      "en": "Route through Warsaw's most beautiful churches: St. John's Archcathedral, Holy Cross Church with Chopin's heart, temples of Krakowskie Przedmieście.",
+      "de": "Route durch Warschaus schönste Kirchen: St.-Johannes-Kathedrale, Heilig-Kreuz-Kirche mit Chopins Herz, Tempel der Krakowskie Przedmieście.",
+      "fr": "Route à travers les plus belles églises de Varsovie : Archicathédrale Saint-Jean, Église de la Sainte-Croix avec le cœur de Chopin, temples de Krakowskie Przedmieście.",
+      "uk": "Маршрут найкрасивішими костелами Варшави: Архікатедра св. Яна, Костел св. Хреста із серцем Шопена, храми Краківського передмістя."
+    },
+    "category": "architecture",
+    "difficulty": "medium",
+    "distance": 7200,
+    "duration": 14400,
+    "imageUrl": "https://images.unsplash.com/photo-1553913861-c0fddf2619ee?w=800&q=80&auto=format&fit=crop",
+    "pois": [
+      {
+        "id": "warszawa-archikatedra",
+        "name": "Archikatedra św. Jana",
+        "description": "Najstarsza i najważniejsza świątynia Warszawy",
+        "category": "landmark",
+        "coordinate": [21.0157, 52.2499],
+        "address": "Kanonia 6, Warszawa"
+      },
+      {
+        "id": "warszawa-sw-krzyza",
+        "name": "Kościół św. Krzyża",
+        "description": "Barokowa świątynia z sercem Chopina",
+        "category": "landmark",
+        "coordinate": [21.0152, 52.2394],
+        "address": "Krakowskie Przedmieście 3, Warszawa"
+      },
+      {
+        "id": "warszawa-karmelitow",
+        "name": "Kościół Karmelitów",
+        "description": "Barokowy kościół z neoklasyczną fasadą",
+        "category": "landmark",
+        "coordinate": [21.0147, 52.2411],
+        "address": "Krakowskie Przedmieście 52/54, Warszawa"
+      },
+      {
+        "id": "warszawa-wizytek",
+        "name": "Kościół Wizytek",
+        "description": "Rokokowa świątynia sióstr Wizytacji",
+        "category": "landmark",
+        "coordinate": [21.0146, 52.2424],
+        "address": "Krakowskie Przedmieście 34, Warszawa"
+      },
+      {
+        "id": "warszawa-aleksandrowska",
+        "name": "Kościół św. Aleksandra",
+        "description": "Neoklasycystyczna rotunda na placu Trzech Krzyży",
+        "category": "landmark",
+        "coordinate": [21.0202, 52.2287],
+        "address": "plac Trzech Krzyży 3, Warszawa"
+      },
+      {
+        "id": "warszawa-zbawiciela",
+        "name": "Kościół św. Zbawiciela",
+        "description": "Neobarokowa świątynia na placu Zbawiciela",
+        "category": "landmark",
+        "coordinate": [21.0258, 52.2209],
+        "address": "plac Zbawiciela 1, Warszawa"
+      }
+    ]
+  }
+]
