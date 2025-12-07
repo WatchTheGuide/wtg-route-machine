@@ -16,7 +16,11 @@ import {
 } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
 import type { Tour } from '../../types';
-import { formatDistance, formatDuration } from '../../utils/format';
+import {
+  formatDistance,
+  formatDuration,
+  getLocalizedString,
+} from '../../utils/format';
 
 interface TourCardProps {
   tour: Tour;
@@ -28,7 +32,7 @@ interface TourCardProps {
  * Displays a curated tour with image, details, and stats
  */
 export function TourCard({ tour, onClick }: TourCardProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -88,7 +92,7 @@ export function TourCard({ tour, onClick }: TourCardProps) {
             position: 'relative',
           }}>
           <img
-            alt={t(tour.name)}
+            alt={getLocalizedString(tour.name, i18n.language)}
             src={tour.imageUrl}
             style={{
               width: '100%',
@@ -109,8 +113,12 @@ export function TourCard({ tour, onClick }: TourCardProps) {
             <IonLabel>{t(`tours.difficulty.${tour.difficulty}`)}</IonLabel>
           </IonChip>
         </div>
-        <IonCardTitle>{t(tour.name)}</IonCardTitle>
-        <IonCardSubtitle>{t(tour.description)}</IonCardSubtitle>
+        <IonCardTitle>
+          {getLocalizedString(tour.name, i18n.language)}
+        </IonCardTitle>
+        <IonCardSubtitle>
+          {getLocalizedString(tour.description, i18n.language)}
+        </IonCardSubtitle>
       </IonCardHeader>
       <IonCardContent>
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>

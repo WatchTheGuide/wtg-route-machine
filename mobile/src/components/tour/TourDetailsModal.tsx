@@ -24,7 +24,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import type { Tour } from '../../types';
-import { formatDistance, formatDuration } from '../../utils/format';
+import {
+  formatDistance,
+  formatDuration,
+  getLocalizedString,
+} from '../../utils/format';
 import MapView from '../map/MapView';
 
 interface TourDetailsModalProps {
@@ -44,7 +48,7 @@ export function TourDetailsModal({
   onClose,
   onStartTour,
 }: TourDetailsModalProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [showMap, setShowMap] = useState(false);
 
   if (!tour) return null;
@@ -93,7 +97,9 @@ export function TourDetailsModal({
               <IonIcon icon={closeOutline} />
             </IonButton>
           </IonButtons>
-          <IonTitle>{t(tour.name)}</IonTitle>
+          <IonTitle>
+            {getLocalizedString(tour.name, i18n.language)}
+          </IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -101,7 +107,7 @@ export function TourDetailsModal({
         {/* Hero Image */}
         {tour.imageUrl && (
           <img
-            alt={t(tour.name)}
+            alt={getLocalizedString(tour.name, i18n.language)}
             src={tour.imageUrl}
             style={{ width: '100%', height: '250px', objectFit: 'cover' }}
           />
@@ -118,9 +124,9 @@ export function TourDetailsModal({
             </IonChip>
           </div>
 
-          <h2>{t(tour.name)}</h2>
+          <h2>{getLocalizedString(tour.name, i18n.language)}</h2>
           <p style={{ color: 'var(--ion-color-medium)' }}>
-            {t(tour.description)}
+            {getLocalizedString(tour.description, i18n.language)}
           </p>
 
           {/* Stats */}

@@ -3,6 +3,21 @@
  * @param meters - Dystans w metrach
  * @returns Sformatowany string (np. "1.5 km" lub "500 m")
  */
+
+import type { LocalizedString } from '../types';
+
+/**
+ * Get localized string value based on current language
+ * Falls back to Polish if language not found
+ */
+export const getLocalizedString = (
+  localizedString: LocalizedString,
+  language: string = 'pl'
+): string => {
+  const lang = language.toLowerCase() as keyof LocalizedString;
+  return localizedString[lang] || localizedString.pl;
+};
+
 export const formatDistance = (meters: number): string => {
   if (meters >= 1000) {
     return `${(meters / 1000).toFixed(1)} km`;

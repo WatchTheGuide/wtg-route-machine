@@ -144,12 +144,23 @@ export type TourCategory =
   | 'architecture';
 
 /**
+ * Localized string (multi-language support)
+ */
+export interface LocalizedString {
+  pl: string;
+  en: string;
+  de: string;
+  fr: string;
+  uk: string;
+}
+
+/**
  * Curated tour
  */
 export interface Tour {
   id: string;
-  name: string;
-  description: string;
+  name: LocalizedString;
+  description: LocalizedString;
   cityId: string;
   category: TourCategory;
   difficulty: TourDifficulty;
