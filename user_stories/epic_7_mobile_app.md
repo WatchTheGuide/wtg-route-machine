@@ -561,10 +561,405 @@ mobile/src/i18n/
 9. Story 7.8: Nawigacja turn-by-turn
 10. Story 7.9: Ustawienia
 
-### Faza 4: Polish (Stories 7.10-7.11)
+### Faza 4: Polish (Stories 7.10-7.12)
 
 11. Story 7.10: Tryb offline
 12. Story 7.11: Obsługa wielu języków (i18n) ✅
+13. Story 7.12: Integracja z backend API tours
+
+---
+
+## User Story 7.12: Integracja z backend API tours
+
+### Opis
+
+Jako użytkownik chcę, aby dane kuratorowanych wycieczek były pobierane z backendu, aby treści były aktualne bez konieczności aktualizacji aplikacji.
+
+### Zależności
+
+- **Wymaga**: Epic 5.1 - Tours Backend API (US 5.1.1-5.1.7)
+- **Bazuje na**: US 7.7 - Kuratorowane wycieczki (UI już zaimplementowane)
+
+### Kryteria akceptacji
+
+- [ ] Serwis `tours.service.ts` komunikuje się z backend API zamiast lokalnych danych
+- [ ] Obsługa API key w produkcji (X-API-Key header)
+- [ ] Brak wymogu API key w developmencie (localhost)
+- [ ] Wszystkie endpointy tours zaimplementowane
+- [ ] Loading states podczas pobierania danych
+- [ ] Error handling z komunikatami użytkownikowi
+- [ ] Cache danych z TanStack Query (stale time 5 min)
+- [ ] Offline fallback do ostatnich załadowanych danych
+- [ ] Migracja danych z `tours.ts` do backendu zakończona
+
+### Endpointy API
+
+#### 1. GET /api/tours/cities
+
+Pobiera listę miast z liczbą dostępnych wycieczek.
+
+**Response:**
+
+```typescript
+{
+  cities: [
+    { id: 'krakow', name: 'Kraków', toursCount: 2 },
+    { id: 'warszawa', name: 'Warszawa', toursCount: 2 },
+    { id: 'wroclaw', name: 'Wrocław', toursCount: 2 },
+    { id: 'trojmiasto', name: 'Trójmiasto', toursCount: 2 }
+  ]
+}
+```
+
+#### 2. GET /api/tours/:cityId
+
+Pobiera wszystkie wycieczki dla danego miasta.
+
+**Przykład:** `GET /api/tours/krakow`
+
+**Response:**
+
+```typescript
+{
+  tours: [
+    {
+      id: 'krakow-old-town',
+      cityId: 'krakow',
+      name: { pl: 'Stare Miasto', en: 'Old Town', ... },
+      description: { pl: 'Opis...', en: 'Description...', ... },
+      category: 'cultural',
+      difficulty: 'easy',
+      distance: 3500,
+      duration: 120,
+      imageUrl: '/images/tours/krakow-old-town.jpg',
+      pois: [...] // POI IDs
+    },
+    // ...more tours
+  ]
+}
+```
+
+#### 3. GET /api/tours/:cityId/:tourId
+
+Pobiera szczegóły pojedynczej wycieczki.
+
+**Przykład:** `GET /api/tours/krakow/krakow-old-town`
+
+**Response:**
+
+```typescript
+{
+  tour: {
+    id: 'krakow-old-town',
+    cityId: 'krakow',
+    name: { pl: 'Stare Miasto', en: 'Old Town', ... },
+    description: { pl: 'Opis...', en: 'Description...', ... },
+    category: 'cultural',
+    difficulty: 'easy',
+    distance: 3500,
+    duration: 120,
+    imageUrl: '/images/tours/krakow-old-town.jpg',
+    pois: [...] // Full POI objects
+  }
+}
+```
+
+#### 4. GET /api/tours/:cityId/search?q=query
+
+Wyszukuje wycieczki po nazwie/opisie.
+
+**Przykład:** `GET /api/tours/krakow/search?q=rynek`
+
+**Response:**
+
+```typescript
+{
+  tours: [
+    // ...matching tours
+  ],
+  query: 'rynek',
+  count: 2
+}
+```
+
+### Konfiguracja środowiskowa
+
+**Development (localhost):**
+
+```typescript
+// mobile/src/config/api.ts
+export const API_CONFIG = {
+  toursBaseUrl: 'http://localhost:3002/api/tours',
+  requireApiKey: false,
+};
+```
+
+**Production:**
+
+```typescript
+// mobile/src/config/api.ts (via env variables)
+export const API_CONFIG = {
+  toursBaseUrl: import.meta.env.VITE_TOURS_API_URL || 'https://api.wtg.pl/tours',
+  apiKey: import.meta.env.VITE_API_KEY,
+  requireApiKey: true,
+};
+```
+
+### Implementacja serwisu
+
+**Przed (hardcoded):**
+
+```typescript
+// mobile/src/services/tours.service.ts
+import { TOURS } from '@/data/tours';
+
+export class ToursService {
+  async getToursByCity(cityId: string) {
+    return TOURS.filter((t) => t.cityId === cityId);
+  }
+}
+```
+
+**Po (backend API):**
+
+```typescript
+// mobile/src/services/tours.service.ts
+import { API_CONFIG } from '@/config/api';
+import axios from 'axios';
+
+export class ToursService {
+  private client = axios.create({
+    baseURL: API_CONFIG.toursBaseUrl,
+    headers: API_CONFIG.requireApiKey
+      ? { 'X-API-Key': API_CONFIG.apiKey }
+      : {},
+  });
+
+  async getCities() {
+    const { data } = await this.client.get('/cities');
+    return data.cities;
+  }
+
+  async getToursByCity(cityId: string) {
+    const { data } = await this.client.get(`/${cityId}`);
+    return data.tours;
+  }
+
+  async getTourById(cityId: string, tourId: string) {
+    const { data } = await this.client.get(`/${cityId}/${tourId}`);
+    return data.tour;
+  }
+
+  async searchTours(cityId: string, query: string) {
+    const { data } = await this.client.get(`/${cityId}/search`, {
+      params: { q: query },
+    });
+    return data.tours;
+  }
+}
+```
+
+### React Query hooks
+
+**Aktualizacja istniejących hooków:**
+
+```typescript
+// mobile/src/hooks/useTours.ts
+import { useQuery } from '@tanstack/react-query';
+import { toursService } from '@/services/tours.service';
+
+export const useTours = (cityId: string) => {
+  return useQuery({
+    queryKey: ['tours', cityId],
+    queryFn: () => toursService.getToursByCity(cityId),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    retry: 2,
+  });
+};
+
+export const useTour = (cityId: string, tourId: string) => {
+  return useQuery({
+    queryKey: ['tour', cityId, tourId],
+    queryFn: () => toursService.getTourById(cityId, tourId),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    retry: 2,
+  });
+};
+
+export const useSearchTours = (cityId: string, query: string) => {
+  return useQuery({
+    queryKey: ['tours', cityId, 'search', query],
+    queryFn: () => toursService.searchTours(cityId, query),
+    enabled: query.length > 0,
+    staleTime: 2 * 60 * 1000, // 2 minutes for search
+  });
+};
+```
+
+### Error handling
+
+```typescript
+// mobile/src/components/tours/ToursPage.tsx
+const ToursPage: React.FC = () => {
+  const { selectedCity } = useCityStore();
+  const { data: tours, isLoading, error } = useTours(selectedCity);
+
+  if (error) {
+    return (
+      <IonContent>
+        <div className="error-container">
+          <IonIcon icon={alertCircleOutline} />
+          <p>{t('tours.error.loadFailed')}</p>
+          <IonButton onClick={() => queryClient.invalidateQueries(['tours'])}>
+            {t('common.retry')}
+          </IonButton>
+        </div>
+      </IonContent>
+    );
+  }
+
+  // ...rest of component
+};
+```
+
+### Migracja danych
+
+**Krok 1:** Przenieś `mobile/src/data/tours.ts` → backend
+
+```bash
+# Tours data to backend JSON files
+mobile/src/data/tours.ts
+  → backend/tours-server/src/data/tours/krakow.json
+  → backend/tours-server/src/data/tours/warszawa.json
+  → backend/tours-server/src/data/tours/wroclaw.json
+  → backend/tours-server/src/data/tours/trojmiasto.json
+```
+
+**Krok 2:** Usuń lokalny plik
+
+```bash
+git rm mobile/src/data/tours.ts
+```
+
+**Krok 3:** Zaktualizuj testy (mockowanie API)
+
+```typescript
+// mobile/src/services/__tests__/tours.service.test.ts
+import { vi } from 'vitest';
+import axios from 'axios';
+
+vi.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+describe('ToursService', () => {
+  it('should fetch tours from API', async () => {
+    mockedAxios.create.mockReturnValue({
+      get: vi.fn().mockResolvedValue({
+        data: { tours: [{ id: 'test', cityId: 'krakow' }] },
+      }),
+    } as any);
+
+    const tours = await toursService.getToursByCity('krakow');
+    expect(tours).toHaveLength(1);
+  });
+});
+```
+
+### Testy
+
+**Unit tests:**
+
+```bash
+npm run test.unit src/services/tours.service.test.ts
+npm run test.unit src/hooks/useTours.test.ts
+```
+
+**Integration tests:**
+
+```bash
+# Uruchom backend tours server
+cd backend/tours-server
+npm start
+
+# Test endpointów
+curl http://localhost:3002/api/tours/cities
+curl http://localhost:3002/api/tours/krakow
+curl http://localhost:3002/api/tours/krakow/krakow-old-town
+```
+
+**Manual testing:**
+
+1. Backend działa na porcie 3002
+2. Mobile app w development mode
+3. Sprawdź loading states
+4. Sprawdź error handling (wyłącz backend)
+5. Sprawdź cache (network tab w DevTools)
+
+### Konfiguracja Vite
+
+**mobile/vite.config.ts:**
+
+```typescript
+export default defineConfig({
+  // ...existing config
+  server: {
+    proxy: {
+      '/api/tours': {
+        target: 'http://localhost:3002',
+        changeOrigin: true,
+      },
+    },
+  },
+});
+```
+
+### Environment variables
+
+**mobile/.env.development:**
+
+```bash
+VITE_TOURS_API_URL=http://localhost:3002/api/tours
+VITE_API_KEY=
+```
+
+**mobile/.env.production:**
+
+```bash
+VITE_TOURS_API_URL=https://api.wtg.pl/tours
+VITE_API_KEY=your-production-api-key
+```
+
+### Zadania
+
+- [ ] Skonfigurować axios client z API key
+- [ ] Zaimplementować wszystkie metody API w `tours.service.ts`
+- [ ] Zaktualizować React Query hooks (`useTours`, `useTour`)
+- [ ] Dodać error handling w `ToursPage.tsx`
+- [ ] Dodać loading skeletons
+- [ ] Skonfigurować Vite proxy dla /api/tours
+- [ ] Dodać environment variables (.env.development, .env.production)
+- [ ] Przenieść dane z `tours.ts` do backend JSON files
+- [ ] Usunąć `mobile/src/data/tours.ts`
+- [ ] Zaktualizować testy jednostkowe (mockowanie axios)
+- [ ] Przetestować wszystkie endpointy API
+- [ ] Przetestować offline fallback
+- [ ] Zaktualizować dokumentację
+
+### Definition of Done
+
+- [ ] Backend Tours Server działa i odpowiada na wszystkie endpointy
+- [ ] Mobile app pobiera dane z backend API
+- [ ] API key wymagany tylko w produkcji
+- [ ] Wszystkie 4 endpointy działają poprawnie
+- [ ] Loading states wyświetlane podczas pobierania
+- [ ] Error handling z komunikatami użytkownikowi
+- [ ] Cache TanStack Query skonfigurowany (5 min stale time)
+- [ ] Testy jednostkowe zaktualizowane i przechodzą
+- [ ] Dane zmigrowane z `tours.ts` do backend
+- [ ] Lokalny plik `tours.ts` usunięty
+- [ ] Dokumentacja zaktualizowana
 
 ---
 
@@ -572,8 +967,10 @@ mobile/src/i18n/
 
 ### Backend API
 
-- POI Server: `http://localhost:3001/api/pois`
-- OSRM Routing: `http://localhost:500X/route/v1/{profile}/{coords}`
+- **POI Server**: `http://localhost:3001/api/pois`
+- **Tours Server**: `http://localhost:3002/api/tours` (wymaga Epic 5.1)
+- **OSRM Routing**: `http://localhost:500X/route/v1/{profile}/{coords}`
+- **API Key**: Wymagany w produkcji (X-API-Key header), opcjonalny w development
 
 ### Środowisko deweloperskie
 
