@@ -19,6 +19,8 @@ const en = {
     dashboard: {
       title: 'Admin Dashboard',
       subtitle: 'Manage tours and points of interest',
+      allCities: 'All cities',
+      selectCity: 'Select city',
       nav: {
         dashboard: 'Dashboard',
         tours: 'Tours',
@@ -32,6 +34,34 @@ const en = {
         cities: 'Cities',
         views: 'Views',
         thisMonth: 'this month',
+        active: 'Active',
+        total: 'Total',
+        fromLastMonth: 'from last month',
+      },
+      citySelector: {
+        label: 'City',
+        all: 'All cities',
+        placeholder: 'Select city',
+      },
+      charts: {
+        toursOverTime: 'Tours over time',
+        toursOverTimeDesc: 'Number of tours and POIs added each month',
+        toursByCity: 'Tours by city',
+        toursByCityDesc: 'Views by city',
+      },
+      quickActions: {
+        title: 'Quick Actions',
+        addTour: 'Add Tour',
+        addPoi: 'Add POI',
+        viewStats: 'View Stats',
+        managePois: 'Manage POIs',
+        viewReports: 'View Reports',
+        analytics: 'Analytics',
+      },
+      topTours: {
+        title: 'Top Tours',
+        subtitle: 'Most viewed tours',
+        views: 'Views',
       },
       status: {
         published: 'Published',

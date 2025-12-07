@@ -19,6 +19,8 @@ const uk = {
     dashboard: {
       title: 'Адмін-панель',
       subtitle: 'Керування екскурсіями та визначними місцями',
+      allCities: 'Усі міста',
+      selectCity: 'Оберіть місто',
       nav: {
         dashboard: 'Головна',
         tours: 'Екскурсії',
@@ -32,6 +34,34 @@ const uk = {
         cities: 'Міста',
         views: 'Перегляди',
         thisMonth: 'цього місяця',
+        active: 'Активні',
+        total: 'Всього',
+        fromLastMonth: 'з минулого місяця',
+      },
+      citySelector: {
+        label: 'Місто',
+        all: 'Усі міста',
+        placeholder: 'Оберіть місто',
+      },
+      charts: {
+        toursOverTime: 'Екскурсії з часом',
+        toursOverTimeDesc: 'Кількість екскурсій та POI за місяць',
+        toursByCity: 'Екскурсії за містом',
+        toursByCityDesc: 'Перегляди за містом',
+      },
+      quickActions: {
+        title: 'Швидкі дії',
+        addTour: 'Додати екскурсію',
+        addPoi: 'Додати POI',
+        viewStats: 'Переглянути статистику',
+        managePois: 'Керувати POI',
+        viewReports: 'Переглянути звіти',
+        analytics: 'Аналітика',
+      },
+      topTours: {
+        title: 'Топ екскурсії',
+        subtitle: 'Найбільш переглядані екскурсії',
+        views: 'Перегляди',
       },
       status: {
         published: 'Опубліковано',

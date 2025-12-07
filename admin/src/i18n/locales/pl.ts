@@ -19,6 +19,8 @@ const pl = {
     dashboard: {
       title: 'Panel administracyjny',
       subtitle: 'Zarządzaj wycieczkami i punktami POI',
+      allCities: 'Wszystkie miasta',
+      selectCity: 'Wybierz miasto',
       nav: {
         dashboard: 'Dashboard',
         tours: 'Wycieczki',
@@ -32,6 +34,34 @@ const pl = {
         cities: 'Miasta',
         views: 'Wyświetlenia',
         thisMonth: 'w tym miesiącu',
+        active: 'Aktywne',
+        total: 'Łącznie',
+        fromLastMonth: 'od ostatniego miesiąca',
+      },
+      citySelector: {
+        label: 'Miasto',
+        all: 'Wszystkie miasta',
+        placeholder: 'Wybierz miasto',
+      },
+      charts: {
+        toursOverTime: 'Wycieczki w czasie',
+        toursOverTimeDesc: 'Liczba wycieczek i POI dodanych w każdym miesiącu',
+        toursByCity: 'Wycieczki wg miasta',
+        toursByCityDesc: 'Wyświetlenia wg miasta',
+      },
+      quickActions: {
+        title: 'Szybkie akcje',
+        addTour: 'Dodaj wycieczkę',
+        addPoi: 'Dodaj POI',
+        viewStats: 'Zobacz statystyki',
+        managePois: 'Zarządzaj POI',
+        viewReports: 'Zobacz raporty',
+        analytics: 'Analityka',
+      },
+      topTours: {
+        title: 'Najpopularniejsze wycieczki',
+        subtitle: 'Najczęściej wyświetlane wycieczki',
+        views: 'Wyświetlenia',
       },
       status: {
         published: 'Opublikowana',

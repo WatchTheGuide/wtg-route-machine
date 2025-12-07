@@ -19,6 +19,8 @@ const fr = {
     dashboard: {
       title: 'Tableau de bord Admin',
       subtitle: "Gérer les circuits et points d'intérêt",
+      allCities: 'Toutes les villes',
+      selectCity: 'Sélectionner une ville',
       nav: {
         dashboard: 'Tableau de bord',
         tours: 'Circuits',
@@ -32,6 +34,34 @@ const fr = {
         cities: 'Villes',
         views: 'Vues',
         thisMonth: 'ce mois-ci',
+        active: 'Actifs',
+        total: 'Total',
+        fromLastMonth: 'depuis le mois dernier',
+      },
+      citySelector: {
+        label: 'Ville',
+        all: 'Toutes les villes',
+        placeholder: 'Sélectionner une ville',
+      },
+      charts: {
+        toursOverTime: 'Circuits dans le temps',
+        toursOverTimeDesc: 'Nombre de circuits et POIs ajoutés par mois',
+        toursByCity: 'Circuits par ville',
+        toursByCityDesc: 'Vues par ville',
+      },
+      quickActions: {
+        title: 'Actions rapides',
+        addTour: 'Ajouter un circuit',
+        addPoi: 'Ajouter un POI',
+        viewStats: 'Voir les stats',
+        managePois: 'Gérer les POIs',
+        viewReports: 'Voir les rapports',
+        analytics: 'Analytique',
+      },
+      topTours: {
+        title: 'Top Circuits',
+        subtitle: 'Circuits les plus vus',
+        views: 'Vues',
       },
       status: {
         published: 'Publié',

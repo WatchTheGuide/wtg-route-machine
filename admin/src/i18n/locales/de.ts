@@ -19,6 +19,8 @@ const de = {
     dashboard: {
       title: 'Admin-Dashboard',
       subtitle: 'Touren und Sehenswürdigkeiten verwalten',
+      allCities: 'Alle Städte',
+      selectCity: 'Stadt auswählen',
       nav: {
         dashboard: 'Dashboard',
         tours: 'Touren',
@@ -32,6 +34,34 @@ const de = {
         cities: 'Städte',
         views: 'Aufrufe',
         thisMonth: 'diesen Monat',
+        active: 'Aktiv',
+        total: 'Gesamt',
+        fromLastMonth: 'seit letztem Monat',
+      },
+      citySelector: {
+        label: 'Stadt',
+        all: 'Alle Städte',
+        placeholder: 'Stadt auswählen',
+      },
+      charts: {
+        toursOverTime: 'Touren im Zeitverlauf',
+        toursOverTimeDesc: 'Anzahl der Touren und POIs pro Monat',
+        toursByCity: 'Touren nach Stadt',
+        toursByCityDesc: 'Aufrufe nach Stadt',
+      },
+      quickActions: {
+        title: 'Schnellaktionen',
+        addTour: 'Tour hinzufügen',
+        addPoi: 'POI hinzufügen',
+        viewStats: 'Statistiken anzeigen',
+        managePois: 'POIs verwalten',
+        viewReports: 'Berichte anzeigen',
+        analytics: 'Analytik',
+      },
+      topTours: {
+        title: 'Top Touren',
+        subtitle: 'Meistgesehene Touren',
+        views: 'Aufrufe',
       },
       status: {
         published: 'Veröffentlicht',
