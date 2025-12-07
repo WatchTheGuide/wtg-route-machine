@@ -15,7 +15,7 @@ import {
   shieldCheckmarkOutline,
 } from 'ionicons/icons';
 import { useTranslation } from 'react-i18next';
-import type { Tour } from '../../types';
+import type { Tour, TourSummary } from '../../types';
 import {
   formatDistance,
   formatDuration,
@@ -23,7 +23,7 @@ import {
 } from '../../utils/format';
 
 interface TourCardProps {
-  tour: Tour;
+  tour: Tour | TourSummary;
   onClick?: () => void;
 }
 
@@ -133,7 +133,8 @@ export function TourCard({ tour, onClick }: TourCardProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <IonIcon icon={barcodeOutline} color="medium" />
             <IonLabel color="medium">
-              {tour.pois.length} {t('tours.stops')}
+              {'poisCount' in tour ? tour.poisCount : tour.pois.length}{' '}
+              {t('tours.stops')}
             </IonLabel>
           </div>
         </div>

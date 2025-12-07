@@ -14,9 +14,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import { walkOutline, filterOutline } from 'ionicons/icons';
 import { useState } from 'react';
-import type { Tour, TourCategory } from '../types';
+import type { Tour, TourSummary, TourCategory } from '../types';
 import { useCityStore } from '../stores/cityStore';
-import { useTours } from '../hooks/useTours';
+import { useTours, useTour } from '../hooks/useTours';
 import { useRoutePlannerStore } from '../stores/routePlannerStore';
 import { TourCard } from '../components/tour/TourCard';
 import { TourDetailsModal } from '../components/tour/TourDetailsModal';
@@ -26,12 +26,15 @@ const ToursPage: React.FC = () => {
   const { t } = useTranslation();
   const currentCity = useCityStore((state) => state.currentCity);
   const { data: tours, isLoading, error } = useTours(currentCity.id);
-  const [selectedTour, setSelectedTour] = useState<Tour | null>(null);
+  const [selectedTourId, setSelectedTourId] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<TourCategory | 'all'>(
     'all'
   );
   const { addWaypoint, openPlanner } = useRoutePlannerStore();
+
+  // Fetch full tour details when a tour is selected
+  const { data: selectedTour } = useTour(currentCity.id, selectedTourId || '');
 
   const categories: Array<TourCategory | 'all'> = [
     'all',
@@ -46,8 +49,8 @@ const ToursPage: React.FC = () => {
     (tour) => categoryFilter === 'all' || tour.category === categoryFilter
   );
 
-  const handleTourClick = (tour: Tour) => {
-    setSelectedTour(tour);
+  const handleTourClick = (tour: TourSummary) => {
+    setSelectedTourId(tour.id);
     setShowDetails(true);
   };
 
@@ -142,8 +145,11 @@ const ToursPage: React.FC = () => {
         {/* Tour Details Modal */}
         <TourDetailsModal
           isOpen={showDetails}
-          tour={selectedTour}
-          onClose={() => setShowDetails(false)}
+          tour={selectedTour || null}
+          onClose={() => {
+            setShowDetails(false);
+            setSelectedTourId(null);
+          }}
           onStartTour={handleStartTour}
         />
       </IonContent>

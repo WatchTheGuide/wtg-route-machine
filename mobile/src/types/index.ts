@@ -155,7 +155,7 @@ export interface LocalizedString {
 }
 
 /**
- * Curated tour
+ * Curated tour (full details with POIs)
  */
 export interface Tour {
   id: string;
@@ -168,4 +168,20 @@ export interface Tour {
   duration: number;
   imageUrl?: string;
   pois: POI[];
+}
+
+/**
+ * Tour summary (list view without full POI data)
+ */
+export interface TourSummary {
+  id: string;
+  name: LocalizedString;
+  description: LocalizedString;
+  cityId: string;
+  category: TourCategory;
+  difficulty: TourDifficulty;
+  distance: number;
+  duration: number;
+  imageUrl?: string;
+  poisCount: number;
 }

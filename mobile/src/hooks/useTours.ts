@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import type { Tour } from '../types';
+import type { Tour, TourSummary } from '../types';
 import { toursService } from '../services/tours.service';
 
 /**
- * Hook for fetching tours by city
+ * Hook for fetching tours by city (returns summaries)
  */
 export function useTours(cityId: string) {
-  return useQuery<Tour[], Error>({
+  return useQuery<TourSummary[], Error>({
     queryKey: ['tours', cityId],
     queryFn: () => toursService.getToursByCity(cityId),
     staleTime: 1000 * 60 * 10, // 10 minutes
@@ -14,7 +14,7 @@ export function useTours(cityId: string) {
 }
 
 /**
- * Hook for fetching a single tour by ID
+ * Hook for fetching a single tour by ID (returns full tour with POIs)
  * @param cityId - City ID where the tour is located
  * @param tourId - Unique tour identifier
  */
@@ -28,10 +28,10 @@ export function useTour(cityId: string, tourId: string) {
 }
 
 /**
- * Hook for fetching all tours
+ * Hook for fetching all tours (returns summaries)
  */
 export function useAllTours() {
-  return useQuery<Tour[], Error>({
+  return useQuery<TourSummary[], Error>({
     queryKey: ['tours', 'all'],
     queryFn: () => toursService.getAllTours(),
     staleTime: 1000 * 60 * 10, // 10 minutes

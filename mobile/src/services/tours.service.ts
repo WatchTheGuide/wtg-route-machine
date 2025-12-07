@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import type { Tour, TourCategory, TourDifficulty } from '../types';
+import type { Tour, TourSummary, TourCategory, TourDifficulty } from '../types';
 import { API_CONFIG, getApiHeaders } from '../config/api';
 
 /**
@@ -73,17 +73,11 @@ class ToursService {
   }
 
   /**
-   * Get all tours for a specific city
+   * Get all tours for a specific city (returns summaries with poisCount)
    */
-  async getToursByCity(cityId: string): Promise<Tour[]> {
+  async getToursByCity(cityId: string): Promise<TourSummary[]> {
     const { data } = await this.client.get<ToursResponse>(`/${cityId}`);
-
-    // Convert summary to full Tour type (without full POI data for list view)
-    return data.tours.map((summary) => ({
-      ...summary,
-      // Tours list doesn't include full POI data, will be loaded on detail view
-      pois: [],
-    })) as Tour[];
+    return data.tours as TourSummary[];
   }
 
   /**
@@ -106,9 +100,9 @@ class ToursService {
   /**
    * Get all tours (for browsing all cities)
    */
-  async getAllTours(): Promise<Tour[]> {
+  async getAllTours(): Promise<TourSummary[]> {
     const cities = await this.getCities();
-    const allTours: Tour[] = [];
+    const allTours: TourSummary[] = [];
 
     // Fetch tours for each city
     for (const city of cities) {
@@ -125,7 +119,7 @@ class ToursService {
   async getToursByCategory(
     cityId: string,
     category: TourCategory
-  ): Promise<Tour[]> {
+  ): Promise<TourSummary[]> {
     const tours = await this.getToursByCity(cityId);
     return tours.filter((tour) => tour.category === category);
   }
@@ -136,7 +130,7 @@ class ToursService {
   async getToursByDifficulty(
     cityId: string,
     difficulty: TourDifficulty
-  ): Promise<Tour[]> {
+  ): Promise<TourSummary[]> {
     const tours = await this.getToursByCity(cityId);
     return tours.filter((tour) => tour.difficulty === difficulty);
   }
@@ -144,7 +138,7 @@ class ToursService {
   /**
    * Search tours by name or description
    */
-  async searchTours(cityId: string, query: string): Promise<Tour[]> {
+  async searchTours(cityId: string, query: string): Promise<TourSummary[]> {
     if (!query.trim()) {
       return [];
     }
@@ -156,11 +150,7 @@ class ToursService {
       }
     );
 
-    // Convert summary to full Tour type
-    return data.tours.map((summary) => ({
-      ...summary,
-      pois: [],
-    })) as Tour[];
+    return data.tours as TourSummary[];
   }
 }
 
