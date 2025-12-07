@@ -562,6 +562,144 @@
 
 ---
 
+## US 8.17: Integracja Admin Panel z Backend API
+
+**Jako** administrator  
+**Chcę** aby panel administracyjny komunikował się z prawdziwym backend API  
+**Aby** móc tworzyć, edytować i usuwać wycieczki z trwałym zapisem w bazie danych
+
+### Zależności:
+- Epic 5.1 (Tours Backend) - rozszerzenie o CRUD operations
+- US 8.2 (Autentykacja) - JWT token handling
+- US 8.4 (Lista wycieczek) - podmiana mock data
+- US 8.5 (Edytor wycieczek) - podmiana mock data
+
+### Kryteria akceptacji:
+
+#### Backend (tours-server) - rozszerzenie:
+
+- [ ] **Auth Endpoints**:
+  - [ ] `POST /api/admin/auth/login` - logowanie (email + hasło)
+  - [ ] `POST /api/admin/auth/logout` - wylogowanie (invalidate token)
+  - [ ] `POST /api/admin/auth/refresh` - odświeżenie tokenu
+  - [ ] `GET /api/admin/auth/me` - dane zalogowanego użytkownika
+  - [ ] JWT token z expiration (1h access, 7d refresh)
+  - [ ] Bcrypt password hashing
+  - [ ] Rate limiting na auth endpoints
+
+- [ ] **Tours CRUD Endpoints**:
+  - [ ] `POST /api/admin/tours` - tworzenie nowej wycieczki
+  - [ ] `PUT /api/admin/tours/:id` - aktualizacja wycieczki
+  - [ ] `DELETE /api/admin/tours/:id` - usuwanie wycieczki
+  - [ ] `POST /api/admin/tours/:id/duplicate` - duplikowanie wycieczki
+  - [ ] `POST /api/admin/tours/:id/publish` - publikacja (draft → published)
+  - [ ] `POST /api/admin/tours/bulk-delete` - masowe usuwanie
+
+- [ ] **Middleware**:
+  - [ ] `authMiddleware` - weryfikacja JWT token
+  - [ ] `roleMiddleware` - sprawdzanie uprawnień (admin/editor)
+  - [ ] Error handling z proper HTTP status codes
+
+- [ ] **Baza danych**:
+  - [ ] Tabela `users` (id, email, password_hash, role, created_at)
+  - [ ] Tabela `refresh_tokens` (id, user_id, token, expires_at)
+  - [ ] Migracje SQLite/PostgreSQL
+
+#### Frontend (admin) - integracja:
+
+- [ ] **Services**:
+  - [ ] `authService.ts` - login, logout, refresh, getCurrentUser
+  - [ ] `toursService.ts` - CRUD operations (create, update, delete, duplicate)
+  - [ ] `apiClient.ts` - axios/fetch wrapper z interceptors
+
+- [ ] **Token Management**:
+  - [ ] Przechowywanie access token (memory) i refresh token (httpOnly cookie lub localStorage)
+  - [ ] Auto-refresh przed wygaśnięciem
+  - [ ] Logout przy 401 Unauthorized
+
+- [ ] **Podmiana mock data**:
+  - [ ] `ToursPage.tsx` - pobieranie listy z API
+  - [ ] `TourEditorPage.tsx` - zapis/aktualizacja przez API
+  - [ ] `DashboardPage.tsx` - statystyki z API
+  - [ ] Loading states i error handling
+
+- [ ] **TanStack Query integration**:
+  - [ ] `useQuery` dla pobierania danych
+  - [ ] `useMutation` dla operacji CRUD
+  - [ ] Optimistic updates
+  - [ ] Cache invalidation
+
+### Struktura plików:
+
+```
+backend/tours-server/
+├── src/
+│   ├── middleware/
+│   │   ├── auth.middleware.ts      # JWT verification
+│   │   └── role.middleware.ts      # Role-based access
+│   ├── routes/
+│   │   ├── admin.auth.routes.ts    # Auth endpoints
+│   │   └── admin.tours.routes.ts   # CRUD endpoints
+│   ├── services/
+│   │   ├── auth.service.ts         # Auth business logic
+│   │   └── user.service.ts         # User management
+│   └── db/
+│       └── migrations/
+│           └── 001_add_users.sql
+
+admin/src/
+├── services/
+│   ├── api.client.ts               # HTTP client with interceptors
+│   ├── auth.service.ts             # Auth API calls
+│   └── tours.service.ts            # Tours CRUD API calls
+├── hooks/
+│   ├── useAuth.ts                  # Auth state hook
+│   └── useTours.ts                 # Tours query hooks
+└── stores/
+    └── authStore.ts                # Zustand auth state
+```
+
+### Przykład API Response:
+
+```json
+// POST /api/admin/auth/login
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIs...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIs...",
+  "user": {
+    "id": "1",
+    "email": "admin@wtg.pl",
+    "role": "admin"
+  },
+  "expiresIn": 3600
+}
+
+// POST /api/admin/tours
+{
+  "id": "tour-123",
+  "name": { "pl": "Droga Królewska", "en": "Royal Road" },
+  "cityId": "krakow",
+  "status": "draft",
+  "createdAt": "2024-12-07T10:00:00Z",
+  "updatedAt": "2024-12-07T10:00:00Z"
+}
+```
+
+### Komponenty shadcn/ui:
+
+- Existing components + `Skeleton` (loading states)
+
+### Estymacja: 4-5 dni
+
+### Fazy implementacji:
+
+1. **Faza 1 (1.5 dnia)**: Backend Auth (login, JWT, middleware)
+2. **Faza 2 (1.5 dnia)**: Backend Tours CRUD (POST, PUT, DELETE)
+3. **Faza 3 (1 dzień)**: Frontend services i token management
+4. **Faza 4 (1 dzień)**: Podmiana mock data, TanStack Query, testy
+
+---
+
 ## Estymacje Podsumowanie
 
 | User Story | Estymacja |
@@ -582,10 +720,11 @@
 | US 8.14    | 2 dni     |
 | US 8.15    | 1.5 dnia  |
 | US 8.16    | 1 dzień   |
+| US 8.17    | 4.5 dnia  |
 
-**Łączna estymacja:** ~30 dni robocze (~6 tygodni)
+**Łączna estymacja:** ~34.5 dni robocze (~7 tygodni)
 
-**MVP (bez US 8.14):** ~28 dni robocze
+**MVP (bez US 8.14):** ~32.5 dni robocze
 
 ---
 
