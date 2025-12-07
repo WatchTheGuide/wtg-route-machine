@@ -569,6 +569,7 @@
 **Aby** móc tworzyć, edytować i usuwać wycieczki z trwałym zapisem w bazie danych
 
 ### Zależności:
+
 - Epic 5.1 (Tours Backend) - rozszerzenie o CRUD operations
 - US 8.2 (Autentykacja) - JWT token handling
 - US 8.4 (Lista wycieczek) - podmiana mock data
@@ -579,6 +580,7 @@
 #### Backend (tours-server) - rozszerzenie:
 
 - [ ] **Auth Endpoints**:
+
   - [ ] `POST /api/admin/auth/login` - logowanie (email + hasło)
   - [ ] `POST /api/admin/auth/logout` - wylogowanie (invalidate token)
   - [ ] `POST /api/admin/auth/refresh` - odświeżenie tokenu
@@ -588,6 +590,7 @@
   - [ ] Rate limiting na auth endpoints
 
 - [ ] **Tours CRUD Endpoints**:
+
   - [ ] `POST /api/admin/tours` - tworzenie nowej wycieczki
   - [ ] `PUT /api/admin/tours/:id` - aktualizacja wycieczki
   - [ ] `DELETE /api/admin/tours/:id` - usuwanie wycieczki
@@ -596,6 +599,7 @@
   - [ ] `POST /api/admin/tours/bulk-delete` - masowe usuwanie
 
 - [ ] **Middleware**:
+
   - [ ] `authMiddleware` - weryfikacja JWT token
   - [ ] `roleMiddleware` - sprawdzanie uprawnień (admin/editor)
   - [ ] Error handling z proper HTTP status codes
@@ -608,16 +612,19 @@
 #### Frontend (admin) - integracja:
 
 - [ ] **Services**:
+
   - [ ] `authService.ts` - login, logout, refresh, getCurrentUser
   - [ ] `toursService.ts` - CRUD operations (create, update, delete, duplicate)
   - [ ] `apiClient.ts` - axios/fetch wrapper z interceptors
 
 - [ ] **Token Management**:
+
   - [ ] Przechowywanie access token (memory) i refresh token (httpOnly cookie lub localStorage)
   - [ ] Auto-refresh przed wygaśnięciem
   - [ ] Logout przy 401 Unauthorized
 
 - [ ] **Podmiana mock data**:
+
   - [ ] `ToursPage.tsx` - pobieranie listy z API
   - [ ] `TourEditorPage.tsx` - zapis/aktualizacja przez API
   - [ ] `DashboardPage.tsx` - statystyki z API
