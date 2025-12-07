@@ -1,12 +1,7 @@
-import { MainLayout } from '@/components/layout/MainLayout';
-import { Dashboard } from '@/pages/Dashboard';
+import { LandingPage } from '@/pages/LandingPage';
 
 function App() {
-  return (
-    <MainLayout>
-      <Dashboard />
-    </MainLayout>
-  );
+  return <LandingPage />;
 }
 
 export default App;

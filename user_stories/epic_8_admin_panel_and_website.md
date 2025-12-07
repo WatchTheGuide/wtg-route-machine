@@ -37,14 +37,11 @@
   ├── src/
   │   ├── components/
   │   │   ├── ui/              # shadcn components
-  │   │   ├── layout/          # Layout components (Header, Sidebar, Footer)
+  │   │   ├── landing/         # Landing page components
   │   │   ├── tours/           # Tour-specific components
   │   │   └── common/          # Shared components
   │   ├── pages/               # Page components
-  │   │   ├── Dashboard.tsx
-  │   │   ├── ToursPage.tsx
-  │   │   ├── TourEditor.tsx
-  │   │   └── Settings.tsx
+  │   │   └── LandingPage.tsx
   │   ├── hooks/               # Custom hooks
   │   ├── services/            # API services
   │   ├── stores/              # Zustand stores
@@ -52,13 +49,14 @@
   │   ├── lib/                 # Utilities (cn, format helpers)
   │   └── App.tsx
   ├── public/
+  │   └── icon.png             # App icon
   └── package.json
   ```
 - [x] Konfiguracja path aliases (`@/` dla src)
-- [x] ESLint + Prettier setup
-- [x] Podstawowy layout z Header + Sidebar + Content area
+- [x] ESLint setup
+- [x] Landing page z Navbar, Hero, Features, Cities, About, Footer
 
-### Estymacja: 0.5 dnia
+### Estymacja: 0.5 dnia ✅ COMPLETED
 
 ---
 

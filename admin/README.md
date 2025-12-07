@@ -4,7 +4,7 @@ Admin panel aplikacji WTG Route Machine do zarządzania kuratorowanymi wycieczka
 
 ## Stack Technologiczny
 
-- **Framework:** Vite + React 18 + TypeScript
+- **Framework:** Vite 7 + React 19 + TypeScript
 - **UI Components:** shadcn/ui (Radix UI + Tailwind CSS)
 - **Routing:** React Router v6 (TODO)
 - **State Management:** TanStack Query + Zustand (TODO)
@@ -53,20 +53,20 @@ admin/
 ├── src/
 │   ├── components/
 │   │   ├── ui/              # shadcn/ui components
-│   │   ├── layout/          # Layout components (Header, Sidebar)
+│   │   ├── landing/         # Landing page components
 │   │   ├── tours/           # Tour-specific components (TODO)
 │   │   └── common/          # Shared components (TODO)
 │   ├── pages/               # Page components
-│   │   └── Dashboard.tsx    # Dashboard page
+│   │   └── LandingPage.tsx  # Landing page
 │   ├── hooks/               # Custom React hooks (TODO)
 │   ├── services/            # API services (TODO)
 │   ├── stores/              # Zustand stores (TODO)
 │   ├── types/               # TypeScript type definitions
 │   ├── lib/                 # Utility functions
-│   │   ├── utils.ts         # cn() helper
-│   │   └── format.ts        # Formatting utilities
+│   │   └── utils.ts         # cn() helper
 │   └── App.tsx              # Main App component
 ├── public/
+│   └── icon.png             # App icon
 └── package.json
 ```
 
@@ -79,11 +79,22 @@ admin/
 - [x] shadcn/ui initialization
 - [x] Folder structure
 - [x] Path aliases (`@/`)
-- [x] Basic layout (Header + Sidebar + Content)
+- [x] Landing page with Navbar, Hero, Features, Cities, About, Footer
 
 ### US 8.2-8.16: TODO
 
 Zobacz [epic_8_admin_panel_and_website.md](../user_stories/epic_8_admin_panel_and_website.md) dla pełnej listy funkcjonalności.
+
+## Landing Page Components
+
+Aktualnie zaimplementowane komponenty landing page:
+
+- **Navbar** - Nawigacja z linkami i CTA
+- **Hero** - Sekcja hero z opisem projektu
+- **Features** - Grid z funkcjami aplikacji
+- **Cities** - Karty dostępnych miast
+- **About** - Informacje o projekcie
+- **Footer** - Stopka z linkami
 
 ## Available Components (shadcn/ui)
 
@@ -91,13 +102,7 @@ Zainstalowane komponenty:
 
 - `Button`
 - `Card`
-- `Input`
-- `Label`
-- `Separator`
-- `Sidebar`
-- `Sheet`
-- `Skeleton`
-- `Tooltip`
+- `Collapsible`
 
 Aby dodać nowe komponenty:
 
@@ -108,67 +113,8 @@ npx shadcn@latest add [component-name]
 ## Code Style
 
 - **TypeScript:** Strict mode enabled
-- **ESLint:** Konfiguracja z vite
-- **Prettier:** TODO
-- **Naming:** camelCase dla zmiennych, PascalCase dla komponentów
+- **ESLint:** Konfiguracja z Vite
 
 ## License
 
 MIT
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
