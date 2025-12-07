@@ -557,11 +557,11 @@ API Server (EC2-2):
 # OSRM data files (one-time, can regenerate)
 aws s3 sync /opt/wtg-route-machine/osrm-data/ s3://wtg-osrm-backup/
 
-# Tours data (important - user-generated content)
-aws s3 sync /opt/wtg-api/tours-server/src/data/ s3://wtg-tours-backup/ --exclude "*.log"
+# API data (important - tour content)
+aws s3 sync /opt/wtg-api/api-server/src/data/ s3://wtg-api-backup/ --exclude "*.log"
 
 # Automated daily backup (cron)
-0 2 * * * /usr/local/bin/backup-tours.sh
+0 2 * * * /usr/local/bin/backup-api-data.sh
 ```
 
 ---
@@ -643,7 +643,7 @@ aws s3 sync /opt/wtg-api/tours-server/src/data/ s3://wtg-tours-backup/ --exclude
 4. [ ] Deploy OSRM containers + Nginx
 5. [ ] Setup SSL certificates
 6. [ ] Launch EC2-2 (API)
-7. [ ] Deploy tours-server
+7. [ ] Deploy api-server (unified POI + Tours + Admin)
 8. [ ] Update mobile app `.env.production`
 9. [ ] Testing end-to-end
 10. [ ] Deploy website do Vercel

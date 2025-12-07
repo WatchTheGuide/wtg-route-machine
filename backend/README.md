@@ -21,8 +21,6 @@ backend/
 ├── nginx/                  # Nginx proxy configurations
 ├── osrm-data/             # Dane map i przetworzone pliki OSRM
 ├── osrm-profiles/         # Profile routingu (foot, car, bike)
-├── poi-server/            # [DEPRECATED] → use api-server
-├── tours-server/          # [DEPRECATED] → use api-server
 └── scripts/               # Skrypty automatyzacji
 ```
 

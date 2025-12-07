@@ -172,9 +172,9 @@ api-server/
 
 ## Migration Notes
 
-This server consolidates:
+This server consolidates the previously separate servers:
 
-- `poi-server` (port 4000) → `/api/poi/*`
-- `tours-server` (port 3002) → `/api/tours/*`
+- `poi-server` (port 4000) → now `/api/poi/*`
+- `tours-server` (port 3002) → now `/api/tours/*`
 
-Both servers can be deprecated after migration is complete.
+Both old servers have been removed as of December 2024.

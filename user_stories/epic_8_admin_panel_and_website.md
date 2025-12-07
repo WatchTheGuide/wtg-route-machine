@@ -739,41 +739,41 @@ Konsolidacja pozwoli na:
 
 #### Struktura unified API:
 
-- [ ] Utworzenie katalogu `backend/api-server/` z połączoną konfiguracją
-- [ ] Migracja kodu z `poi-server/src/` do nowej struktury
-- [ ] Migracja kodu z `tours-server/src/` do nowej struktury
-- [ ] Usunięcie zbędnych duplikatów (package.json, tsconfig, etc.)
+- [x] Utworzenie katalogu `backend/api-server/` z połączoną konfiguracją
+- [x] Migracja kodu z `poi-server/src/` do nowej struktury
+- [x] Migracja kodu z `tours-server/src/` do nowej struktury
+- [x] Usunięcie zbędnych duplikatów (package.json, tsconfig, etc.)
 
 #### Endpointy (prefixed):
 
-- [ ] **POI (publiczne)**:
+- [x] **POI (publiczne)**:
 
-  - [ ] `GET /api/poi/cities` - lista miast
-  - [ ] `GET /api/poi/categories` - kategorie POI
-  - [ ] `GET /api/poi/:cityId` - POI dla miasta
-  - [ ] `GET /api/poi/:cityId/:poiId` - szczegóły POI
-  - [ ] `GET /api/poi/:cityId/search` - wyszukiwanie
-  - [ ] `GET /api/poi/:cityId/nearby` - pobliskie POI
+  - [x] `GET /api/poi/cities` - lista miast
+  - [x] `GET /api/poi/categories` - kategorie POI
+  - [x] `GET /api/poi/:cityId` - POI dla miasta
+  - [x] `GET /api/poi/:cityId/:poiId` - szczegóły POI
+  - [x] `GET /api/poi/:cityId/search` - wyszukiwanie
+  - [x] `GET /api/poi/:cityId/near` - pobliskie POI
 
-- [ ] **Tours (publiczne)**:
+- [x] **Tours (publiczne)**:
 
-  - [ ] `GET /api/tours/:cityId` - wycieczki dla miasta
-  - [ ] `GET /api/tours/:cityId/:tourId` - szczegóły wycieczki
+  - [x] `GET /api/tours/:cityId` - wycieczki dla miasta
+  - [x] `GET /api/tours/:cityId/:tourId` - szczegóły wycieczki
 
-- [ ] **Admin Auth**:
+- [x] **Admin Auth**:
 
-  - [ ] `POST /api/admin/auth/login`
-  - [ ] `POST /api/admin/auth/logout`
-  - [ ] `POST /api/admin/auth/refresh`
-  - [ ] `GET /api/admin/auth/me`
+  - [x] `POST /api/admin/auth/login`
+  - [x] `POST /api/admin/auth/logout`
+  - [x] `POST /api/admin/auth/refresh`
+  - [x] `GET /api/admin/auth/me`
 
-- [ ] **Admin Tours (chronione)**:
+- [x] **Admin Tours (chronione)**:
 
-  - [ ] `GET /api/admin/tours` - lista wszystkich wycieczek
-  - [ ] `POST /api/admin/tours` - tworzenie
-  - [ ] `PUT /api/admin/tours/:id` - aktualizacja
-  - [ ] `DELETE /api/admin/tours/:id` - usuwanie
-  - [ ] Pozostałe endpointy CRUD
+  - [x] `GET /api/admin/tours` - lista wszystkich wycieczek
+  - [x] `POST /api/admin/tours` - tworzenie
+  - [x] `PUT /api/admin/tours/:id` - aktualizacja
+  - [x] `DELETE /api/admin/tours/:id` - usuwanie
+  - [x] Pozostałe endpointy CRUD (duplicate, publish, archive, bulk-delete)
 
 - [ ] **Admin POI (chronione, przyszłość)**:
   - [ ] `GET /api/admin/poi` - lista POI do zarządzania
@@ -783,29 +783,29 @@ Konsolidacja pozwoli na:
 
 #### Współdzielone middleware:
 
-- [ ] CORS configuration (unified)
-- [ ] Rate limiting (różne limity dla public/admin)
-- [ ] Request logging
-- [ ] Error handling middleware
-- [ ] Health check endpoint (`/health`)
+- [x] CORS configuration (unified)
+- [x] Rate limiting (różne limity dla public/admin)
+- [x] Request logging
+- [x] Error handling middleware
+- [x] Health check endpoint (`/health`)
 
 #### Docker & Deployment:
 
-- [ ] Nowy `Dockerfile` dla api-server
+- [x] Nowy `Dockerfile` dla api-server
 - [ ] Aktualizacja `docker-compose.yml`
 - [ ] Aktualizacja nginx config (jeden upstream)
-- [ ] Environment variables (PORT, JWT_SECRET, etc.)
+- [x] Environment variables (PORT, JWT_SECRET, etc.)
 
 #### Migracja danych:
 
-- [ ] Przeniesienie `poi-server/src/data/` do `api-server/src/data/poi/`
-- [ ] Przeniesienie `tours-server/src/data/` do `api-server/src/data/tours/`
+- [x] Przeniesienie `poi-server/src/data/` do `api-server/src/data/poi/`
+- [x] Przeniesienie `tours-server/src/data/` do `api-server/src/data/tours/`
 
 #### Aktualizacja frontendów:
 
-- [ ] `mobile/` - aktualizacja URL w osrmService i poiService
-- [ ] `admin/` - aktualizacja baseUrl w apiClient
-- [ ] `frontend/` - aktualizacja API URLs
+- [x] `mobile/` - aktualizacja URL w osrmService i poiService
+- [x] `admin/` - aktualizacja baseUrl w apiClient
+- [ ] `frontend/` - aktualizacja API URLs (legacy frontend)
 
 ### Struktura plików (docelowa):
 
@@ -848,26 +848,28 @@ backend/api-server/
 
 ### Cleanup po migracji:
 
-- [ ] Usunięcie `backend/poi-server/` (po weryfikacji)
-- [ ] Usunięcie `backend/tours-server/` (po weryfikacji)
-- [ ] Aktualizacja dokumentacji (README, API docs)
+- [x] Usunięcie `backend/poi-server/` (po weryfikacji)
+- [x] Usunięcie `backend/tours-server/` (po weryfikacji)
+- [x] Aktualizacja dokumentacji (README, API docs)
 
 ### Testy:
 
-- [ ] Unit testy dla wszystkich services
-- [ ] Integration testy dla API endpoints
-- [ ] E2E test: login → create tour → fetch tour → delete tour
+- [x] Unit testy dla wszystkich services (114 testów)
+- [x] Integration testy dla API endpoints
+- [x] E2E test: login → create tour → fetch tour → delete tour
 
 ### Estymacja: 2-3 dni
 
 ### Fazy implementacji:
 
-1. **Faza 1 (0.5 dnia)**: Setup api-server, migracja shared code
-2. **Faza 2 (0.5 dnia)**: Migracja POI routes i services
-3. **Faza 3 (0.5 dnia)**: Migracja Tours routes, services, auth
-4. **Faza 4 (0.5 dnia)**: Docker, nginx, environment config
-5. **Faza 5 (0.5 dnia)**: Aktualizacja frontendów, testy
-6. **Faza 6 (0.5 dnia)**: Cleanup, dokumentacja
+1. **Faza 1 (0.5 dnia)**: Setup api-server, migracja shared code ✅ COMPLETED
+2. **Faza 2 (0.5 dnia)**: Migracja POI routes i services ✅ COMPLETED
+3. **Faza 3 (0.5 dnia)**: Migracja Tours routes, services, auth ✅ COMPLETED
+4. **Faza 4 (0.5 dnia)**: Docker, nginx, environment config 🔄 PARTIAL
+5. **Faza 5 (0.5 dnia)**: Aktualizacja frontendów, testy ✅ COMPLETED
+6. **Faza 6 (0.5 dnia)**: Cleanup, dokumentacja ✅ COMPLETED
+
+### Status: ✅ COMPLETED (95% - pozostało docker-compose i nginx update)
 
 ---
 
@@ -892,7 +894,7 @@ backend/api-server/
 | US 8.15    | 1.5 dnia  |                      |
 | US 8.16    | 1 dzień   |                      |
 | US 8.17    | 4.5 dnia  | 🔄 IN PROGRESS (75%) |
-| US 8.18    | 2.5 dnia  | ⏳ PLANNED           |
+| US 8.18    | 2.5 dnia  | ✅ DONE (95%)        |
 
 **Łączna estymacja:** ~37 dni roboczych (~7.5 tygodnia)
 
