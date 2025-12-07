@@ -16,7 +16,10 @@ import config from './config.js';
 
 const app = express();
 
-// Rate limiters
+// Check if running in test mode
+const isTestMode = process.env.NODE_ENV === 'test';
+
+// Rate limiters (disabled in test mode)
 const generalLimiter = rateLimit({
   windowMs: config.rateLimitWindowMs,
   max: config.rateLimitMaxRequests,
@@ -26,6 +29,7 @@ const generalLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: () => isTestMode, // Skip rate limiting in tests
 });
 
 const authLimiter = rateLimit({
@@ -37,6 +41,7 @@ const authLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: () => isTestMode, // Skip rate limiting in tests
 });
 
 // Middleware

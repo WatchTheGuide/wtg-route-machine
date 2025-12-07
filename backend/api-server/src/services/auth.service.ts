@@ -18,6 +18,9 @@ import type {
 const users: Map<string, User> = new Map();
 const refreshTokens: Map<string, RefreshToken> = new Map();
 
+// Promise to track initialization completion
+let initPromise: Promise<void> | null = null;
+
 // Initialize default admin user
 const initDefaultAdmin = async () => {
   const adminId = 'admin-1';
@@ -35,8 +38,18 @@ const initDefaultAdmin = async () => {
   }
 };
 
-// Initialize on module load
-initDefaultAdmin();
+// Initialize on module load and store the promise
+initPromise = initDefaultAdmin();
+
+/**
+ * Ensure default admin user is initialized (for testing)
+ * Call this before running auth tests
+ */
+export const ensureInitialized = async (): Promise<void> => {
+  if (initPromise) {
+    await initPromise;
+  }
+};
 
 const SALT_ROUNDS = 10;
 
