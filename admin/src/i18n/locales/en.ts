@@ -48,6 +48,8 @@ const en = {
         toursOverTimeDesc: 'Number of tours and POIs added each month',
         toursByCity: 'Tours by city',
         toursByCityDesc: 'Views by city',
+        viewsPerCity: 'Views per city',
+        viewsPerCityDesc: 'Total views for each city',
       },
       quickActions: {
         title: 'Quick Actions',

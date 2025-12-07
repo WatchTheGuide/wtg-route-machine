@@ -48,6 +48,8 @@ const pl = {
         toursOverTimeDesc: 'Liczba wycieczek i POI dodanych w każdym miesiącu',
         toursByCity: 'Wycieczki wg miasta',
         toursByCityDesc: 'Wyświetlenia wg miasta',
+        viewsPerCity: 'Wyświetlenia wg miasta',
+        viewsPerCityDesc: 'Całkowita liczba wyświetleń dla każdego miasta',
       },
       quickActions: {
         title: 'Szybkie akcje',

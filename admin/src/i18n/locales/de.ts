@@ -48,6 +48,8 @@ const de = {
         toursOverTimeDesc: 'Anzahl der Touren und POIs pro Monat',
         toursByCity: 'Touren nach Stadt',
         toursByCityDesc: 'Aufrufe nach Stadt',
+        viewsPerCity: 'Aufrufe pro Stadt',
+        viewsPerCityDesc: 'Gesamtaufrufe für jede Stadt',
       },
       quickActions: {
         title: 'Schnellaktionen',

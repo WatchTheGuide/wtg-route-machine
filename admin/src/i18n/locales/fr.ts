@@ -48,6 +48,8 @@ const fr = {
         toursOverTimeDesc: 'Nombre de circuits et POIs ajoutés par mois',
         toursByCity: 'Circuits par ville',
         toursByCityDesc: 'Vues par ville',
+        viewsPerCity: 'Vues par ville',
+        viewsPerCityDesc: 'Nombre total de vues pour chaque ville',
       },
       quickActions: {
         title: 'Actions rapides',

@@ -48,6 +48,8 @@ const uk = {
         toursOverTimeDesc: 'Кількість екскурсій та POI за місяць',
         toursByCity: 'Екскурсії за містом',
         toursByCityDesc: 'Перегляди за містом',
+        viewsPerCity: 'Перегляди за містом',
+        viewsPerCityDesc: 'Загальна кількість переглядів для кожного міста',
       },
       quickActions: {
         title: 'Швидкі дії',
