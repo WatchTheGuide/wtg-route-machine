@@ -15,8 +15,16 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { adminToursService } from '../services/admin.tours.service.js';
-import { authMiddleware, editorOrAdmin, adminOnly } from '../middleware/index.js';
-import type { AdminTour, AdminTourSummary, ErrorResponse } from '../types/index.js';
+import {
+  authMiddleware,
+  editorOrAdmin,
+  adminOnly,
+} from '../middleware/index.js';
+import type {
+  AdminTour,
+  AdminTourSummary,
+  ErrorResponse,
+} from '../types/index.js';
 
 const router = Router();
 
@@ -49,7 +57,14 @@ const tourInputSchema = z.object({
   cityId: z.string().min(1),
   name: localizedStringSchema,
   description: localizedStringSchema,
-  category: z.enum(['history', 'architecture', 'nature', 'food', 'art', 'nightlife']),
+  category: z.enum([
+    'history',
+    'architecture',
+    'nature',
+    'food',
+    'art',
+    'nightlife',
+  ]),
   difficulty: z.enum(['easy', 'medium', 'hard']),
   distance: z.number().min(0),
   duration: z.number().min(0),
@@ -72,7 +87,10 @@ const bulkDeleteSchema = z.object({
 router.get(
   '/',
   editorOrAdmin,
-  async (req: Request, res: Response<{ tours: AdminTourSummary[] } | ErrorResponse>): Promise<void> => {
+  async (
+    req: Request,
+    res: Response<{ tours: AdminTourSummary[] } | ErrorResponse>
+  ): Promise<void> => {
     try {
       const { cityId, status, category, difficulty, search } = req.query;
 
@@ -144,7 +162,10 @@ router.get(
 router.get(
   '/:id',
   editorOrAdmin,
-  async (req: Request, res: Response<{ tour: AdminTour } | ErrorResponse>): Promise<void> => {
+  async (
+    req: Request,
+    res: Response<{ tour: AdminTour } | ErrorResponse>
+  ): Promise<void> => {
     try {
       const { id } = req.params;
       const tour = await adminToursService.getTourById(id);
@@ -175,7 +196,10 @@ router.get(
 router.post(
   '/',
   editorOrAdmin,
-  async (req: Request, res: Response<{ tour: AdminTour } | ErrorResponse>): Promise<void> => {
+  async (
+    req: Request,
+    res: Response<{ tour: AdminTour } | ErrorResponse>
+  ): Promise<void> => {
     try {
       const validation = tourInputSchema.safeParse(req.body);
       if (!validation.success) {
@@ -205,7 +229,10 @@ router.post(
 router.put(
   '/:id',
   editorOrAdmin,
-  async (req: Request, res: Response<{ tour: AdminTour } | ErrorResponse>): Promise<void> => {
+  async (
+    req: Request,
+    res: Response<{ tour: AdminTour } | ErrorResponse>
+  ): Promise<void> => {
     try {
       const { id } = req.params;
 
@@ -246,7 +273,10 @@ router.put(
 router.delete(
   '/:id',
   adminOnly,
-  async (req: Request, res: Response<{ success: boolean } | ErrorResponse>): Promise<void> => {
+  async (
+    req: Request,
+    res: Response<{ success: boolean } | ErrorResponse>
+  ): Promise<void> => {
     try {
       const { id } = req.params;
       const deleted = await adminToursService.deleteTour(id);
@@ -277,7 +307,10 @@ router.delete(
 router.post(
   '/bulk-delete',
   adminOnly,
-  async (req: Request, res: Response<{ deleted: number } | ErrorResponse>): Promise<void> => {
+  async (
+    req: Request,
+    res: Response<{ deleted: number } | ErrorResponse>
+  ): Promise<void> => {
     try {
       const validation = bulkDeleteSchema.safeParse(req.body);
       if (!validation.success) {
@@ -307,7 +340,10 @@ router.post(
 router.post(
   '/:id/duplicate',
   editorOrAdmin,
-  async (req: Request, res: Response<{ tour: AdminTour } | ErrorResponse>): Promise<void> => {
+  async (
+    req: Request,
+    res: Response<{ tour: AdminTour } | ErrorResponse>
+  ): Promise<void> => {
     try {
       const { id } = req.params;
       const tour = await adminToursService.duplicateTour(id);
@@ -338,7 +374,10 @@ router.post(
 router.post(
   '/:id/publish',
   editorOrAdmin,
-  async (req: Request, res: Response<{ tour: AdminTour } | ErrorResponse>): Promise<void> => {
+  async (
+    req: Request,
+    res: Response<{ tour: AdminTour } | ErrorResponse>
+  ): Promise<void> => {
     try {
       const { id } = req.params;
       const tour = await adminToursService.publishTour(id);
@@ -369,7 +408,10 @@ router.post(
 router.post(
   '/:id/archive',
   adminOnly,
-  async (req: Request, res: Response<{ tour: AdminTour } | ErrorResponse>): Promise<void> => {
+  async (
+    req: Request,
+    res: Response<{ tour: AdminTour } | ErrorResponse>
+  ): Promise<void> => {
     try {
       const { id } = req.params;
       const tour = await adminToursService.archiveTour(id);
