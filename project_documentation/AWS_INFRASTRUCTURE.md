@@ -61,15 +61,18 @@
 │  │  - CORS headers                                    │        │
 │  └─────────────────────────────────────────────────────┘        │
 │                             │                                    │
-│         ┌───────────────────┴──────────────────┐               │
-│         │                                        │               │
-│  ┌──────▼──────┐                      ┌─────────▼────────┐     │
-│  │ Tours Server│                      │   POI Server     │     │
-│  │ Port 3002   │                      │   Port 4000      │     │
-│  │ Node.js     │                      │   Node.js        │     │
-│  │ + TypeScript│                      │   (future)       │     │
-│  │ + Express   │                      │                  │     │
-│  └─────────────┘                      └──────────────────┘     │
+│                    ┌────────▼────────┐                          │
+│                    │  Unified API    │                          │
+│                    │  Server (3000)  │                          │
+│                    │                  │                          │
+│                    │  - /api/poi/*   │  ← Points of Interest   │
+│                    │  - /api/tours/* │  ← Curated Tours        │
+│                    │  - /api/admin/* │  ← Admin Panel API      │
+│                    │                  │                          │
+│                    │  Node.js        │                          │
+│                    │  Express + TS   │                          │
+│                    │  JWT Auth       │                          │
+│                    └─────────────────┘                          │
 │                                                                   │
 │  Optional: PostgreSQL (if needed for user data)                 │
 │  Optional: Redis (for caching tours/POI)                        │
@@ -345,26 +348,25 @@ services:
       - api-network
     restart: unless-stopped
 
-  tours-server:
-    build: ./tours-server
-    container_name: wtg-tours-server
+  api-server:
+    build: ./api-server
+    container_name: wtg-api-server
     environment:
       - NODE_ENV=production
-      - PORT=3002
+      - PORT=3000
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=1h
+      - CORS_ORIGIN=*
     volumes:
-      - ./tours-server/src/data:/app/src/data:ro
+      - ./api-server/src/data:/app/src/data:ro
     networks:
       - api-network
     restart: unless-stopped
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3002/health']
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3000/health']
       interval: 30s
       timeout: 10s
       retries: 3
-
-  # Future: POI server
-  # poi-server:
-  #   ...
 
 networks:
   api-network:
@@ -374,8 +376,8 @@ networks:
 ### Nginx Configuration (`api.conf`):
 
 ```nginx
-upstream tours_backend {
-    server tours-server:3002;
+upstream api_backend {
+    server api-server:3000;
 }
 
 server {
@@ -393,12 +395,35 @@ server {
 
     # CORS
     add_header Access-Control-Allow-Origin "*" always;
-    add_header Access-Control-Allow-Methods "GET, POST, OPTIONS" always;
-    add_header Access-Control-Allow-Headers "Content-Type" always;
+    add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+    add_header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key" always;
 
-    # Tours API
-    location /tours/ {
-        proxy_pass http://tours_backend/api/tours/;
+    # Handle OPTIONS preflight
+    if ($request_method = 'OPTIONS') {
+        return 204;
+    }
+
+    # POI API (public)
+    location /api/poi/ {
+        proxy_pass http://api_backend/api/poi/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Tours API (public)
+    location /api/tours/ {
+        proxy_pass http://api_backend/api/tours/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Admin API (protected - requires JWT)
+    location /api/admin/ {
+        proxy_pass http://api_backend/api/admin/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -408,8 +433,7 @@ server {
     # Health check
     location /health {
         access_log off;
-        return 200 '{"status": "ok", "service": "api-server"}';
-        add_header Content-Type application/json;
+        proxy_pass http://api_backend/health;
     }
 }
 ```
@@ -439,10 +463,18 @@ sudo certbot renew --dry-run
 
 ```env
 # mobile/.env.production
-VITE_TOURS_API_URL=https://api.watchtheguide.com/tours
+VITE_TOURS_API_URL=https://api.watchtheguide.com/api/tours
+VITE_POIS_API_URL=https://api.watchtheguide.com/api/poi
 VITE_OSRM_API_URL=https://osrm.watchtheguide.com
 VITE_API_KEY=prod-mobile-key-abc123xyz789
 VITE_REQUIRE_API_KEY=true
+```
+
+### Admin Panel Configuration:
+
+```env
+# admin/.env.production
+VITE_API_URL=https://api.watchtheguide.com
 ```
 
 ### URL Format dla OSRM:
@@ -483,10 +515,14 @@ const url = `${baseUrl}/{city}/{profile}/route/v1/{profile}/{coordinates}`;
 - [ ] Point DNS: `api.watchtheguide.com` → Elastic IP
 - [ ] Install Docker + Docker Compose
 - [ ] Clone repo
-- [ ] Build tours-server: `docker build -t wtg-tours-server ./tours-server`
+- [ ] Set environment variables (JWT_SECRET)
+- [ ] Build api-server: `docker build -t wtg-api-server ./api-server`
 - [ ] Setup Let's Encrypt SSL: `certbot --nginx -d api.watchtheguide.com`
 - [ ] Start services: `docker-compose up -d`
-- [ ] Test API: `curl https://api.watchtheguide.com/tours/cities`
+- [ ] Test API endpoints:
+  - `curl https://api.watchtheguide.com/health`
+  - `curl https://api.watchtheguide.com/api/poi/cities`
+  - `curl https://api.watchtheguide.com/api/tours/cities`
 - [ ] Setup CloudWatch monitoring
 
 ### Route 53:

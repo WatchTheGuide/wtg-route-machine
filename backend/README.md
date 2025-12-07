@@ -1,65 +1,126 @@
 # Backend - WTG Route Machine
 
-Backend OSRM (Open Source Routing Machine) zoptymalizowany pod routing pieszy w miastach Polski.
+Backend zawiera serwisy routingu OSRM oraz zunifikowany serwer API dla POI, Tours i Admin Panel.
 
 ## Struktura
 
 ```
 backend/
+├── api-server/            # Zunifikowany API Server (POI + Tours + Admin)
+│   ├── src/
+│   │   ├── routes/       # Express routes
+│   │   ├── services/     # Business logic
+│   │   ├── types/        # TypeScript types
+│   │   ├── middleware/   # Auth middleware
+│   │   └── data/         # JSON data files
+│   ├── Dockerfile
+│   └── package.json
 ├── docker/                 # Niestandardowe Dockerfile (opcjonalnie)
-├── docker-compose.yml      # Konfiguracja Docker Compose
+├── docker-compose.yml      # Pojedynczy OSRM (development)
+├── docker-compose.multi-city.yml  # 12× OSRM + API Server (production)
+├── nginx/                  # Nginx proxy configurations
 ├── osrm-data/             # Dane map i przetworzone pliki OSRM
 ├── osrm-profiles/         # Profile routingu (foot, car, bike)
+├── poi-server/            # [DEPRECATED] → use api-server
+├── tours-server/          # [DEPRECATED] → use api-server
 └── scripts/               # Skrypty automatyzacji
-    ├── download-map.sh
-    ├── extract-city.sh
-    ├── prepare-city-osrm.sh
-    ├── prepare-osrm.sh
-    └── run-city-server.sh
 ```
+
+## Serwisy
+
+### 1. API Server (Port 3000)
+
+Zunifikowany serwer API obsługujący:
+
+- **POI**: `/api/poi/*` - Points of Interest
+- **Tours**: `/api/tours/*` - Curated Walking Tours
+- **Admin**: `/api/admin/*` - Panel administracyjny (JWT auth)
+
+```bash
+cd api-server
+npm install
+npm run dev
+```
+
+### 2. OSRM Servers (Ports 5001-5033)
+
+Routing dla 4 miast × 3 profile = 12 kontenerów:
+
+- Kraków: 5001 (foot), 5002 (bicycle), 5003 (car)
+- Warszawa: 5011-5013
+- Wrocław: 5021-5023
+- Trójmiasto: 5031-5033
 
 ## Wymagania
 
+- Node.js 20+ (dla API Server)
 - Docker 20.10+
 - Docker Compose 2.0+
 - osmium-tool 1.18+ (dla ekstrakcji miast)
 - ~2GB wolnej pamięci RAM (na miasto)
 - ~500MB wolnego miejsca na dysku (na miasto)
 
-## Quick Start
+## Quick Start (Development)
 
-### 1. Pobierz mapę województwa
+### 1. Uruchom API Server
+
+```bash
+cd api-server
+npm install
+npm run dev
+# Server starts on http://localhost:3000
+```
+
+### 2. Pobierz mapę województwa
 
 ```bash
 ./scripts/download-map.sh malopolskie
 ```
 
-### 2. Wyekstrahuj miasto
+### 3. Wyekstrahuj miasto
 
 ```bash
 ./scripts/extract-city.sh malopolskie krakow
 ```
 
-### 3. Przygotuj dane OSRM
+### 4. Przygotuj dane OSRM
 
 ```bash
 ./scripts/prepare-city-osrm.sh krakow foot
 ```
 
-### 4. Uruchom serwer
+### 5. Uruchom serwer OSRM
 
 ```bash
 ./scripts/run-city-server.sh krakow 5001
 ```
 
-### 5. Testuj API
+### 6. Testuj API
 
 ```bash
-# Nearest point
+# API Server - POI
+curl "http://localhost:3000/api/poi/cities"
+
+# API Server - Tours
+curl "http://localhost:3000/api/tours/cities"
+
+# OSRM - Nearest point
 curl "http://localhost:5001/nearest/v1/foot/19.9385,50.0647"
 
-# Route
+# OSRM - Route
 curl "http://localhost:5001/route/v1/foot/19.9450,50.0614;19.9385,50.0647?overview=full"
+```
+
+## Docker Compose (Production)
+
+Uruchom wszystkie serwisy jednocześnie:
+
+```bash
+# 12× OSRM + API Server
+docker-compose -f docker-compose.multi-city.yml up -d
+
+# Sprawdź status
+docker-compose -f docker-compose.multi-city.yml ps
 ```
 
 ## Obsługiwane miasta

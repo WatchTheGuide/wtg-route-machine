@@ -149,23 +149,26 @@ services:
     command: osrm-routed --algorithm mld /data/trojmiasto-car.osrm --max-table-size 10000
 
   # ============================================
-  # POI SERVER - Points of Interest API
+  # UNIFIED API SERVER - POI + Tours + Admin
   # ============================================
-  poi-server:
+  api-server:
     build:
-      context: ./poi-server
+      context: ./api-server
       dockerfile: Dockerfile
-    container_name: wtg-poi-server
+    container_name: wtg-api-server
     restart: unless-stopped
     ports:
-      - "4000:4000"
+      - "3000:3000"
     environment:
       - NODE_ENV=production
-      - PORT=4000
+      - PORT=3000
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
+      - JWT_EXPIRES_IN=1h
+      - CORS_ORIGIN=*
     networks:
       - osrm-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -173,38 +176,9 @@ services:
     deploy:
       resources:
         limits:
-          memory: 128M
+          memory: 256M
         reservations:
-          memory: 64M
-
-  # ============================================
-  # TOURS SERVER - Curated Tours API
-  # ============================================
-  tours-server:
-    build:
-      context: ./tours-server
-      dockerfile: Dockerfile
-    container_name: wtg-tours-server
-    restart: unless-stopped
-    ports:
-      - "3002:3002"
-    environment:
-      - NODE_ENV=production
-      - PORT=3002
-    networks:
-      - osrm-network
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
-    deploy:
-      resources:
-        limits:
           memory: 128M
-        reservations:
-          memory: 64M
 
 networks:
   osrm-network:

@@ -4,53 +4,80 @@ Dokument ten opisuje strategię wdrożenia backendu WTG Route Machine (OSRM) ora
 
 ## 1. Architektura Wdrożenia
 
-Backend składa się z kilku kontenerów Dockerowych uruchamiających instancje OSRM dla różnych profili (pieszy, rowerowy, samochodowy) oraz serwera Nginx pełniącego rolę Reverse Proxy i bramki bezpieczeństwa.
+Backend składa się z:
+
+1. **OSRM Server (EC2-1)**: Kontenery OSRM dla routingu (12 kontenerów: 4 miasta × 3 profile)
+2. **API Server (EC2-2)**: Zunifikowany serwer API obsługujący:
+   - `/api/poi/*` - Points of Interest
+   - `/api/tours/*` - Curated Tours
+   - `/api/admin/*` - Admin Panel API (chronione JWT)
 
 ```mermaid
 graph LR
-    Client[Mobile App / Web] -->|HTTPS + API Key| Nginx[Nginx Reverse Proxy]
-    Nginx -->|Auth Check| Auth{Valid Key?}
+    Client[Mobile App / Web / Admin] -->|HTTPS| Nginx[Nginx Reverse Proxy]
+    Nginx -->|/api/poi/*| API[API Server :3000]
+    Nginx -->|/api/tours/*| API
+    Nginx -->|/api/admin/*| API
+    API -->|JWT Auth| Auth{Valid Token?}
     Auth -->|No| 401[401 Unauthorized]
-    Auth -->|Yes| Router
-    Router -->|/route/v1/foot| OSRM_Foot[OSRM Foot :5001]
-    Router -->|/route/v1/bicycle| OSRM_Bike[OSRM Bike :5002]
-    Router -->|/route/v1/car| OSRM_Car[OSRM Car :5003]
+    Auth -->|Yes| AdminRoutes[Admin Routes]
 ```
 
 ### Komponenty:
 
 1.  **Nginx Reverse Proxy**:
     - Obsługa SSL/TLS (Let's Encrypt).
-    - Weryfikacja klucza API (`X-API-Key` header).
-    - Routing zapytań do odpowiednich kontenerów na podstawie URL.
+    - Routing zapytań do odpowiednich serwisów.
     - Rate limiting (zabezpieczenie przed DDoS).
-2.  **Kontenery OSRM**:
-    - Izolowane instancje dla każdego profilu.
-    - Dostępne tylko w wewnętrznej sieci Dockera (nie wystawione publicznie).
+    - CORS headers dla aplikacji mobilnej/webowej.
+2.  **API Server (Unified)**:
+    - Port 3000 (wewnętrzny).
+    - Node.js + Express + TypeScript.
+    - JWT authentication dla Admin API.
+    - Zod validation dla request/response.
+3.  **Kontenery OSRM** (na osobnym serwerze):
+    - Izolowane instancje dla każdego miasta/profilu.
+    - Dostępne tylko przez dedykowany serwer OSRM.
 
 ## 2. Wymagania Sprzętowe (AWS / VPS)
 
-OSRM jest pamięciożerny (RAM), szczególnie przy ładowaniu grafów (MLD/CH).
+### EC2-1: OSRM Routing Server
 
-- **CPU**: 2 vCPU (zalecane dla responsywności).
-- **RAM**:
-  - Dla jednego miasta (np. Kraków): 4GB RAM wystarczy dla 3 profili.
-  - Dla całego województwa/kraju: Wymagane znacznie więcej (np. 16GB-32GB+).
-- **Disk**: 20-40GB SSD (mapy, pliki OSRM, logi).
-- **OS**: Ubuntu 22.04 LTS lub Debian 11/12.
+- **CPU**: 2 vCPU (t3.large)
+- **RAM**: 8GB (dla 12 kontenerów OSRM)
+- **Disk**: 40GB SSD (mapy, pliki OSRM)
+- **OS**: Ubuntu 22.04 LTS
 
-**Rekomendacja AWS**: Instancja `t3.medium` (4GB RAM) lub `t3.large` (8GB RAM) na start dla jednego dużego miasta.
+### EC2-2: API Server
 
-## 3. Zabezpieczenie API (API Key Strategy)
+- **CPU**: 2 vCPU (t3.small)
+- **RAM**: 2GB (Node.js API)
+- **Disk**: 20GB SSD
+- **OS**: Ubuntu 22.04 LTS
 
-Ponieważ OSRM nie posiada wbudowanej autoryzacji, zaimplementujemy ją na poziomie Nginx.
+**Szacowany koszt miesięczny**: ~$75-80 (t3.large + t3.small)
 
-### Metoda weryfikacji
+## 3. Zabezpieczenie API
 
-Aplikacja mobilna będzie wysyłać klucz w nagłówku HTTP:
+### OSRM API (osrm.watchtheguide.com)
+
+Aplikacja mobilna wysyła klucz w nagłówku HTTP:
 `X-API-Key: twoj-tajny-klucz-produkcyjny`
 
-### Konfiguracja Nginx (Snippet)
+### Admin API (api.watchtheguide.com/api/admin/\*)
+
+Chronione przez JWT (JSON Web Token):
+
+- Login: `POST /api/admin/auth/login` (email + password)
+- Token w nagłówku: `Authorization: Bearer <access_token>`
+- Refresh token: `POST /api/admin/auth/refresh`
+
+### Rate Limiting
+
+- OSRM: 10 req/s per IP
+- API: 100 req/15min (general), 5 req/15min (auth)
+
+### Konfiguracja Nginx dla OSRM (Snippet)
 
 ```nginx
 # Definicja kluczy API (można wydzielić do osobnego pliku)
@@ -174,7 +201,10 @@ docker run -it --rm --name certbot \
 
 ## 6. Planowane Zadania (TODO)
 
-1.  [ ] Utworzyć plik `backend/docker-compose.prod.yml` z konfiguracją Nginx.
-2.  [ ] Przygotować plik konfiguracyjny `backend/nginx/default.conf` z logiką API Key.
-3.  [ ] Zaktualizować aplikację mobilną (Frontend), aby wysyłała nagłówek `X-API-Key` w zapytaniach do API.
-4.  [ ] Wykupić domenę i skonfigurować rekordy DNS (A record) na IP serwera.
+1.  [x] Utworzyć zunifikowany API Server (`backend/api-server`)
+2.  [x] Przygotować `docker-compose.multi-city.yml` z konfiguracją OSRM + API Server
+3.  [x] Zaktualizować dokumentację AWS_INFRASTRUCTURE.md
+4.  [ ] Wykupić domenę i skonfigurować rekordy DNS
+5.  [ ] Wdrożyć na EC2-1 (OSRM) i EC2-2 (API)
+6.  [ ] Skonfigurować SSL (Let's Encrypt)
+7.  [ ] Zaktualizować `.env.production` w aplikacji mobilnej i admin panel
