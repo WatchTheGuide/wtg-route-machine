@@ -220,6 +220,7 @@ const uk = {
         email: 'Email',
         emailPlaceholder: 'admin@example.com',
         password: 'Пароль',
+        passwordPlaceholder: 'Введіть пароль',
         rememberMe: "Запам'ятати мене",
         forgotPassword: 'Забули пароль?',
         submit: 'Увійти',

@@ -219,6 +219,7 @@ const en = {
         email: 'Email',
         emailPlaceholder: 'admin@example.com',
         password: 'Password',
+        passwordPlaceholder: 'Enter password',
         rememberMe: 'Remember me',
         forgotPassword: 'Forgot password?',
         submit: 'Sign In',

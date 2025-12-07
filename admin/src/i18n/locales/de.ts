@@ -221,6 +221,7 @@ const de = {
         email: 'E-Mail',
         emailPlaceholder: 'admin@example.com',
         password: 'Passwort',
+        passwordPlaceholder: 'Passwort eingeben',
         rememberMe: 'Angemeldet bleiben',
         forgotPassword: 'Passwort vergessen?',
         submit: 'Anmelden',

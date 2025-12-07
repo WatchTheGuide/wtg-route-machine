@@ -220,6 +220,7 @@ const pl = {
         email: 'Email',
         emailPlaceholder: 'admin@example.com',
         password: 'Hasło',
+        passwordPlaceholder: 'Wprowadź hasło',
         rememberMe: 'Zapamiętaj mnie',
         forgotPassword: 'Zapomniałeś hasła?',
         submit: 'Zaloguj się',

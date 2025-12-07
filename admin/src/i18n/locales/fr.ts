@@ -219,9 +219,10 @@ const fr = {
         title: 'Connexion',
         subtitle:
           "Entrez vos identifiants pour accéder au panneau d'administration",
-        email: 'E-mail',
+        email: 'Email',
         emailPlaceholder: 'admin@example.com',
         password: 'Mot de passe',
+        passwordPlaceholder: 'Entrer le mot de passe',
         rememberMe: 'Se souvenir de moi',
         forgotPassword: 'Mot de passe oublié ?',
         submit: 'Se connecter',
