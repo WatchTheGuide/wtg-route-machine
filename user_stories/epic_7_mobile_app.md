@@ -284,6 +284,7 @@ Jako użytkownik chcę zapisywać swoje trasy, aby móc do nich wrócić późni
 ### Zaimplementowane komponenty
 
 #### SaveRouteModal
+
 - Formularz z nazwą (wymagana, 3-50 znaków)
 - Opis (opcjonalny, max 200 znaków)
 - Podgląd statystyk (profil, waypoints, dystans, czas)
@@ -291,12 +292,14 @@ Jako użytkownik chcę zapisywać swoje trasy, aby móc do nich wrócić późni
 - Toast potwierdzenia
 
 #### DraftRouteCard
+
 - Wyświetla trasę roboczą (niezapisaną)
 - Statystyki: profil, liczba punktów, dystans, czas
 - Akcje: kontynuuj edycję, zapisz, odrzuć
 - Neutralny styl z subtelnym cieniem
 
 #### RoutesPage
+
 - Lista zapisanych tras
 - Filtr: wszystkie / ulubione (ikona serca w nagłówku)
 - Integracja z DraftRouteCard
@@ -304,6 +307,7 @@ Jako użytkownik chcę zapisywać swoje trasy, aby móc do nich wrócić późni
 - Toast dla akcji (zapisano, usunięto, odrzucono)
 
 #### SavedRouteCard
+
 - Nazwa, opis, data utworzenia
 - Ikona profilu (foot/bicycle/car)
 - Statystyki: waypoints, dystans, czas
@@ -311,17 +315,20 @@ Jako użytkownik chcę zapisywać swoje trasy, aby móc do nich wrócić późni
 - Swipe actions na iOS/Android
 
 #### RouteDetailsModal
+
 - Mapa z trasą i waypoints
 - Lista waypoints z adresami
 - Statystyki: dystans, czas, wzniesienia
 - Eksport (przygotowane do US 7.10)
 
 ### Persystencja
+
 - Capacitor Preferences do przechowywania tras
 - Auto-save przy każdej zmianie
 - Unikalne ID generowane przez `crypto.randomUUID()`
 
 ### UX Improvements
+
 - Numerowane markery na mapie (1, 2, 3...)
 - Kolorowe ikony waypoints (zielony start, pomarańczowe pośrednie, czerwony koniec)
 - Przycisk "Zapisz trasę" w plannerze (disabled gdy brak trasy)
@@ -329,12 +336,13 @@ Jako użytkownik chcę zapisywać swoje trasy, aby móc do nich wrócić późni
 - Ikony waypoints w liście (flag, radio button, location)
 
 ### Eksport trasy (przygotowane)
+
 - GeoJSON export (częściowo zaimplementowany)
 - GPX export (do implementacji w US 7.10)
 
 ---
 
-## User Story 7.7: Kuratorowane wycieczki
+## User Story 7.7: Kuratorowane wycieczki ✅
 
 ### Opis
 
@@ -342,21 +350,69 @@ Jako użytkownik chcę przeglądać gotowe wycieczki, aby odkrywać miasto wedł
 
 ### Kryteria akceptacji
 
-- [ ] Lista wycieczek dla wybranego miasta
-- [ ] Kategorie wycieczek (historia, sztuka, jedzenie, etc.)
-- [ ] Poziom trudności (łatwy, średni, trudny)
-- [ ] Czas trwania i dystans
-- [ ] Szczegóły wycieczki z listą POI
-- [ ] Rozpoczęcie nawigacji po wycieczce
+- [x] Lista wycieczek dla wybranego miasta
+- [x] Kategorie wycieczek (historia, architektura)
+- [x] Poziom trudności (łatwy, średni, trudny)
+- [x] Czas trwania i dystans
+- [x] Szczegóły wycieczki z listą POI
+- [x] Rozpoczęcie nawigacji po wycieczce
+- [x] Obrazy wycieczek z Unsplash
+- [x] Filtrowanie po kategorii
+- [x] Integracja z planowaniem trasy
+- [x] Tłumaczenia (PL, EN, DE, FR, UK)
 
 ### Zadania
 
-- [ ] Tour model (interface)
-- [ ] Tours Service (API lub lokalne JSON)
-- [ ] ToursPage screen
-- [ ] TourCard component
-- [ ] TourDetails modal
-- [ ] StartTour action
+- [x] Tour model (TypeScript interface: `Tour`)
+- [x] Tours Service (lokalne dane testowe)
+- [x] ToursPage screen z filtrowaniem
+- [x] TourCard component z obrazami
+- [x] TourDetailsModal z mapą i listą POI
+- [x] StartTour action (dodaje wszystkie POI jako waypoints)
+- [x] Dane testowe: 8 wycieczek (2 na miasto × 4 miasta)
+- [x] React Query hooks (useTours, useTour, useAllTours)
+- [x] QueryClientProvider konfiguracja
+
+### Zaimplementowane komponenty
+
+#### TourCard
+
+- Obraz wycieczki (full width, 200px height)
+- Kategoria i poziom trudności (chipy)
+- Nazwa i opis wycieczki
+- Statystyki: dystans, czas, liczba przystanków
+- Tłumaczenia nazw i opisów
+
+#### TourDetailsModal
+
+- Hero image (pełna szerokość)
+- Toggleable mapa z trasą
+- Numerowana lista POI
+- Statystyki wycieczki
+- Przycisk "Rozpocznij wycieczkę" (dodaje POI do planera)
+
+#### ToursPage
+
+- Filtrowanie po kategorii (wszystkie/historia/architektura)
+- Lista kart wycieczek
+- Loading/error/empty states
+- Integracja z useCityStore
+
+### Dane testowe
+
+**Miasta:** Kraków, Warszawa, Wrocław, Trójmiasto
+
+**Wycieczki na miasto:**
+
+1. **Najważniejsze zabytki** (kategoria: historia, łatwy, ~3h, 5-5.5 km)
+2. **Najważniejsze kościoły** (kategoria: architektura, średni, ~4h, 6-7 km)
+
+**Obrazy:**
+
+- Wszystkie wycieczki używają zweryfikowanych obrazów z Unsplash
+- Zabytki: obraz Wawelu (photo-1578916171728)
+- Kościoły: obraz gotyckiego kościoła (photo-1553913861)
+- Parametry: `w=800&q=80&auto=format&fit=crop`
 
 ---
 
@@ -499,9 +555,9 @@ mobile/src/i18n/
 6. Story 7.5.1: Integracja POI z planowaniem trasy ✅
 7. Story 7.6: Zapisywanie tras
 
-### Faza 3: Advanced Features (Stories 7.7-7.9)
+### Faza 3: Advanced Features (Stories 7.7-7.9) ✅ (1/3)
 
-8. Story 7.7: Kuratorowane wycieczki
+8. Story 7.7: Kuratorowane wycieczki ✅
 9. Story 7.8: Nawigacja turn-by-turn
 10. Story 7.9: Ustawienia
 

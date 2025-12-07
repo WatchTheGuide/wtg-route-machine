@@ -78,9 +78,76 @@ const de = {
     tours: {
       title: 'Touren',
       subtitle: 'Kuratierte Touren',
-      noTours: 'Keine Touren verfügbar',
+      noToursTitle: 'Keine Touren verfügbar',
       noToursHint: 'Fertige Routen durch polnische Städte kommen bald',
       comingSoon: 'Demnächst!',
+      error: 'Touren konnten nicht geladen werden',
+      stops: 'Haltestellen',
+      stopsOnRoute: 'Haltestellen auf der Route',
+      showMap: 'Karte anzeigen',
+      hideMap: 'Karte verbergen',
+      startTour: 'Tour starten',
+      allCategories: 'Alle',
+      category: {
+        history: 'Geschichte',
+        architecture: 'Architektur',
+        art: 'Kunst',
+        food: 'Kulinarik',
+        nature: 'Natur',
+      },
+      difficulty: {
+        easy: 'Einfach',
+        medium: 'Mittel',
+        hard: 'Schwer',
+      },
+      krakow: {
+        landmarks: {
+          name: 'Wichtigste Sehenswürdigkeiten von Krakau',
+          description:
+            'Spaziergang durch Krakau mit Besuch der wichtigsten Denkmäler',
+        },
+        churches: {
+          name: 'Historische Kirchen von Krakau',
+          description:
+            'Entdecken Sie die schönsten Kirchen Krakaus von Gotik bis Barock',
+        },
+      },
+      warszawa: {
+        landmarks: {
+          name: 'Wichtigste Sehenswürdigkeiten von Warschau',
+          description:
+            'Erkundung der polnischen Hauptstadt - von der Altstadt bis zu den Königlichen Łazienki',
+        },
+        churches: {
+          name: 'Historische Kirchen von Warschau',
+          description:
+            'Entdecken Sie die wichtigsten Kirchen Warschaus und ihre reiche Geschichte',
+        },
+      },
+      wroclaw: {
+        landmarks: {
+          name: 'Wichtigste Sehenswürdigkeiten von Breslau',
+          description:
+            'Spaziergang durch das malerische Breslau - vom Marktplatz bis Ostrów Tumski',
+        },
+        churches: {
+          name: 'Historische Kirchen von Breslau',
+          description:
+            'Entdecken Sie gotische Perlen der sakralen Architektur Breslaus',
+        },
+      },
+      trojmiasto: {
+        landmarks: {
+          name: 'Wichtigste Sehenswürdigkeiten von Danzig',
+          description:
+            'Spaziergang durch Danzig - die Hauptstadt der Dreistadt mit reicher Geschichte',
+        },
+        churches: {
+          name: 'Historische Kirchen von Danzig',
+          description:
+            'Entdecken Sie monumentale Kirchen Danzigs, einschließlich der größten Backsteinbasilika der Welt',
+        },
+      },
     },
 
     // Settings page

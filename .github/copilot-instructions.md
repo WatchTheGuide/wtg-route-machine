@@ -310,14 +310,15 @@ mobile/src/
 
    ```typescript
    // Waypoint management
-   const { waypoints, addWaypoint, removeWaypoint, reorderWaypoints } = useWaypoints();
-   
+   const { waypoints, addWaypoint, removeWaypoint, reorderWaypoints } =
+     useWaypoints();
+
    // Route calculation
    const { route, calculateRoute, isCalculating, error } = useRouting();
-   
+
    // User location
    const { position, getCurrentPosition, isLoading } = useGeolocation();
-   
+
    // Map control
    const { center, zoom, flyTo } = useMap();
    ```
@@ -326,8 +327,9 @@ mobile/src/
 
    ```typescript
    // Route planner state (in-memory)
-   const { waypoints, route, profile, addWaypoint, clearWaypoints } = useRoutePlannerStore();
-   
+   const { waypoints, route, profile, addWaypoint, clearWaypoints } =
+     useRoutePlannerStore();
+
    // Saved routes (persisted)
    const routes = useSavedRoutesStore(selectRoutes);
    const { saveRoute, toggleFavorite, deleteRoute } = useSavedRoutesStore();
@@ -361,6 +363,7 @@ const CITIES = {
 #### Implemented Features (US 7.6 Complete)
 
 **Route Planning:**
+
 - ✅ Interactive map with waypoint placement
 - ✅ Reorderable waypoint list with drag & drop
 - ✅ Profile selector (foot/bicycle/car)
@@ -369,6 +372,7 @@ const CITIES = {
 - ✅ Numbered waypoint markers on map (green start, orange intermediate, red destination)
 
 **Route Saving:**
+
 - ✅ Save route with name and description
 - ✅ Draft route card (unsaved routes)
 - ✅ Saved routes list with filtering (all/favorites)
@@ -377,6 +381,7 @@ const CITIES = {
 - ✅ Persistent storage with Capacitor Preferences
 
 **UX Improvements:**
+
 - ✅ Back button in planner (arrowBackOutline + text)
 - ✅ Save button always visible (disabled when calculating)
 - ✅ Toast notifications for all actions

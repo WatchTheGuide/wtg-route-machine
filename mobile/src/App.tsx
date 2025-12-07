@@ -20,6 +20,7 @@ import {
 } from 'ionicons/icons';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Capacitor } from '@capacitor/core';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import ExplorePage from './pages/ExplorePage';
 import RoutesPage from './pages/RoutesPage';
@@ -63,6 +64,16 @@ import { useTheme } from './hooks/useTheme';
 
 setupIonicReact();
 
+// Create a client for React Query
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 // Configure status bar for native platforms
 const configureStatusBar = async () => {
   if (Capacitor.isNativePlatform()) {
@@ -83,50 +94,52 @@ const App: React.FC = () => {
   const waypointCount = useRoutePlannerStore(selectWaypointCount);
 
   return (
-    <IonApp>
-      <IonReactRouter>
-        <IonTabs>
-          <IonRouterOutlet>
-            <Route exact path="/explore">
-              <ExplorePage />
-            </Route>
-            <Route exact path="/routes">
-              <RoutesPage />
-            </Route>
-            <Route exact path="/tours">
-              <ToursPage />
-            </Route>
-            <Route exact path="/settings">
-              <SettingsPage />
-            </Route>
-            <Route exact path="/">
-              <Redirect to="/explore" />
-            </Route>
-          </IonRouterOutlet>
-          <IonTabBar slot="bottom">
-            <IonTabButton tab="explore" href="/explore">
-              <IonIcon icon={compassOutline} />
-              <IonLabel>{t('tabs.explore')}</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="routes" href="/routes">
-              <IonIcon icon={mapOutline} />
-              <IonLabel>{t('tabs.routes')}</IonLabel>
-              {waypointCount > 0 && (
-                <IonBadge color="danger">{waypointCount}</IonBadge>
-              )}
-            </IonTabButton>
-            <IonTabButton tab="tours" href="/tours">
-              <IonIcon icon={walkOutline} />
-              <IonLabel>{t('tabs.tours')}</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="settings" href="/settings">
-              <IonIcon icon={settingsOutline} />
-              <IonLabel>{t('tabs.settings')}</IonLabel>
-            </IonTabButton>
-          </IonTabBar>
-        </IonTabs>
-      </IonReactRouter>
-    </IonApp>
+    <QueryClientProvider client={queryClient}>
+      <IonApp>
+        <IonReactRouter>
+          <IonTabs>
+            <IonRouterOutlet>
+              <Route exact path="/explore">
+                <ExplorePage />
+              </Route>
+              <Route exact path="/routes">
+                <RoutesPage />
+              </Route>
+              <Route exact path="/tours">
+                <ToursPage />
+              </Route>
+              <Route exact path="/settings">
+                <SettingsPage />
+              </Route>
+              <Route exact path="/">
+                <Redirect to="/explore" />
+              </Route>
+            </IonRouterOutlet>
+            <IonTabBar slot="bottom">
+              <IonTabButton tab="explore" href="/explore">
+                <IonIcon icon={compassOutline} />
+                <IonLabel>{t('tabs.explore')}</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="routes" href="/routes">
+                <IonIcon icon={mapOutline} />
+                <IonLabel>{t('tabs.routes')}</IonLabel>
+                {waypointCount > 0 && (
+                  <IonBadge color="danger">{waypointCount}</IonBadge>
+                )}
+              </IonTabButton>
+              <IonTabButton tab="tours" href="/tours">
+                <IonIcon icon={walkOutline} />
+                <IonLabel>{t('tabs.tours')}</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="settings" href="/settings">
+                <IonIcon icon={settingsOutline} />
+                <IonLabel>{t('tabs.settings')}</IonLabel>
+              </IonTabButton>
+            </IonTabBar>
+          </IonTabs>
+        </IonReactRouter>
+      </IonApp>
+    </QueryClientProvider>
   );
 };
 

@@ -78,9 +78,75 @@ const pl = {
     tours: {
       title: 'Wycieczki',
       subtitle: 'Kuratorowane wycieczki',
-      noTours: 'Brak dostępnych wycieczek',
+      noToursTitle: 'Brak dostępnych wycieczek',
       noToursHint: 'Wkrótce dostępne będą gotowe trasy po miastach Polski',
       comingSoon: 'Wkrótce!',
+      error: 'Nie udało się wczytać wycieczek',
+      stops: 'przystanki',
+      stopsOnRoute: 'Przystanki na trasie',
+      showMap: 'Pokaż mapę',
+      hideMap: 'Ukryj mapę',
+      startTour: 'Rozpocznij wycieczkę',
+      allCategories: 'Wszystkie',
+      category: {
+        history: 'Historia',
+        architecture: 'Architektura',
+        art: 'Sztuka',
+        food: 'Kulinaria',
+        nature: 'Przyroda',
+      },
+      difficulty: {
+        easy: 'Łatwa',
+        medium: 'Średnia',
+        hard: 'Trudna',
+      },
+      krakow: {
+        landmarks: {
+          name: 'Najważniejsze zabytki Krakowa',
+          description:
+            'Spacer po centrum Krakowa z wizytą w najważniejszych zabytkach miasta',
+        },
+        churches: {
+          name: 'Historyczne kościoły Krakowa',
+          description:
+            'Odkryj najpiękniejsze świątynie Krakowa od gotyku po barok',
+        },
+      },
+      warszawa: {
+        landmarks: {
+          name: 'Najważniejsze zabytki Warszawy',
+          description:
+            'Zwiedzanie stolicy Polski - od Starego Miasta po Łazienki Królewskie',
+        },
+        churches: {
+          name: 'Historyczne kościoły Warszawy',
+          description:
+            'Odkryj najważniejsze świątynie Warszawy i ich bogatą historię',
+        },
+      },
+      wroclaw: {
+        landmarks: {
+          name: 'Najważniejsze zabytki Wrocławia',
+          description:
+            'Spacer po malowniczym Wrocławiu - od Rynku po Ostrów Tumski',
+        },
+        churches: {
+          name: 'Historyczne kościoły Wrocławia',
+          description: 'Odkryj gotyckie perły architektury sakralnej Wrocławia',
+        },
+      },
+      trojmiasto: {
+        landmarks: {
+          name: 'Najważniejsze zabytki Gdańska',
+          description:
+            'Spacer po Gdańsku - głównym mieście Trójmiasta z bogatą historią',
+        },
+        churches: {
+          name: 'Historyczne kościoły Gdańska',
+          description:
+            'Odkryj monumentalne świątynie Gdańska, w tym największą ceglana bazylikę świata',
+        },
+      },
     },
 
     // Settings page

@@ -76,12 +76,79 @@ const fr = {
 
     // Tours page
     tours: {
-      title: 'Visites',
-      subtitle: 'Visites guidées',
-      noTours: 'Aucune visite disponible',
+      title: 'Circuits',
+      subtitle: 'Circuits organisés',
+      noToursTitle: 'Aucun circuit disponible',
       noToursHint:
-        'Des itinéraires prêts à travers les villes polonaises arrivent bientôt',
-      comingSoon: 'Bientôt !',
+        'Des itinéraires prêts dans les villes polonaises bientôt disponibles',
+      comingSoon: 'Bientôt disponible!',
+      error: 'Échec du chargement des circuits',
+      stops: 'arrêts',
+      stopsOnRoute: 'Arrêts sur le parcours',
+      showMap: 'Afficher la carte',
+      hideMap: 'Masquer la carte',
+      startTour: 'Commencer le circuit',
+      allCategories: 'Tous',
+      category: {
+        history: 'Histoire',
+        architecture: 'Architecture',
+        art: 'Art',
+        food: 'Gastronomie',
+        nature: 'Nature',
+      },
+      difficulty: {
+        easy: 'Facile',
+        medium: 'Moyen',
+        hard: 'Difficile',
+      },
+      krakow: {
+        landmarks: {
+          name: 'Monuments principaux de Cracovie',
+          description:
+            'Promenade dans le centre de Cracovie avec visite des monuments les plus importants',
+        },
+        churches: {
+          name: 'Églises historiques de Cracovie',
+          description:
+            'Découvrez les plus belles églises de Cracovie, du gothique au baroque',
+        },
+      },
+      warszawa: {
+        landmarks: {
+          name: 'Monuments principaux de Varsovie',
+          description:
+            'Exploration de la capitale polonaise - de la Vieille Ville aux Bains Royaux',
+        },
+        churches: {
+          name: 'Églises historiques de Varsovie',
+          description:
+            'Découvrez les églises les plus importantes de Varsovie et leur riche histoire',
+        },
+      },
+      wroclaw: {
+        landmarks: {
+          name: 'Monuments principaux de Wrocław',
+          description:
+            'Promenade dans le pittoresque Wrocław - de la Place du Marché à Ostrów Tumski',
+        },
+        churches: {
+          name: 'Églises historiques de Wrocław',
+          description:
+            "Découvrez les perles gothiques de l'architecture sacrée de Wrocław",
+        },
+      },
+      trojmiasto: {
+        landmarks: {
+          name: 'Monuments principaux de Gdańsk',
+          description:
+            'Promenade à Gdańsk - la principale ville de Tri-City avec une riche histoire',
+        },
+        churches: {
+          name: 'Églises historiques de Gdańsk',
+          description:
+            'Découvrez les églises monumentales de Gdańsk, dont la plus grande basilique en brique du monde',
+        },
+      },
     },
 
     // Settings page

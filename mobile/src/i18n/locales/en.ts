@@ -78,9 +78,75 @@ const en = {
     tours: {
       title: 'Tours',
       subtitle: 'Curated tours',
-      noTours: 'No tours available',
+      noToursTitle: 'No tours available',
       noToursHint: 'Ready-made routes through Polish cities coming soon',
       comingSoon: 'Coming soon!',
+      error: 'Failed to load tours',
+      stops: 'stops',
+      stopsOnRoute: 'Stops on route',
+      showMap: 'Show map',
+      hideMap: 'Hide map',
+      startTour: 'Start tour',
+      allCategories: 'All',
+      category: {
+        history: 'History',
+        architecture: 'Architecture',
+        art: 'Art',
+        food: 'Food',
+        nature: 'Nature',
+      },
+      difficulty: {
+        easy: 'Easy',
+        medium: 'Medium',
+        hard: 'Hard',
+      },
+      krakow: {
+        landmarks: {
+          name: 'Main Landmarks of Kraków',
+          description:
+            'Walk through Kraków center visiting the most important city monuments',
+        },
+        churches: {
+          name: 'Historic Churches of Kraków',
+          description:
+            'Discover the most beautiful temples of Kraków from Gothic to Baroque',
+        },
+      },
+      warszawa: {
+        landmarks: {
+          name: 'Main Landmarks of Warsaw',
+          description:
+            "Exploring Poland's capital - from Old Town to Royal Łazienki",
+        },
+        churches: {
+          name: 'Historic Churches of Warsaw',
+          description:
+            'Discover the most important temples of Warsaw and their rich history',
+        },
+      },
+      wroclaw: {
+        landmarks: {
+          name: 'Main Landmarks of Wrocław',
+          description:
+            'Walk through picturesque Wrocław - from Market Square to Ostrów Tumski',
+        },
+        churches: {
+          name: 'Historic Churches of Wrocław',
+          description: "Discover Gothic gems of Wrocław's sacred architecture",
+        },
+      },
+      trojmiasto: {
+        landmarks: {
+          name: 'Main Landmarks of Gdańsk',
+          description:
+            'Walk through Gdańsk - the main city of Tri-City with rich history',
+        },
+        churches: {
+          name: 'Historic Churches of Gdańsk',
+          description:
+            "Discover monumental temples of Gdańsk, including the world's largest brick basilica",
+        },
+      },
     },
 
     // Settings page
