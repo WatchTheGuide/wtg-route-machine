@@ -68,20 +68,20 @@
 
 ### Kryteria akceptacji:
 
-- [ ] Strona logowania z formularzem (email + hasło)
+- [x] Strona logowania z formularzem (email + hasło)
 - [ ] Integracja z backend auth API (do stworzenia)
-- [ ] JWT token storage (localStorage + httpOnly cookies)
-- [ ] Protected routes z React Router
-- [ ] Auto-logout po wygaśnięciu tokenu
-- [ ] "Remember me" checkbox
+- [x] JWT token storage (localStorage + httpOnly cookies)
+- [x] Protected routes z React Router
+- [x] Auto-logout po wygaśnięciu tokenu
+- [x] "Remember me" checkbox
 - [ ] Password reset flow (email link)
-- [ ] Role-based access control (admin, editor, viewer)
+- [x] Role-based access control (admin, editor, viewer)
 
 ### Komponenty shadcn/ui:
 
 - `Button`, `Input`, `Label`, `Card`, `Alert`
 
-### Estymacja: 2 dni
+### Estymacja: 2 dni ✅ COMPLETED (mock auth, pending real API)
 
 ---
 
