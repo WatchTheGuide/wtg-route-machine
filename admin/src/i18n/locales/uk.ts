@@ -168,6 +168,108 @@ const uk = {
       },
     },
 
+    // Tour Editor
+    tourEditor: {
+      createTitle: 'Нова екскурсія',
+      editTitle: 'Редагувати екскурсію',
+      lastSaved: 'Останнє збереження: {{time}}',
+      unsavedChanges: 'Незбережені зміни',
+      autoSaved: 'Чернетку збережено автоматично',
+      saved: 'Екскурсію збережено',
+      published: 'Екскурсію опубліковано',
+      deleted: 'Екскурсію видалено',
+      saveDraft: 'Зберегти чернетку',
+      publish: 'Опублікувати',
+      previewButton: 'Перегляд',
+      tabs: {
+        basic: 'Основне',
+        media: 'Медіа',
+        details: 'Деталі',
+        waypoints: 'Точки маршруту',
+        settings: 'Налаштування',
+      },
+      basicInfo: {
+        title: 'Основна інформація',
+        description: 'Введіть основну інформацію про екскурсію.',
+      },
+      media: {
+        title: 'Фото та медіа',
+        description: 'Додайте фотографії до екскурсії.',
+        dropzone: 'Перетягніть фотографії сюди або натисніть для вибору',
+        browse: 'Вибрати файли',
+      },
+      details: {
+        title: 'Деталі екскурсії',
+        description: 'Встановіть тривалість та теги.',
+      },
+      waypoints: {
+        title: 'Точки маршруту',
+        description: 'Визначте точки на маршруті екскурсії.',
+        jsonNote:
+          'Візуальний редактор карти буде доступний у майбутньому. Поки що введіть точки маршруту у форматі JSON.',
+      },
+      settings: {
+        title: 'Налаштування публікації',
+        description: 'Керуйте статусом та видимістю екскурсії.',
+      },
+      fields: {
+        name: 'Назва екскурсії',
+        description: 'Опис',
+        city: 'Місто',
+        category: 'Категорія',
+        difficulty: 'Складність',
+        duration: 'Тривалість',
+        tags: 'Теги',
+        waypointsJson: 'Точки маршруту (JSON)',
+        status: 'Статус',
+        featured: 'Рекомендована екскурсія',
+      },
+      placeholders: {
+        name: 'Напр. Королівська дорога',
+        description: 'Опишіть екскурсію...',
+        city: 'Виберіть місто',
+        category: 'Виберіть категорію',
+        tags: 'Введіть тег і натисніть Enter',
+        waypoints:
+          '[\n  {\n    "id": "1",\n    "name": "Початкова точка",\n    "coordinates": [19.9373, 50.0619],\n    "order": 1\n  }\n]',
+      },
+      hints: {
+        name: 'Від 5 до 100 символів',
+        description: '{{current}}/{{max}} символів (мін. {{min}})',
+        duration:
+          'Перетягніть повзунок, щоб встановити орієнтовну тривалість екскурсії',
+        tags: 'Натисніть Enter, щоб додати тег. Натисніть на тег, щоб видалити його.',
+        waypoints:
+          'Формат JSON з масивом точок маршруту. Кожна точка вимагає id, name, coordinates та order.',
+        status:
+          'Чернетки не видимі для користувачів. Опубліковані екскурсії доступні в додатку.',
+        featured: 'Рекомендовані екскурсії виділяються на головній сторінці.',
+      },
+      validation: {
+        nameMin: 'Назва повинна містити щонайменше 5 символів',
+        nameMax: 'Назва може містити максимум 100 символів',
+        descriptionMin: 'Опис повинен містити щонайменше 50 символів',
+        descriptionMax: 'Опис може містити максимум 2000 символів',
+        cityRequired: 'Будь ласка, виберіть місто',
+        categoryRequired: 'Будь ласка, виберіть категорію',
+      },
+      preview: {
+        title: 'Перегляд',
+        description: 'Попередній перегляд екскурсії в реальному часі',
+        mapPlaceholder: "Карта маршруту з'явиться тут",
+        city: 'Місто',
+        category: 'Категорія',
+        duration: 'Тривалість',
+        status: 'Статус',
+      },
+      exitDialog: {
+        title: 'Незбережені зміни',
+        description:
+          'У вас є незбережені зміни. Ви впевнені, що хочете вийти без збереження?',
+        confirm: 'Вийти без збереження',
+      },
+    },
+
     // POIs page
     pois: {
       title: 'Визначні місця',
@@ -266,6 +368,44 @@ const uk = {
         pois: 'POI',
         openSource: 'Open Source',
       },
+    },
+
+    // Map Editor
+    mapEditor: {
+      title: 'Редактор карти',
+      newWaypoint: 'Точка {{number}}',
+      importedWaypoint: 'Імпортовано {{number}}',
+      routeCalculated: 'Маршрут розраховано',
+      layers: {
+        streets: 'Вулиці',
+        satellite: 'Супутник',
+        terrain: 'Рельєф',
+      },
+      addWaypoint: 'Додати точку',
+      deleteWaypoint: 'Видалити обрану точку',
+      fitToWaypoints: 'Підлаштувати до точок',
+      clickToAdd: 'Натисніть на карту, щоб додати точку',
+      calculateRoute: 'Розрахувати маршрут',
+      import: 'Імпорт',
+      export: 'Експорт',
+    },
+
+    // Waypoints List
+    waypointsList: {
+      title: 'Точки маршруту',
+      empty: 'Немає точок',
+      emptyHint:
+        'Натисніть на карту або використайте "Додати точку", щоб додати першу точку.',
+      name: 'Назва',
+      description: 'Опис',
+      stopDuration: 'Тривалість зупинки',
+      minutes: 'хвилин',
+      coordinates: 'Координати',
+      actions: 'Дії',
+      calculateRoute: 'Розрахувати маршрут',
+      import: 'Імпортувати',
+      export: 'Експортувати',
+      importedWaypoint: 'Імпортований {{number}}',
     },
 
     // Footer

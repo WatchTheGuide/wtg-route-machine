@@ -168,6 +168,107 @@ const en = {
       },
     },
 
+    // Tour Editor
+    tourEditor: {
+      createTitle: 'New Tour',
+      editTitle: 'Edit Tour',
+      lastSaved: 'Last saved: {{time}}',
+      unsavedChanges: 'Unsaved changes',
+      autoSaved: 'Draft saved automatically',
+      saved: 'Tour has been saved',
+      published: 'Tour has been published',
+      deleted: 'Tour has been deleted',
+      saveDraft: 'Save Draft',
+      publish: 'Publish',
+      previewButton: 'Preview',
+      tabs: {
+        basic: 'Basic Info',
+        media: 'Media',
+        details: 'Details',
+        waypoints: 'Waypoints',
+        settings: 'Settings',
+      },
+      basicInfo: {
+        title: 'Basic Information',
+        description: 'Enter basic tour information.',
+      },
+      media: {
+        title: 'Photos and Media',
+        description: 'Add photos to the tour.',
+        dropzone: 'Drag and drop photos here or click to browse',
+        browse: 'Browse Files',
+      },
+      details: {
+        title: 'Tour Details',
+        description: 'Set duration and tags.',
+      },
+      waypoints: {
+        title: 'Waypoints',
+        description: 'Define points on the tour route.',
+        jsonNote:
+          'A visual map editor will be available in the future. For now, enter waypoints as JSON.',
+      },
+      settings: {
+        title: 'Publication Settings',
+        description: 'Manage tour status and visibility.',
+      },
+      fields: {
+        name: 'Tour Name',
+        description: 'Description',
+        city: 'City',
+        category: 'Category',
+        difficulty: 'Difficulty',
+        duration: 'Duration',
+        tags: 'Tags',
+        waypointsJson: 'Waypoints (JSON)',
+        status: 'Status',
+        featured: 'Featured Tour',
+      },
+      placeholders: {
+        name: 'E.g., Royal Road',
+        description: 'Describe the tour...',
+        city: 'Select city',
+        category: 'Select category',
+        tags: 'Type a tag and press Enter',
+        waypoints:
+          '[\n  {\n    "id": "1",\n    "name": "Starting Point",\n    "coordinates": [19.9373, 50.0619],\n    "order": 1\n  }\n]',
+      },
+      hints: {
+        name: '5 to 100 characters',
+        description: '{{current}}/{{max}} characters (min. {{min}})',
+        duration: 'Drag the slider to set estimated tour duration',
+        tags: 'Press Enter to add a tag. Click a tag to remove it.',
+        waypoints:
+          'JSON format with array of waypoints. Each point requires id, name, coordinates and order.',
+        status:
+          'Drafts are not visible to users. Published tours are available in the app.',
+        featured: 'Featured tours are promoted on the home page.',
+      },
+      validation: {
+        nameMin: 'Name must be at least 5 characters',
+        nameMax: 'Name can be at most 100 characters',
+        descriptionMin: 'Description must be at least 50 characters',
+        descriptionMax: 'Description can be at most 2000 characters',
+        cityRequired: 'Please select a city',
+        categoryRequired: 'Please select a category',
+      },
+      preview: {
+        title: 'Preview',
+        description: 'Real-time tour preview',
+        mapPlaceholder: 'Route map will appear here',
+        city: 'City',
+        category: 'Category',
+        duration: 'Duration',
+        status: 'Status',
+      },
+      exitDialog: {
+        title: 'Unsaved Changes',
+        description:
+          'You have unsaved changes. Are you sure you want to leave without saving?',
+        confirm: 'Leave Without Saving',
+      },
+    },
+
     // POIs page
     pois: {
       title: 'Points of Interest',
@@ -266,6 +367,44 @@ const en = {
         pois: 'POIs',
         openSource: 'Open Source',
       },
+    },
+
+    // Map Editor
+    mapEditor: {
+      title: 'Map Editor',
+      newWaypoint: 'Point {{number}}',
+      importedWaypoint: 'Imported {{number}}',
+      routeCalculated: 'Route calculated',
+      layers: {
+        streets: 'Streets',
+        satellite: 'Satellite',
+        terrain: 'Terrain',
+      },
+      addWaypoint: 'Add waypoint',
+      deleteWaypoint: 'Delete selected waypoint',
+      fitToWaypoints: 'Fit to waypoints',
+      clickToAdd: 'Click on the map to add a waypoint',
+      calculateRoute: 'Calculate route',
+      import: 'Import',
+      export: 'Export',
+    },
+
+    // Waypoints List
+    waypointsList: {
+      title: 'Waypoints',
+      empty: 'No waypoints',
+      emptyHint:
+        'Click on the map or use "Add waypoint" button to add the first waypoint.',
+      name: 'Name',
+      description: 'Description',
+      stopDuration: 'Stop duration',
+      minutes: 'minutes',
+      coordinates: 'Coordinates',
+      actions: 'Actions',
+      calculateRoute: 'Calculate route',
+      import: 'Import',
+      export: 'Export',
+      importedWaypoint: 'Imported {{number}}',
     },
 
     // Footer
