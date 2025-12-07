@@ -12,10 +12,12 @@ Ten katalog zawiera dokumentację user stories dla rozwoju aplikacji GuideTracke
 | 2   | [Obsługa Wielu Miast (Frontend)](./epic_2_multi_city_frontend.md)      | 🔴 Wysoki | 📋 Zaplanowany            | 3 dni           |
 | 3   | [Backend Multi-City](./epic_3_backend_multi_city.md)                   | 🔴 Wysoki | ✅ Ukończony              | 6 dni           |
 | 4   | [Punkty Turystyczne (POI)](./epic_4_points_of_interest.md)             | 🟡 Średni | 🟡 Backend ✅ Frontend 📋 | 4 dni (Backend) |
-| 5   | [Gotowe Wycieczki](./epic_5_curated_tours.md)                          | 🟡 Średni | 📋 Zaplanowany            | 8.5 dni         |
+| 5   | [Gotowe Wycieczki](./epic_5_curated_tours.md)                          | 🟡 Średni | 🚧 W trakcie (Backend ✅) | 8.5 dni         |
 | 6   | [Nawigacja Turn-by-Turn](./epic_6_turn_by_turn_navigation.md)          | 🟢 Niski  | 📋 Zaplanowany            | 12 dni          |
+| 7   | [Aplikacja Mobilna](./epic_7_mobile_app.md)                            | 🔴 Wysoki | 🚧 W trakcie              | 15 dni          |
+| 8   | [Panel Admin i Strona Projektu](./epic_8_admin_panel_and_website.md)   | 🟡 Średni | 📋 Zaplanowany            | 30 dni          |
 
-**Łączna estymacja:** ~41.5 dni robocze
+**Łączna estymacja:** ~94.5 dni robocze
 
 ## Obsługiwane Miasta
 
@@ -46,6 +48,12 @@ Ten katalog zawiera dokumentację user stories dla rozwoju aplikacji GuideTracke
 ### Faza 4: Nawigacja (2 tygodnie) - opcjonalna
 
 1. **Epic 6** - Nawigacja Turn-by-Turn (US 6.1 - 6.6)
+
+### Faza 5: Web Admin Panel (6 tygodni)
+
+1. **Epic 8** - Panel Administracyjny (US 8.1 - 8.11, 8.15 - 8.16)
+2. **Epic 8** - Strona Projektu (US 8.12 - 8.13)
+3. **Epic 8** - Blog (US 8.14) - opcjonalne
 
 ## Architektura Docelowa
 
