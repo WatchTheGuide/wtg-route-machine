@@ -91,3 +91,42 @@ export interface ErrorResponse {
   error: string;
   message?: string;
 }
+
+// Tour status for admin operations
+export type TourStatus = 'draft' | 'published' | 'archived';
+
+// Extended Tour with admin fields
+export interface AdminTour extends Tour {
+  status: TourStatus;
+  featured: boolean;
+  views: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Tour input for create/update operations
+export interface TourInput {
+  cityId: string;
+  name: LocalizedString;
+  description: LocalizedString;
+  category: TourCategory;
+  difficulty: TourDifficulty;
+  distance: number;
+  duration: number;
+  imageUrl: string;
+  pois: POI[];
+  status?: TourStatus;
+  featured?: boolean;
+}
+
+// Admin tour summary with extra fields
+export interface AdminTourSummary extends TourSummary {
+  status: TourStatus;
+  featured: boolean;
+  views: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Re-export auth types
+export * from './auth.types.js';
