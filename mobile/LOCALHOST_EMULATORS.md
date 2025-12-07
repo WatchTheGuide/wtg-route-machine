@@ -220,17 +220,74 @@ app.use(
 
 ---
 
-## Dla produkcji
+## Dla produkcji 🚀
 
-W produkcji używaj prawdziwych URL-i:
+### Hierarchia konfiguracji (priorytet):
+
+```
+1. .env.production (HIGHEST) → nadpisuje wszystko
+2. .env.development
+3. getLocalhostUrl() fallback (LOWEST) → tylko gdy brak .env
+```
+
+**Bezpieczeństwo:** Zmienne środowiskowe **zawsze** mają priorytet nad localhost!
+
+```typescript
+// mobile/src/config/api.ts
+export const API_CONFIG = {
+  toursBaseUrl: import.meta.env.VITE_TOURS_API_URL || getLocalhostUrl(3002),
+  //     ↑ PRIORYTET 1: .env        ↑ FALLBACK: localhost
+};
+```
+
+### Production build:
+
+```bash
+# Vite automatycznie użyje .env.production przy buildzie
+npm run build
+
+# Sprawdź jakie URL są użyte (w DevTools)
+console.log(API_CONFIG.toursBaseUrl);
+// Development: "http://10.0.2.2:3002/api/tours" lub "http://localhost:3002/api/tours"
+// Production:  "https://api.wtg.pl/tours"
+```
+
+### Konfiguracja produkcyjna:
 
 ```env
-# mobile/.env.production
-VITE_TOURS_API_URL=https://api.watchtheguide.com/tours
-VITE_OSRM_API_URL=https://routing.watchtheguide.com
+# mobile/.env.production (już skonfigurowane ✅)
+VITE_TOURS_API_URL=https://api.wtg.pl/tours
+VITE_POIS_API_URL=https://api.wtg.pl/pois
+VITE_OSRM_API_URL=https://api.wtg.pl/route
 VITE_API_KEY=your-production-api-key
 VITE_REQUIRE_API_KEY=true
 ```
+
+### Weryfikacja przed publikacją:
+
+```bash
+# 1. Build produkcyjny
+npm run build
+
+# 2. Sprawdź bundle
+grep -r "10.0.2.2" dist/  # Powinno być puste (brak localhost w prod)
+grep -r "api.wtg.pl" dist/assets/*.js  # Powinno znaleźć production URLs
+
+# 3. Test w przeglądarce (dist/)
+npx serve dist
+
+# 4. Sync do natywnych platform
+npx cap sync
+
+# 5. Build release
+npx cap build ios --release
+npx cap build android --release
+```
+
+**Rezultat:**
+
+- ✅ Development: używa localhost (10.0.2.2 na Android)
+- ✅ Production: używa https://api.wtg.pl (bez localhost!)
 
 ---
 

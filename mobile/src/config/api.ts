@@ -28,6 +28,7 @@ function getLocalhostUrl(port: number): string {
 
 export const API_CONFIG = {
   // Tours API
+  // Priority: .env.production > .env.development > localhost fallback
   toursBaseUrl:
     import.meta.env.VITE_TOURS_API_URL || `${getLocalhostUrl(3002)}/api/tours`,
 
