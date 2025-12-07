@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -22,12 +21,9 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
-          <Languages className="h-5 w-5" />
+        <Button variant="ghost" size="icon">
+          <span className="text-xl">{currentLanguage.flag}</span>
           <span className="sr-only">Change language</span>
-          <span className="absolute -bottom-1 -right-1 text-xs">
-            {currentLanguage.flag}
-          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

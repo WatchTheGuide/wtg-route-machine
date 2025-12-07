@@ -140,7 +140,9 @@ export function Features() {
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary mb-4">
               <feature.icon className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">{t(feature.titleKey)}</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {t(feature.titleKey)}
+            </h3>
             <p className="text-sm text-muted-foreground">
               {t(feature.descriptionKey)}
             </p>
@@ -187,7 +189,9 @@ export function Cities() {
                 </p>
                 <div className="mt-4 flex items-center gap-2 text-sm">
                   <Navigation className="h-4 w-4 text-primary" />
-                  <span>{t('cities.toursAvailable', { count: city.tours })}</span>
+                  <span>
+                    {t('cities.toursAvailable', { count: city.tours })}
+                  </span>
                 </div>
               </div>
             </div>
