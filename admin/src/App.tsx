@@ -4,9 +4,11 @@ import { LoginPage } from '@/pages/LoginPage';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { ToursPage } from '@/pages/ToursPage';
+import { TourEditorPage } from '@/pages/TourEditorPage';
 import { PoisPage } from '@/pages/PoisPage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { Toaster } from '@/components/ui/sonner';
 
 function App() {
   return (
@@ -26,10 +28,13 @@ function App() {
           }>
           <Route index element={<DashboardPage />} />
           <Route path="tours" element={<ToursPage />} />
+          <Route path="tours/new" element={<TourEditorPage />} />
+          <Route path="tours/:id/edit" element={<TourEditorPage />} />
           <Route path="pois" element={<PoisPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Routes>
+      <Toaster />
     </BrowserRouter>
   );
 }

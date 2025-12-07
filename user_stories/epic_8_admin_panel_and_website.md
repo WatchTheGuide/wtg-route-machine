@@ -119,30 +119,36 @@
 
 ### Kryteria akceptacji:
 
-- [ ] Tabela z kolumnami:
-  - Thumbnail (miniatura mapy)
+- [x] Tabela z kolumnami:
+  - ~~Thumbnail (miniatura mapy)~~ (do dodania w przyszłości)
   - Nazwa wycieczki
   - Miasto
   - Kategoria
   - Trudność
   - Liczba POI
-  - Status (draft/published)
-  - Akcje (Edit, Delete, Duplicate, Preview)
-- [ ] Filtry:
-  - Miasto (dropdown multi-select)
-  - Kategoria (checkboxes)
   - Status (draft/published/archived)
-  - Sortowanie (nazwa, data utworzenia, popularność)
-- [ ] Wyszukiwarka pełnotekstowa (nazwa, opis, tagi)
-- [ ] Paginacja (10/25/50/100 wyników na stronę)
-- [ ] Bulk actions: Delete selected, Publish selected, Export to JSON
-- [ ] "Add New Tour" floating action button
+  - Wyświetlenia (views)
+  - Akcje (Edit, Delete, Duplicate, Preview)
+- [x] Filtry:
+  - Miasto (dropdown)
+  - Kategoria (dropdown)
+  - Status (draft/published/archived)
+  - Trudność (easy/medium/hard)
+  - Sortowanie (nazwa, data utworzenia, wyświetlenia, POI count)
+- [x] Wyszukiwarka pełnotekstowa (nazwa, miasto, kategoria)
+- [x] Paginacja (10/25/50/100 wyników na stronę)
+- [x] Bulk actions: Delete selected, Publish selected, Export to JSON
+- [x] "Add New Tour" button
+- [x] Przycisk "Clear filters" gdy aktywne filtry
+- [x] Dialog potwierdzenia usunięcia (AlertDialog)
+- [x] Export do JSON (pojedyncze lub zaznaczone)
+- [x] Pełna internacjonalizacja (i18n)
 
 ### Komponenty shadcn/ui:
 
-- `Table`, `Input` (search), `Select`, `Checkbox`, `Button`, `DropdownMenu`, `Pagination`
+- `Table`, `Input` (search), `Select`, `Checkbox`, `Button`, `DropdownMenu`, `Badge`, `Card`, `AlertDialog`
 
-### Estymacja: 2 dni
+### Estymacja: 2 dni ✅ COMPLETED (mock data, pending real API)
 
 ---
 
@@ -154,28 +160,32 @@
 
 ### Kryteria akceptacji:
 
-- [ ] Formularz z sekcjami (Tabs):
+- [x] Formularz z sekcjami (Tabs):
   - **Basic Info**: Nazwa, opis (textarea), miasto (select), kategoria, trudność
-  - **Media**: Upload zdjęcia głównego (drag & drop), galeria zdjęć
-  - **Details**: Szacowany czas, dystans, tagi (input z chips)
-  - **Waypoints**: Lista punktów (na razie JSON textarea - US 8.6 poprawi)
-  - **Settings**: Status (draft/published), featured tour, visibility
-- [ ] Walidacja formularza (React Hook Form + Zod):
+  - **Media**: Upload zdjęcia głównego (drag & drop placeholder) - UI gotowe, upload do implementacji
+  - **Details**: Szacowany czas (slider), tagi (input z chips)
+  - **Waypoints**: Lista punktów (JSON textarea - US 8.6 doda wizualny edytor)
+  - **Settings**: Status (draft/published/archived), featured tour (switch)
+- [x] Walidacja formularza (React Hook Form + Zod):
   - Nazwa: min 5 znaków, max 100
   - Opis: min 50 znaków, max 2000
-  - Waypoints: minimum 2 punkty
-  - Współrzędne: valid lon/lat
-- [ ] Live preview w bocznym panelu (miniatura mapy)
-- [ ] Auto-save draft (co 30 sekund)
-- [ ] Przyciski: Save Draft, Publish, Cancel, Delete
-- [ ] Success/error toast notifications
-- [ ] Unsaved changes warning (przed opuszczeniem strony)
+  - Miasto: wymagane
+  - Kategoria: wymagane
+  - Współrzędne: valid JSON format
+- [x] Live preview w bocznym panelu (miniatura mapy placeholder + stats)
+- [x] Auto-save draft (co 30 sekund)
+- [x] Przyciski: Save Draft, Publish, Preview (edit mode), Delete (edit mode)
+- [x] Success/error toast notifications (Sonner)
+- [x] Unsaved changes warning (AlertDialog przed opuszczeniem strony)
+- [x] Routing: `/admin/tours/new` (nowa) i `/admin/tours/:id/edit` (edycja)
+- [x] Tłumaczenia dla 5 języków (PL, EN, DE, FR, UK)
+- [x] Powiązanie z listą wycieczek (przyciski Add Tour, Edit)
 
 ### Komponenty shadcn/ui:
 
-- `Form`, `Input`, `Textarea`, `Select`, `Tabs`, `Button`, `Switch`, `Label`, `Toast`
+- `Form`, `Input`, `Textarea`, `Select`, `Tabs`, `Button`, `Switch`, `Label`, `Card`, `Badge`, `Separator`, `AlertDialog`, `Sonner` (toast)
 
-### Estymacja: 3 dni
+### Estymacja: 3 dni ✅ COMPLETED (mock data, pending real API)
 
 ---
 
@@ -187,29 +197,84 @@
 
 ### Kryteria akceptacji:
 
-- [ ] Integracja OpenLayers w edytorze (split view: form + map)
-- [ ] Kliknięcie na mapie dodaje nowy waypoint
-- [ ] Waypoints jako markery z numerami (1, 2, 3...)
-- [ ] Drag & drop markerów do zmiany pozycji
-- [ ] Linia łącząca waypoints (preview trasy)
-- [ ] Lista waypoints synchronizowana z mapą:
-  - Drag & drop do zmiany kolejności
-  - Pole "Name" dla każdego punktu
-  - Pole "Description" (optional)
-  - Pole "Stop duration" (minuty)
-  - Przycisk "Delete waypoint"
+- [x] Integracja OpenLayers w edytorze (split view: form + map)
+- [x] Kliknięcie na mapie dodaje nowy waypoint
+- [x] Waypoints jako markery z numerami (1, 2, 3...)
+- [x] Drag & drop markerów do zmiany pozycji
+- [x] Linia łącząca waypoints (preview trasy)
+- [x] Lista waypoints synchronizowana z mapą:
+  - [x] Edycja nazwy dla każdego punktu
+  - [x] Pole "Description" (optional)
+  - [x] Pole "Stop duration" (minuty)
+  - [x] Przycisk "Delete waypoint"
+  - [x] Przyciski up/down do zmiany kolejności
 - [ ] Geocoding: wyszukiwanie adresu → współrzędne
 - [ ] Reverse geocoding: współrzędne → nazwa ulicy (autofill name)
-- [ ] Przycisk "Calculate route with OSRM" - preview realnej trasy
-- [ ] Przycisk "Import from GPX/GeoJSON"
-- [ ] Przycisk "Export to GPX/GeoJSON"
-- [ ] Map layers: Streets (default), Satellite, Terrain
+- [x] Przycisk "Calculate route with OSRM" - UI gotowe, placeholder dla API
+- [x] Przycisk "Import from GeoJSON"
+- [x] Przycisk "Export to GeoJSON"
+- [x] Map layers: Streets (default), Satellite, Terrain
+- [x] Zoom controls (+, -, fit to waypoints)
+- [x] Synchronizacja zaznaczenia między mapą a listą
+- [x] Tłumaczenia dla 5 języków (PL, EN, DE, FR, UK)
+- [x] Dropdown menu "Akcje" w WaypointsList (Calculate route, Import, Export)
 
 ### Komponenty shadcn/ui:
 
-- `Card`, `Button`, `Input`, `Textarea`, `Separator`, `ScrollArea`, `Dialog`
+- `Card`, `Button`, `Input`, `Textarea`, `Separator`, `Select`, `Label`, `DropdownMenu`
 
-### Estymacja: 4 dni
+### Estymacja: 4 dni ✅ PARTIALLY COMPLETED (geocoding pending)
+
+---
+
+## US 8.6.1: Geocoding i Reverse Geocoding
+
+**Jako** administrator  
+**Chcę** wyszukiwać adresy i automatycznie uzupełniać nazwy punktów  
+**Aby** szybko dodawać waypoints bez ręcznego wpisywania współrzędnych
+
+### Kryteria akceptacji:
+
+- [ ] **Geocoding (Address Search)**:
+
+  - [ ] Pole wyszukiwania adresu w edytorze mapy
+  - [ ] Autouzupełnianie podczas wpisywania (debounce 300ms)
+  - [ ] Lista sugestii z nazwą i adresem
+  - [ ] Kliknięcie sugestii:
+    - Centruje mapę na lokalizacji
+    - Opcjonalnie dodaje waypoint
+  - [ ] Obsługa Nominatim OpenStreetMap API (darmowe)
+  - [ ] Ograniczenie do wybranego miasta/bounding box
+
+- [ ] **Reverse Geocoding (Coordinate to Address)**:
+
+  - [ ] Po dodaniu waypointa na mapie → automatyczne pobranie nazwy ulicy
+  - [ ] Autouzupełnianie pola "Name" waypointa z adresu
+  - [ ] Formatowanie: "ul. {street} {number}" lub "{POI name}"
+  - [ ] Obsługa błędów (brak wyników, limit API)
+
+- [ ] **Konfiguracja**:
+
+  - [ ] Fallback na alternatywne API (np. Photon)
+  - [ ] Rate limiting (max 1 request/s dla Nominatim)
+  - [ ] Cache wyników (localStorage lub IndexedDB)
+
+- [ ] **UX**:
+  - [ ] Loading spinner podczas wyszukiwania
+  - [ ] Clear button w polu wyszukiwania
+  - [ ] Komunikat "Brak wyników" gdy nic nie znaleziono
+  - [ ] Tłumaczenia dla 5 języków
+
+### Komponenty shadcn/ui:
+
+- `Command` (combobox z autouzupełnianiem), `Input`, `Button`, `Popover`
+
+### API:
+
+- Nominatim: `https://nominatim.openstreetmap.org/search`
+- Photon (fallback): `https://photon.komoot.io/api/`
+
+### Estymacja: 1.5 dnia
 
 ---
 
@@ -497,6 +562,151 @@
 
 ---
 
+## US 8.17: Integracja Admin Panel z Backend API
+
+**Jako** administrator  
+**Chcę** aby panel administracyjny komunikował się z prawdziwym backend API  
+**Aby** móc tworzyć, edytować i usuwać wycieczki z trwałym zapisem w bazie danych
+
+### Zależności:
+
+- Epic 5.1 (Tours Backend) - rozszerzenie o CRUD operations
+- US 8.2 (Autentykacja) - JWT token handling
+- US 8.4 (Lista wycieczek) - podmiana mock data
+- US 8.5 (Edytor wycieczek) - podmiana mock data
+
+### Kryteria akceptacji:
+
+#### Backend (tours-server) - rozszerzenie:
+
+- [ ] **Auth Endpoints**:
+
+  - [ ] `POST /api/admin/auth/login` - logowanie (email + hasło)
+  - [ ] `POST /api/admin/auth/logout` - wylogowanie (invalidate token)
+  - [ ] `POST /api/admin/auth/refresh` - odświeżenie tokenu
+  - [ ] `GET /api/admin/auth/me` - dane zalogowanego użytkownika
+  - [ ] JWT token z expiration (1h access, 7d refresh)
+  - [ ] Bcrypt password hashing
+  - [ ] Rate limiting na auth endpoints
+
+- [ ] **Tours CRUD Endpoints**:
+
+  - [ ] `POST /api/admin/tours` - tworzenie nowej wycieczki
+  - [ ] `PUT /api/admin/tours/:id` - aktualizacja wycieczki
+  - [ ] `DELETE /api/admin/tours/:id` - usuwanie wycieczki
+  - [ ] `POST /api/admin/tours/:id/duplicate` - duplikowanie wycieczki
+  - [ ] `POST /api/admin/tours/:id/publish` - publikacja (draft → published)
+  - [ ] `POST /api/admin/tours/bulk-delete` - masowe usuwanie
+
+- [ ] **Middleware**:
+
+  - [ ] `authMiddleware` - weryfikacja JWT token
+  - [ ] `roleMiddleware` - sprawdzanie uprawnień (admin/editor)
+  - [ ] Error handling z proper HTTP status codes
+
+- [ ] **Baza danych**:
+  - [ ] Tabela `users` (id, email, password_hash, role, created_at)
+  - [ ] Tabela `refresh_tokens` (id, user_id, token, expires_at)
+  - [ ] Migracje SQLite/PostgreSQL
+
+#### Frontend (admin) - integracja:
+
+- [ ] **Services**:
+
+  - [ ] `authService.ts` - login, logout, refresh, getCurrentUser
+  - [ ] `toursService.ts` - CRUD operations (create, update, delete, duplicate)
+  - [ ] `apiClient.ts` - axios/fetch wrapper z interceptors
+
+- [ ] **Token Management**:
+
+  - [ ] Przechowywanie access token (memory) i refresh token (httpOnly cookie lub localStorage)
+  - [ ] Auto-refresh przed wygaśnięciem
+  - [ ] Logout przy 401 Unauthorized
+
+- [ ] **Podmiana mock data**:
+
+  - [ ] `ToursPage.tsx` - pobieranie listy z API
+  - [ ] `TourEditorPage.tsx` - zapis/aktualizacja przez API
+  - [ ] `DashboardPage.tsx` - statystyki z API
+  - [ ] Loading states i error handling
+
+- [ ] **TanStack Query integration**:
+  - [ ] `useQuery` dla pobierania danych
+  - [ ] `useMutation` dla operacji CRUD
+  - [ ] Optimistic updates
+  - [ ] Cache invalidation
+
+### Struktura plików:
+
+```
+backend/tours-server/
+├── src/
+│   ├── middleware/
+│   │   ├── auth.middleware.ts      # JWT verification
+│   │   └── role.middleware.ts      # Role-based access
+│   ├── routes/
+│   │   ├── admin.auth.routes.ts    # Auth endpoints
+│   │   └── admin.tours.routes.ts   # CRUD endpoints
+│   ├── services/
+│   │   ├── auth.service.ts         # Auth business logic
+│   │   └── user.service.ts         # User management
+│   └── db/
+│       └── migrations/
+│           └── 001_add_users.sql
+
+admin/src/
+├── services/
+│   ├── api.client.ts               # HTTP client with interceptors
+│   ├── auth.service.ts             # Auth API calls
+│   └── tours.service.ts            # Tours CRUD API calls
+├── hooks/
+│   ├── useAuth.ts                  # Auth state hook
+│   └── useTours.ts                 # Tours query hooks
+└── stores/
+    └── authStore.ts                # Zustand auth state
+```
+
+### Przykład API Response:
+
+```json
+// POST /api/admin/auth/login
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIs...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIs...",
+  "user": {
+    "id": "1",
+    "email": "admin@wtg.pl",
+    "role": "admin"
+  },
+  "expiresIn": 3600
+}
+
+// POST /api/admin/tours
+{
+  "id": "tour-123",
+  "name": { "pl": "Droga Królewska", "en": "Royal Road" },
+  "cityId": "krakow",
+  "status": "draft",
+  "createdAt": "2024-12-07T10:00:00Z",
+  "updatedAt": "2024-12-07T10:00:00Z"
+}
+```
+
+### Komponenty shadcn/ui:
+
+- Existing components + `Skeleton` (loading states)
+
+### Estymacja: 4-5 dni
+
+### Fazy implementacji:
+
+1. **Faza 1 (1.5 dnia)**: Backend Auth (login, JWT, middleware)
+2. **Faza 2 (1.5 dnia)**: Backend Tours CRUD (POST, PUT, DELETE)
+3. **Faza 3 (1 dzień)**: Frontend services i token management
+4. **Faza 4 (1 dzień)**: Podmiana mock data, TanStack Query, testy
+
+---
+
 ## Estymacje Podsumowanie
 
 | User Story | Estymacja |
@@ -517,10 +727,11 @@
 | US 8.14    | 2 dni     |
 | US 8.15    | 1.5 dnia  |
 | US 8.16    | 1 dzień   |
+| US 8.17    | 4.5 dnia  |
 
-**Łączna estymacja:** ~30 dni robocze (~6 tygodni)
+**Łączna estymacja:** ~34.5 dni robocze (~7 tygodni)
 
-**MVP (bez US 8.14):** ~28 dni robocze
+**MVP (bez US 8.14):** ~32.5 dni robocze
 
 ---
 

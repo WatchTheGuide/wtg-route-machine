@@ -168,6 +168,109 @@ const fr = {
       },
     },
 
+    // Tour Editor
+    tourEditor: {
+      createTitle: 'Nouveau circuit',
+      editTitle: 'Modifier le circuit',
+      lastSaved: 'Dernière sauvegarde: {{time}}',
+      unsavedChanges: 'Modifications non enregistrées',
+      autoSaved: 'Brouillon enregistré automatiquement',
+      saved: 'Circuit enregistré',
+      published: 'Circuit publié',
+      deleted: 'Circuit supprimé',
+      saveDraft: 'Enregistrer brouillon',
+      publish: 'Publier',
+      previewButton: 'Aperçu',
+      tabs: {
+        basic: 'Infos de base',
+        media: 'Médias',
+        details: 'Détails',
+        waypoints: 'Points de passage',
+        settings: 'Paramètres',
+      },
+      basicInfo: {
+        title: 'Informations de base',
+        description: 'Entrez les informations de base du circuit.',
+      },
+      media: {
+        title: 'Photos et médias',
+        description: 'Ajoutez des photos au circuit.',
+        dropzone: 'Glissez-déposez des photos ici ou cliquez pour parcourir',
+        browse: 'Parcourir les fichiers',
+      },
+      details: {
+        title: 'Détails du circuit',
+        description: 'Définissez la durée et les tags.',
+      },
+      waypoints: {
+        title: 'Points de passage',
+        description: 'Définissez les points sur le parcours du circuit.',
+        jsonNote:
+          "Un éditeur de carte visuel sera disponible à l'avenir. Pour l'instant, entrez les points de passage en JSON.",
+      },
+      settings: {
+        title: 'Paramètres de publication',
+        description: 'Gérez le statut et la visibilité du circuit.',
+      },
+      fields: {
+        name: 'Nom du circuit',
+        description: 'Description',
+        city: 'Ville',
+        category: 'Catégorie',
+        difficulty: 'Difficulté',
+        duration: 'Durée',
+        tags: 'Tags',
+        waypointsJson: 'Points de passage (JSON)',
+        status: 'Statut',
+        featured: 'Circuit en vedette',
+      },
+      placeholders: {
+        name: 'Ex. Chemin Royal',
+        description: 'Décrivez le circuit...',
+        city: 'Sélectionner une ville',
+        category: 'Sélectionner une catégorie',
+        tags: 'Tapez un tag et appuyez sur Entrée',
+        waypoints:
+          '[\n  {\n    "id": "1",\n    "name": "Point de départ",\n    "coordinates": [19.9373, 50.0619],\n    "order": 1\n  }\n]',
+      },
+      hints: {
+        name: '5 à 100 caractères',
+        description: '{{current}}/{{max}} caractères (min. {{min}})',
+        duration:
+          'Faites glisser le curseur pour définir la durée estimée du circuit',
+        tags: 'Appuyez sur Entrée pour ajouter un tag. Cliquez sur un tag pour le supprimer.',
+        waypoints:
+          'Format JSON avec un tableau de points de passage. Chaque point nécessite id, name, coordinates et order.',
+        status:
+          "Les brouillons ne sont pas visibles pour les utilisateurs. Les circuits publiés sont disponibles dans l'app.",
+        featured:
+          "Les circuits en vedette sont mis en avant sur la page d'accueil.",
+      },
+      validation: {
+        nameMin: 'Le nom doit avoir au moins 5 caractères',
+        nameMax: 'Le nom peut avoir au maximum 100 caractères',
+        descriptionMin: 'La description doit avoir au moins 50 caractères',
+        descriptionMax: 'La description peut avoir au maximum 2000 caractères',
+        cityRequired: 'Veuillez sélectionner une ville',
+        categoryRequired: 'Veuillez sélectionner une catégorie',
+      },
+      preview: {
+        title: 'Aperçu',
+        description: 'Aperçu du circuit en temps réel',
+        mapPlaceholder: 'La carte du parcours apparaîtra ici',
+        city: 'Ville',
+        category: 'Catégorie',
+        duration: 'Durée',
+        status: 'Statut',
+      },
+      exitDialog: {
+        title: 'Modifications non enregistrées',
+        description:
+          'Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter sans enregistrer?',
+        confirm: 'Quitter sans enregistrer',
+      },
+    },
+
     // POIs page
     pois: {
       title: "Points d'intérêt",
@@ -268,6 +371,44 @@ const fr = {
         pois: 'POIs',
         openSource: 'Open Source',
       },
+    },
+
+    // Map Editor
+    mapEditor: {
+      title: 'Éditeur de carte',
+      newWaypoint: 'Point {{number}}',
+      importedWaypoint: 'Importé {{number}}',
+      routeCalculated: 'Itinéraire calculé',
+      layers: {
+        streets: 'Rues',
+        satellite: 'Satellite',
+        terrain: 'Terrain',
+      },
+      addWaypoint: 'Ajouter un point',
+      deleteWaypoint: 'Supprimer le point sélectionné',
+      fitToWaypoints: 'Ajuster aux points',
+      clickToAdd: 'Cliquez sur la carte pour ajouter un point',
+      calculateRoute: "Calculer l'itinéraire",
+      import: 'Importer',
+      export: 'Exporter',
+    },
+
+    // Waypoints List
+    waypointsList: {
+      title: 'Points de passage',
+      empty: 'Aucun point',
+      emptyHint:
+        'Cliquez sur la carte ou utilisez "Ajouter un point" pour ajouter le premier point.',
+      name: 'Nom',
+      description: 'Description',
+      stopDuration: "Durée d'arrêt",
+      minutes: 'minutes',
+      coordinates: 'Coordonnées',
+      actions: 'Actions',
+      calculateRoute: "Calculer l'itinéraire",
+      import: 'Importer',
+      export: 'Exporter',
+      importedWaypoint: 'Importé {{number}}',
     },
 
     // Footer

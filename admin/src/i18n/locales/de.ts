@@ -168,6 +168,108 @@ const de = {
       },
     },
 
+    // Tour Editor
+    tourEditor: {
+      createTitle: 'Neue Tour',
+      editTitle: 'Tour bearbeiten',
+      lastSaved: 'Zuletzt gespeichert: {{time}}',
+      unsavedChanges: 'Ungespeicherte Änderungen',
+      autoSaved: 'Entwurf automatisch gespeichert',
+      saved: 'Tour wurde gespeichert',
+      published: 'Tour wurde veröffentlicht',
+      deleted: 'Tour wurde gelöscht',
+      saveDraft: 'Entwurf speichern',
+      publish: 'Veröffentlichen',
+      previewButton: 'Vorschau',
+      tabs: {
+        basic: 'Grundinfo',
+        media: 'Medien',
+        details: 'Details',
+        waypoints: 'Wegpunkte',
+        settings: 'Einstellungen',
+      },
+      basicInfo: {
+        title: 'Grundlegende Informationen',
+        description: 'Geben Sie grundlegende Tour-Informationen ein.',
+      },
+      media: {
+        title: 'Fotos und Medien',
+        description: 'Fügen Sie Fotos zur Tour hinzu.',
+        dropzone: 'Fotos hierher ziehen oder klicken zum Durchsuchen',
+        browse: 'Dateien durchsuchen',
+      },
+      details: {
+        title: 'Tour-Details',
+        description: 'Dauer und Tags festlegen.',
+      },
+      waypoints: {
+        title: 'Wegpunkte',
+        description: 'Definieren Sie Punkte auf der Tour-Route.',
+        jsonNote:
+          'Ein visueller Karten-Editor wird in Zukunft verfügbar sein. Geben Sie vorerst Wegpunkte als JSON ein.',
+      },
+      settings: {
+        title: 'Veröffentlichungseinstellungen',
+        description: 'Tour-Status und Sichtbarkeit verwalten.',
+      },
+      fields: {
+        name: 'Tour-Name',
+        description: 'Beschreibung',
+        city: 'Stadt',
+        category: 'Kategorie',
+        difficulty: 'Schwierigkeit',
+        duration: 'Dauer',
+        tags: 'Tags',
+        waypointsJson: 'Wegpunkte (JSON)',
+        status: 'Status',
+        featured: 'Empfohlene Tour',
+      },
+      placeholders: {
+        name: 'Z.B. Königsweg',
+        description: 'Beschreiben Sie die Tour...',
+        city: 'Stadt auswählen',
+        category: 'Kategorie auswählen',
+        tags: 'Tag eingeben und Enter drücken',
+        waypoints:
+          '[\n  {\n    "id": "1",\n    "name": "Startpunkt",\n    "coordinates": [19.9373, 50.0619],\n    "order": 1\n  }\n]',
+      },
+      hints: {
+        name: '5 bis 100 Zeichen',
+        description: '{{current}}/{{max}} Zeichen (min. {{min}})',
+        duration:
+          'Schieberegler ziehen, um die geschätzte Tour-Dauer festzulegen',
+        tags: 'Enter drücken, um ein Tag hinzuzufügen. Tag anklicken, um es zu entfernen.',
+        waypoints:
+          'JSON-Format mit Array von Wegpunkten. Jeder Punkt benötigt id, name, coordinates und order.',
+        status:
+          'Entwürfe sind für Benutzer nicht sichtbar. Veröffentlichte Touren sind in der App verfügbar.',
+        featured: 'Empfohlene Touren werden auf der Startseite beworben.',
+      },
+      validation: {
+        nameMin: 'Name muss mindestens 5 Zeichen haben',
+        nameMax: 'Name kann maximal 100 Zeichen haben',
+        descriptionMin: 'Beschreibung muss mindestens 50 Zeichen haben',
+        descriptionMax: 'Beschreibung kann maximal 2000 Zeichen haben',
+        cityRequired: 'Bitte wählen Sie eine Stadt',
+        categoryRequired: 'Bitte wählen Sie eine Kategorie',
+      },
+      preview: {
+        title: 'Vorschau',
+        description: 'Echtzeit-Tour-Vorschau',
+        mapPlaceholder: 'Routenkarte wird hier angezeigt',
+        city: 'Stadt',
+        category: 'Kategorie',
+        duration: 'Dauer',
+        status: 'Status',
+      },
+      exitDialog: {
+        title: 'Ungespeicherte Änderungen',
+        description:
+          'Sie haben ungespeicherte Änderungen. Möchten Sie die Seite wirklich ohne Speichern verlassen?',
+        confirm: 'Ohne Speichern verlassen',
+      },
+    },
+
     // POIs page
     pois: {
       title: 'Sehenswürdigkeiten',
@@ -267,6 +369,44 @@ const de = {
         pois: 'POIs',
         openSource: 'Open Source',
       },
+    },
+
+    // Map Editor
+    mapEditor: {
+      title: 'Karteneditor',
+      newWaypoint: 'Punkt {{number}}',
+      importedWaypoint: 'Importiert {{number}}',
+      routeCalculated: 'Route berechnet',
+      layers: {
+        streets: 'Straßen',
+        satellite: 'Satellit',
+        terrain: 'Gelände',
+      },
+      addWaypoint: 'Wegpunkt hinzufügen',
+      deleteWaypoint: 'Ausgewählten Wegpunkt löschen',
+      fitToWaypoints: 'Auf Wegpunkte anpassen',
+      clickToAdd: 'Klicken Sie auf die Karte, um einen Wegpunkt hinzuzufügen',
+      calculateRoute: 'Route berechnen',
+      import: 'Importieren',
+      export: 'Exportieren',
+    },
+
+    // Waypoints List
+    waypointsList: {
+      title: 'Wegpunkte',
+      empty: 'Keine Wegpunkte',
+      emptyHint:
+        'Klicken Sie auf die Karte oder verwenden Sie "Wegpunkt hinzufügen", um den ersten Wegpunkt hinzuzufügen.',
+      name: 'Name',
+      description: 'Beschreibung',
+      stopDuration: 'Aufenthaltsdauer',
+      minutes: 'Minuten',
+      coordinates: 'Koordinaten',
+      actions: 'Aktionen',
+      calculateRoute: 'Route berechnen',
+      import: 'Importieren',
+      export: 'Exportieren',
+      importedWaypoint: 'Importiert {{number}}',
     },
 
     // Footer

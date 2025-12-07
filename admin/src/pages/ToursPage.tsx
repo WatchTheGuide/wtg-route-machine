@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
   Card,
   CardContent,
@@ -238,6 +239,7 @@ const pageSizes = [10, 25, 50, 100];
 
 export function ToursPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
@@ -465,7 +467,7 @@ export function ToursPage() {
             <Download className="h-4 w-4 mr-2" />
             {t('tours.export')}
           </Button>
-          <Button>
+          <Button onClick={() => navigate('/admin/tours/new')}>
             <Plus className="h-4 w-4 mr-2" />
             {t('tours.addTour')}
           </Button>
@@ -755,7 +757,10 @@ export function ToursPage() {
                               <Eye className="h-4 w-4 mr-2" />
                               {t('tours.actions.preview')}
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                navigate(`/admin/tours/${tour.id}/edit`)
+                              }>
                               <Pencil className="h-4 w-4 mr-2" />
                               {t('tours.actions.edit')}
                             </DropdownMenuItem>

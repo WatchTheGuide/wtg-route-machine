@@ -168,6 +168,107 @@ const pl = {
       },
     },
 
+    // Tour Editor
+    tourEditor: {
+      createTitle: 'Nowa wycieczka',
+      editTitle: 'Edycja wycieczki',
+      lastSaved: 'Ostatnio zapisano: {{time}}',
+      unsavedChanges: 'Niezapisane zmiany',
+      autoSaved: 'Zapisano szkic automatycznie',
+      saved: 'Wycieczka została zapisana',
+      published: 'Wycieczka została opublikowana',
+      deleted: 'Wycieczka została usunięta',
+      saveDraft: 'Zapisz szkic',
+      publish: 'Opublikuj',
+      previewButton: 'Podgląd',
+      tabs: {
+        basic: 'Podstawowe',
+        media: 'Media',
+        details: 'Szczegóły',
+        waypoints: 'Punkty trasy',
+        settings: 'Ustawienia',
+      },
+      basicInfo: {
+        title: 'Podstawowe informacje',
+        description: 'Wprowadź podstawowe dane wycieczki.',
+      },
+      media: {
+        title: 'Zdjęcia i media',
+        description: 'Dodaj zdjęcia do wycieczki.',
+        dropzone: 'Przeciągnij i upuść zdjęcia tutaj lub kliknij, aby wybrać',
+        browse: 'Wybierz pliki',
+      },
+      details: {
+        title: 'Szczegóły wycieczki',
+        description: 'Ustaw czas trwania i tagi.',
+      },
+      waypoints: {
+        title: 'Punkty trasy',
+        description: 'Zdefiniuj punkty na trasie wycieczki.',
+        jsonNote:
+          'W przyszłości będzie dostępny wizualny edytor mapy. Na razie wprowadź waypoints jako JSON.',
+      },
+      settings: {
+        title: 'Ustawienia publikacji',
+        description: 'Zarządzaj statusem i widocznością wycieczki.',
+      },
+      fields: {
+        name: 'Nazwa wycieczki',
+        description: 'Opis',
+        city: 'Miasto',
+        category: 'Kategoria',
+        difficulty: 'Trudność',
+        duration: 'Czas trwania',
+        tags: 'Tagi',
+        waypointsJson: 'Punkty trasy (JSON)',
+        status: 'Status',
+        featured: 'Wyróżniona wycieczka',
+      },
+      placeholders: {
+        name: 'Np. Droga Królewska',
+        description: 'Opisz wycieczkę...',
+        city: 'Wybierz miasto',
+        category: 'Wybierz kategorię',
+        tags: 'Wpisz tag i naciśnij Enter',
+        waypoints:
+          '[\n  {\n    "id": "1",\n    "name": "Punkt startowy",\n    "coordinates": [19.9373, 50.0619],\n    "order": 1\n  }\n]',
+      },
+      hints: {
+        name: 'Od 5 do 100 znaków',
+        description: '{{current}}/{{max}} znaków (min. {{min}})',
+        duration: 'Przeciągnij suwak, aby ustawić szacowany czas wycieczki',
+        tags: 'Naciśnij Enter, aby dodać tag. Kliknij tag, aby go usunąć.',
+        waypoints:
+          'Format JSON z tablicą punktów trasy. Każdy punkt wymaga id, name, coordinates i order.',
+        status:
+          'Szkic nie jest widoczny dla użytkowników. Opublikowana wycieczka jest dostępna w aplikacji.',
+        featured: 'Wyróżnione wycieczki są promowane na stronie głównej.',
+      },
+      validation: {
+        nameMin: 'Nazwa musi mieć co najmniej 5 znaków',
+        nameMax: 'Nazwa może mieć maksymalnie 100 znaków',
+        descriptionMin: 'Opis musi mieć co najmniej 50 znaków',
+        descriptionMax: 'Opis może mieć maksymalnie 2000 znaków',
+        cityRequired: 'Wybierz miasto',
+        categoryRequired: 'Wybierz kategorię',
+      },
+      preview: {
+        title: 'Podgląd',
+        description: 'Podgląd wycieczki w czasie rzeczywistym',
+        mapPlaceholder: 'Mapa z trasą pojawi się tutaj',
+        city: 'Miasto',
+        category: 'Kategoria',
+        duration: 'Czas trwania',
+        status: 'Status',
+      },
+      exitDialog: {
+        title: 'Niezapisane zmiany',
+        description:
+          'Masz niezapisane zmiany. Czy na pewno chcesz opuścić stronę bez zapisywania?',
+        confirm: 'Opuść bez zapisywania',
+      },
+    },
+
     // POIs page
     pois: {
       title: 'Punkty POI',
@@ -266,6 +367,44 @@ const pl = {
         pois: 'Punkty POI',
         openSource: 'Open Source',
       },
+    },
+
+    // Map Editor
+    mapEditor: {
+      title: 'Edytor mapy',
+      newWaypoint: 'Punkt {{number}}',
+      importedWaypoint: 'Importowany {{number}}',
+      routeCalculated: 'Trasa obliczona',
+      layers: {
+        streets: 'Ulice',
+        satellite: 'Satelita',
+        terrain: 'Teren',
+      },
+      addWaypoint: 'Dodaj punkt',
+      deleteWaypoint: 'Usuń zaznaczony punkt',
+      fitToWaypoints: 'Dopasuj do punktów',
+      clickToAdd: 'Kliknij na mapę, aby dodać punkt',
+      calculateRoute: 'Oblicz trasę',
+      import: 'Importuj',
+      export: 'Eksportuj',
+    },
+
+    // Waypoints List
+    waypointsList: {
+      title: 'Punkty trasy',
+      empty: 'Brak punktów trasy',
+      emptyHint:
+        'Kliknij na mapę lub użyj przycisku "Dodaj punkt", aby dodać pierwszy punkt.',
+      name: 'Nazwa',
+      description: 'Opis',
+      stopDuration: 'Czas postoju',
+      minutes: 'minut',
+      coordinates: 'Współrzędne',
+      actions: 'Akcje',
+      calculateRoute: 'Oblicz trasę',
+      import: 'Importuj',
+      export: 'Eksportuj',
+      importedWaypoint: 'Importowany {{number}}',
     },
 
     // Footer
