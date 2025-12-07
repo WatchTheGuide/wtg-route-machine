@@ -445,6 +445,12 @@ const uk = {
         demoCredentials: 'Використовуйте демо-дані:',
       },
       logout: 'Вийти',
+      errors: {
+        invalidCredentials: 'Невірний email або пароль',
+        networkError: "Помилка з'єднання. Спробуйте ще раз.",
+        tooManyAttempts: 'Забагато спроб входу. Зачекайте та спробуйте знову.',
+        sessionExpired: 'Сесія закінчилася. Увійдіть знову.',
+      },
       validation: {
         emailRequired: "Email обов'язковий",
         emailInvalid: 'Невірна адреса email',

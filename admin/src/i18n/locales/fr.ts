@@ -448,6 +448,12 @@ const fr = {
         demoCredentials: 'Utilisez les identifiants de démonstration :',
       },
       logout: 'Déconnexion',
+      errors: {
+        invalidCredentials: 'Email ou mot de passe invalide',
+        networkError: 'Erreur de connexion. Veuillez réessayer.',
+        tooManyAttempts: 'Trop de tentatives de connexion. Veuillez patienter.',
+        sessionExpired: 'Session expirée. Veuillez vous reconnecter.',
+      },
       validation: {
         emailRequired: "L'e-mail est requis",
         emailInvalid: 'Adresse e-mail invalide',

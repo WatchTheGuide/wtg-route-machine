@@ -443,6 +443,12 @@ const en = {
         demoCredentials: 'Use demo credentials:',
       },
       logout: 'Logout',
+      errors: {
+        invalidCredentials: 'Invalid email or password',
+        networkError: 'Connection error. Please try again.',
+        tooManyAttempts: 'Too many login attempts. Please wait and try again.',
+        sessionExpired: 'Session expired. Please log in again.',
+      },
       validation: {
         emailRequired: 'Email is required',
         emailInvalid: 'Invalid email address',

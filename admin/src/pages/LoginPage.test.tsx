@@ -23,7 +23,6 @@ describe('LoginPage', () => {
     // Reset auth store before each test
     useAuthStore.setState({
       user: null,
-      token: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
@@ -145,7 +144,6 @@ describe('LoginPage', () => {
         isLoading: false,
         isAuthenticated: false,
         user: null,
-        token: null,
         rememberMe: false,
       });
 

@@ -444,6 +444,12 @@ const pl = {
         demoCredentials: 'Użyj testowych danych logowania:',
       },
       logout: 'Wyloguj',
+      errors: {
+        invalidCredentials: 'Nieprawidłowy email lub hasło',
+        networkError: 'Błąd połączenia. Spróbuj ponownie.',
+        tooManyAttempts: 'Zbyt wiele prób logowania. Spróbuj za chwilę.',
+        sessionExpired: 'Sesja wygasła. Zaloguj się ponownie.',
+      },
       validation: {
         emailRequired: 'Email jest wymagany',
         emailInvalid: 'Nieprawidłowy adres email',

@@ -1,5 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import {
+  authService,
+  type AuthUser,
+  ApiClientError,
+  getRefreshToken,
+} from '@/services';
 
 export interface User {
   id: string;
@@ -10,7 +16,6 @@ export interface User {
 
 interface AuthState {
   user: User | null;
-  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -22,37 +27,23 @@ interface AuthState {
     password: string,
     rememberMe: boolean
   ) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   clearError: () => void;
-  checkAuth: () => void;
+  checkAuth: () => Promise<void>;
 }
 
-// Mock API delay
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// Mock users for demo (will be replaced with real API)
-const MOCK_USERS = [
-  {
-    id: '1',
-    email: 'admin@wtg.pl',
-    password: 'admin123',
-    name: 'Administrator',
-    role: 'admin' as const,
-  },
-  {
-    id: '2',
-    email: 'editor@wtg.pl',
-    password: 'editor123',
-    name: 'Editor',
-    role: 'editor' as const,
-  },
-];
+// Convert AuthUser from API to User for store
+const mapAuthUserToUser = (authUser: AuthUser): User => ({
+  id: authUser.id,
+  email: authUser.email,
+  name: authUser.email.split('@')[0], // Use email prefix as name
+  role: authUser.role,
+});
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      token: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
@@ -62,75 +53,82 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
 
         try {
-          // Simulate API call
-          await delay(800);
-
-          const user = MOCK_USERS.find(
-            (u) => u.email === email && u.password === password
-          );
-
-          if (!user) {
-            set({ isLoading: false, error: 'auth.errors.invalidCredentials' });
-            return;
-          }
-
-          // Generate mock token
-          const token = btoa(`${user.id}:${Date.now()}`);
+          const response = await authService.login({ email, password });
 
           set({
-            user: {
-              id: user.id,
-              email: user.email,
-              name: user.name,
-              role: user.role,
-            },
-            token,
+            user: mapAuthUserToUser(response.user),
             isAuthenticated: true,
             isLoading: false,
             rememberMe,
             error: null,
           });
-        } catch {
+        } catch (error) {
+          let errorMessage = 'auth.errors.networkError';
+
+          if (error instanceof ApiClientError) {
+            if (error.status === 401) {
+              errorMessage = 'auth.errors.invalidCredentials';
+            } else if (error.status === 429) {
+              errorMessage = 'auth.errors.tooManyAttempts';
+            }
+          }
+
           set({
             isLoading: false,
-            error: 'auth.errors.networkError',
+            error: errorMessage,
           });
         }
       },
 
-      logout: () => {
-        set({
-          user: null,
-          token: null,
-          isAuthenticated: false,
-          error: null,
-        });
+      logout: async () => {
+        try {
+          await authService.logout();
+        } finally {
+          set({
+            user: null,
+            isAuthenticated: false,
+            error: null,
+          });
+        }
       },
 
       clearError: () => {
         set({ error: null });
       },
 
-      checkAuth: () => {
-        const { token, rememberMe } = get();
+      checkAuth: async () => {
+        const { rememberMe } = get();
 
-        // If no token or not remember me, clear auth
-        if (!token) {
+        // If no refresh token stored, user is not authenticated
+        if (!rememberMe || !getRefreshToken()) {
           set({ isAuthenticated: false, user: null });
           return;
         }
 
-        // Check token expiration (mock: 24h for remember me, 1h otherwise)
-        try {
-          const [, timestamp] = atob(token).split(':');
-          const tokenAge = Date.now() - parseInt(timestamp, 10);
-          const maxAge = rememberMe ? 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
+        set({ isLoading: true });
 
-          if (tokenAge > maxAge) {
-            set({ isAuthenticated: false, user: null, token: null });
+        try {
+          const authUser = await authService.checkAuth();
+
+          if (authUser) {
+            set({
+              user: mapAuthUserToUser(authUser),
+              isAuthenticated: true,
+              isLoading: false,
+            });
+          } else {
+            set({
+              user: null,
+              isAuthenticated: false,
+              isLoading: false,
+            });
           }
         } catch {
-          set({ isAuthenticated: false, user: null, token: null });
+          set({
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
+          });
         }
       },
     }),
@@ -138,7 +136,6 @@ export const useAuthStore = create<AuthState>()(
       name: 'wtg-auth-storage',
       partialize: (state) => ({
         user: state.rememberMe ? state.user : null,
-        token: state.rememberMe ? state.token : null,
         isAuthenticated: state.rememberMe ? state.isAuthenticated : false,
         rememberMe: state.rememberMe,
       }),

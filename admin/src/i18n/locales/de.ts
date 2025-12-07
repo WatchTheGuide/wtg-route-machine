@@ -446,6 +446,12 @@ const de = {
         demoCredentials: 'Demo-Anmeldedaten verwenden:',
       },
       logout: 'Abmelden',
+      errors: {
+        invalidCredentials: 'Ungültige E-Mail oder Passwort',
+        networkError: 'Verbindungsfehler. Bitte versuchen Sie es erneut.',
+        tooManyAttempts: 'Zu viele Anmeldeversuche. Bitte warten Sie.',
+        sessionExpired: 'Sitzung abgelaufen. Bitte melden Sie sich erneut an.',
+      },
       validation: {
         emailRequired: 'E-Mail ist erforderlich',
         emailInvalid: 'Ungültige E-Mail-Adresse',

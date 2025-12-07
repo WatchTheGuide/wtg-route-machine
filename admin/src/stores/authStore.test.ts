@@ -1,16 +1,45 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { act } from '@testing-library/react';
 import { useAuthStore } from '@/stores/authStore';
+import * as authService from '@/services/auth.service';
+
+// Mock auth service
+vi.mock('@/services/auth.service', () => ({
+  authService: {
+    login: vi.fn(),
+    logout: vi.fn(),
+    checkAuth: vi.fn(),
+    getCurrentUser: vi.fn(),
+  },
+}));
+
+vi.mock('@/services/api.client', () => ({
+  setAccessToken: vi.fn(),
+  getRefreshToken: vi.fn(() => null),
+  ApiClientError: class ApiClientError extends Error {
+    status: number;
+    errorCode: string;
+    constructor(status: number, errorCode: string, message: string) {
+      super(message);
+      this.status = status;
+      this.errorCode = errorCode;
+    }
+  },
+}));
 
 describe('authStore', () => {
   beforeEach(() => {
     // Reset store state before each test
+    vi.clearAllMocks();
     const store = useAuthStore.getState();
-    store.logout();
+    useAuthStore.setState({
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      error: null,
+      rememberMe: false,
+    });
     store.clearError();
-
-    // Clear any timers
-    vi.clearAllTimers();
   });
 
   describe('initial state', () => {
@@ -37,34 +66,41 @@ describe('authStore', () => {
 
   describe('login', () => {
     it('should login successfully with valid credentials', async () => {
-      vi.useFakeTimers();
+      const mockResponse = {
+        accessToken: 'mock-token',
+        refreshToken: 'mock-refresh',
+        user: { id: '1', email: 'admin@wtg.pl', role: 'admin' as const },
+        expiresIn: 3600,
+      };
+      vi.mocked(authService.authService.login).mockResolvedValue(mockResponse);
 
-      const loginPromise = useAuthStore
-        .getState()
-        .login('admin@wtg.pl', 'admin123', false);
-
-      // Fast-forward timer
       await act(async () => {
-        vi.advanceTimersByTime(1000);
-        await loginPromise;
+        await useAuthStore.getState().login('admin@wtg.pl', 'admin123', false);
       });
 
-      const { user, isAuthenticated, token } = useAuthStore.getState();
+      const { user, isAuthenticated } = useAuthStore.getState();
 
       expect(isAuthenticated).toBe(true);
       expect(user).not.toBeNull();
       expect(user?.email).toBe('admin@wtg.pl');
-      expect(user?.name).toBe('Administrator');
       expect(user?.role).toBe('admin');
-      expect(token).toBeTruthy();
-
-      vi.useRealTimers();
     });
 
     it('should set loading state during login', async () => {
-      vi.useFakeTimers();
+      const mockResponse = {
+        accessToken: 'mock-token',
+        refreshToken: 'mock-refresh',
+        user: { id: '1', email: 'admin@wtg.pl', role: 'admin' as const },
+        expiresIn: 3600,
+      };
 
-      const loginPromise = useAuthStore
+      let resolveLogin: () => void;
+      const loginPromise = new Promise<typeof mockResponse>((resolve) => {
+        resolveLogin = () => resolve(mockResponse);
+      });
+      vi.mocked(authService.authService.login).mockReturnValue(loginPromise);
+
+      const loginCall = useAuthStore
         .getState()
         .login('admin@wtg.pl', 'admin123', false);
 
@@ -72,25 +108,23 @@ describe('authStore', () => {
       expect(useAuthStore.getState().isLoading).toBe(true);
 
       await act(async () => {
-        vi.advanceTimersByTime(1000);
-        await loginPromise;
+        resolveLogin!();
+        await loginCall;
       });
 
       expect(useAuthStore.getState().isLoading).toBe(false);
-
-      vi.useRealTimers();
     });
 
     it('should fail with invalid credentials', async () => {
-      vi.useFakeTimers();
-
-      const loginPromise = useAuthStore
-        .getState()
-        .login('wrong@email.com', 'wrongpass', false);
+      const { ApiClientError } = await import('@/services/api.client');
+      vi.mocked(authService.authService.login).mockRejectedValue(
+        new ApiClientError(401, 'Unauthorized', 'Invalid credentials')
+      );
 
       await act(async () => {
-        vi.advanceTimersByTime(1000);
-        await loginPromise;
+        await useAuthStore
+          .getState()
+          .login('wrong@email.com', 'wrongpass', false);
       });
 
       const { user, isAuthenticated, error } = useAuthStore.getState();
@@ -98,90 +132,66 @@ describe('authStore', () => {
       expect(isAuthenticated).toBe(false);
       expect(user).toBeNull();
       expect(error).toBe('auth.errors.invalidCredentials');
-
-      vi.useRealTimers();
-    });
-
-    it('should login as editor with editor credentials', async () => {
-      vi.useFakeTimers();
-
-      const loginPromise = useAuthStore
-        .getState()
-        .login('editor@wtg.pl', 'editor123', false);
-
-      await act(async () => {
-        vi.advanceTimersByTime(1000);
-        await loginPromise;
-      });
-
-      const { user } = useAuthStore.getState();
-
-      expect(user?.email).toBe('editor@wtg.pl');
-      expect(user?.role).toBe('editor');
-
-      vi.useRealTimers();
     });
 
     it('should set rememberMe flag when provided', async () => {
-      vi.useFakeTimers();
-
-      const loginPromise = useAuthStore
-        .getState()
-        .login('admin@wtg.pl', 'admin123', true);
+      const mockResponse = {
+        accessToken: 'mock-token',
+        refreshToken: 'mock-refresh',
+        user: { id: '1', email: 'admin@wtg.pl', role: 'admin' as const },
+        expiresIn: 3600,
+      };
+      vi.mocked(authService.authService.login).mockResolvedValue(mockResponse);
 
       await act(async () => {
-        vi.advanceTimersByTime(1000);
-        await loginPromise;
+        await useAuthStore.getState().login('admin@wtg.pl', 'admin123', true);
       });
 
       const { rememberMe } = useAuthStore.getState();
       expect(rememberMe).toBe(true);
-
-      vi.useRealTimers();
     });
   });
 
   describe('logout', () => {
     it('should clear user data on logout', async () => {
-      vi.useFakeTimers();
+      const mockResponse = {
+        accessToken: 'mock-token',
+        refreshToken: 'mock-refresh',
+        user: { id: '1', email: 'admin@wtg.pl', role: 'admin' as const },
+        expiresIn: 3600,
+      };
+      vi.mocked(authService.authService.login).mockResolvedValue(mockResponse);
+      vi.mocked(authService.authService.logout).mockResolvedValue(undefined);
 
       // First login
-      const loginPromise = useAuthStore
-        .getState()
-        .login('admin@wtg.pl', 'admin123', false);
       await act(async () => {
-        vi.advanceTimersByTime(1000);
-        await loginPromise;
+        await useAuthStore.getState().login('admin@wtg.pl', 'admin123', false);
       });
 
       // Verify logged in
       expect(useAuthStore.getState().isAuthenticated).toBe(true);
 
       // Logout
-      act(() => {
-        useAuthStore.getState().logout();
+      await act(async () => {
+        await useAuthStore.getState().logout();
       });
 
-      const { user, isAuthenticated, token } = useAuthStore.getState();
+      const { user, isAuthenticated } = useAuthStore.getState();
       expect(user).toBeNull();
       expect(isAuthenticated).toBe(false);
-      expect(token).toBeNull();
-
-      vi.useRealTimers();
     });
   });
 
   describe('clearError', () => {
     it('should clear error message', async () => {
-      vi.useFakeTimers();
+      const { ApiClientError } = await import('@/services/api.client');
+      vi.mocked(authService.authService.login).mockRejectedValue(
+        new ApiClientError(401, 'Unauthorized', 'Invalid credentials')
+      );
 
       // Trigger an error
-      const loginPromise = useAuthStore
-        .getState()
-        .login('wrong@email.com', 'wrong', false);
       await act(async () => {
-        vi.advanceTimersByTime(1000);
-        await loginPromise;
+        await useAuthStore.getState().login('wrong@email.com', 'wrong', false);
       });
 
       expect(useAuthStore.getState().error).not.toBeNull();
@@ -192,15 +202,13 @@ describe('authStore', () => {
       });
 
       expect(useAuthStore.getState().error).toBeNull();
-
-      vi.useRealTimers();
     });
   });
 
   describe('checkAuth', () => {
-    it('should invalidate auth if no token', () => {
-      act(() => {
-        useAuthStore.getState().checkAuth();
+    it('should invalidate auth if no refresh token', async () => {
+      await act(async () => {
+        await useAuthStore.getState().checkAuth();
       });
 
       expect(useAuthStore.getState().isAuthenticated).toBe(false);

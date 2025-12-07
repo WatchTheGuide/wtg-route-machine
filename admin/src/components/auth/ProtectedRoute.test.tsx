@@ -48,7 +48,6 @@ describe('ProtectedRoute', () => {
     // Reset auth store before each test
     useAuthStore.setState({
       user: null,
-      token: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
@@ -74,7 +73,6 @@ describe('ProtectedRoute', () => {
           name: 'Administrator',
           role: 'admin',
         },
-        token: 'test-token',
         isAuthenticated: true,
         isLoading: false,
         error: null,
@@ -112,7 +110,6 @@ describe('ProtectedRoute', () => {
           name: 'Viewer',
           role: 'viewer',
         },
-        token: 'test-token',
         isAuthenticated: true,
         isLoading: false,
         error: null,
@@ -133,7 +130,6 @@ describe('ProtectedRoute', () => {
           name: 'Editor',
           role: 'editor',
         },
-        token: 'test-token',
         isAuthenticated: true,
         isLoading: false,
         error: null,
