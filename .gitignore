@@ -31,6 +31,13 @@ Thumbs.db
 node_modules/
 package-lock.json
 
+# SQLite Database
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+backend/api-server/data/
+
 # Capacitor / Mobile
 frontend/www/
 frontend/android/
