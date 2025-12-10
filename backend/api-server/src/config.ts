@@ -8,6 +8,10 @@ export const config = {
   port: parseInt(process.env.PORT || '3000', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
 
+  // Database
+  databaseUrl: process.env.DATABASE_URL || 'file:./data/wtg.db',
+  autoMigrate: process.env.AUTO_MIGRATE === 'true',
+
   // JWT
   jwtSecret: process.env.JWT_SECRET || 'dev-secret-change-in-production',
   jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '1h',

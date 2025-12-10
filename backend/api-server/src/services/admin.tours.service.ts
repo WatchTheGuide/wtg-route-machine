@@ -94,13 +94,28 @@ class AdminToursService {
       conditions.push(eq(tours.cityId, filters.cityId));
     }
     if (filters?.status) {
-      conditions.push(eq(tours.status, filters.status));
+      conditions.push(
+        eq(tours.status, filters.status as 'draft' | 'published' | 'archived')
+      );
     }
     if (filters?.category) {
-      conditions.push(eq(tours.category, filters.category));
+      conditions.push(
+        eq(
+          tours.category,
+          filters.category as
+            | 'history'
+            | 'architecture'
+            | 'nature'
+            | 'food'
+            | 'art'
+            | 'nightlife'
+        )
+      );
     }
     if (filters?.difficulty) {
-      conditions.push(eq(tours.difficulty, filters.difficulty));
+      conditions.push(
+        eq(tours.difficulty, filters.difficulty as 'easy' | 'medium' | 'hard')
+      );
     }
     if (filters?.search) {
       const searchPattern = `%${filters.search.toLowerCase()}%`;
@@ -402,7 +417,7 @@ class AdminToursService {
       'food',
       'art',
       'nightlife',
-    ];
+    ] as const;
     const toursByCategory: Record<string, number> = {};
     for (const category of categories) {
       const result = db

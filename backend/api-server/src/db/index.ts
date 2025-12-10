@@ -1,6 +1,12 @@
 /**
  * Database connection and Drizzle ORM setup
- * Supports SQLite for development
+ *
+ * Currently supports SQLite for development.
+ * PostgreSQL support is planned for production deployment.
+ *
+ * DATABASE_URL format:
+ *   - SQLite: file:./data/wtg.db (default)
+ *   - PostgreSQL: postgresql://user:pass@host:5432/dbname (planned)
  */
 
 import Database, { type Database as DatabaseType } from 'better-sqlite3';
@@ -9,21 +15,38 @@ import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import * as schema from './schema/index.js';
 
+// Database dialect (SQLite for now, PostgreSQL planned)
+export type DbDialect = 'sqlite' | 'postgresql';
+export const dialect: DbDialect = 'sqlite';
+
 // Get database URL from environment or use default SQLite path
-const getDatabasePath = (): string => {
+const getDatabaseUrl = (): string => {
   const url = process.env.DATABASE_URL || 'file:./data/wtg.db';
 
-  // Handle SQLite file:// URL format
-  if (url.startsWith('file:')) {
-    return url.replace('file:', '');
+  // Validate that we're using SQLite for now
+  if (url.startsWith('postgresql://') || url.startsWith('postgres://')) {
+    console.warn(
+      '⚠️  PostgreSQL is not fully supported yet. Falling back to SQLite.'
+    );
+    console.warn('   Set DATABASE_URL=file:./data/wtg.db for development.');
+    return 'file:./data/wtg.db';
   }
 
   return url;
 };
 
-// Create database connection
+// Get SQLite path from URL
+const getSqlitePath = (url: string): string => {
+  if (url.startsWith('file:')) {
+    return url.replace('file:', '');
+  }
+  return url;
+};
+
+// Create SQLite connection
 const createConnection = () => {
-  const dbPath = getDatabasePath();
+  const url = getDatabaseUrl();
+  const dbPath = getSqlitePath(url);
 
   // Ensure data directory exists
   const dir = dirname(dbPath);
@@ -53,7 +76,7 @@ export const db = drizzle(sqlite, { schema });
 export const connection: DatabaseType = sqlite;
 
 // Close database connection (for graceful shutdown)
-export const closeDatabase = () => {
+export const closeDatabase = async () => {
   sqlite.close();
 };
 
