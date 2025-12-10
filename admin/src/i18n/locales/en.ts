@@ -132,6 +132,7 @@ const en = {
         poisCount: 'POI count',
       },
       categories: {
+        history: 'History',
         historical: 'Historical',
         cultural: 'Cultural',
         nature: 'Nature',
@@ -139,6 +140,8 @@ const en = {
         religious: 'Religious',
         nightlife: 'Nightlife',
         urban: 'Urban',
+        food: 'Food & Dining',
+        art: 'Art & Culture',
       },
       status: {
         published: 'Published',
@@ -186,6 +189,7 @@ const en = {
         media: 'Media',
         details: 'Details',
         waypoints: 'Waypoints',
+        pois: 'POIs',
         settings: 'Settings',
       },
       basicInfo: {
@@ -405,6 +409,27 @@ const en = {
       import: 'Import',
       export: 'Export',
       importedWaypoint: 'Imported {{number}}',
+    },
+
+    // Tour POI Selector
+    tourPOI: {
+      mapTitle: 'POI Map',
+      selectedPOIs: 'Selected POIs',
+      availablePOIs: 'Available POIs',
+      noSelectedPOIs: 'No POIs selected. Click on the map or list to add.',
+      noPOIs: 'No POIs for this city',
+      noResults: 'No results for the given filters',
+      searchPlaceholder: 'Search POIs...',
+      filterByCategory: 'Filter by category',
+      clearFilters: 'Clear filters',
+      clickToAdd: 'Click to add POI to tour',
+      add: 'Add',
+      remove: 'Remove',
+      suggestPOIs: 'Suggest POIs',
+      suggestPOIsHint: 'Automatically add POIs near the route',
+      fromRoute: 'from route',
+      selectCityFirst: 'Select a city first to see available POIs',
+      loadError: 'Failed to load POIs',
     },
 
     // Footer

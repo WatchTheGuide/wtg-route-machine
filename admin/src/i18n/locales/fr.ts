@@ -186,6 +186,7 @@ const fr = {
         media: 'Médias',
         details: 'Détails',
         waypoints: 'Points de passage',
+        pois: 'POIs',
         settings: 'Paramètres',
       },
       basicInfo: {
@@ -409,6 +410,29 @@ const fr = {
       import: 'Importer',
       export: 'Exporter',
       importedWaypoint: 'Importé {{number}}',
+    },
+
+    // Tour POI Selector
+    tourPOI: {
+      mapTitle: 'Carte des POI',
+      selectedPOIs: 'POI sélectionnés',
+      availablePOIs: 'POI disponibles',
+      noSelectedPOIs:
+        'Aucun POI sélectionné. Cliquez sur la carte ou la liste pour ajouter.',
+      noPOIs: 'Aucun POI pour cette ville',
+      noResults: 'Aucun résultat pour les filtres donnés',
+      searchPlaceholder: 'Rechercher des POI...',
+      filterByCategory: 'Filtrer par catégorie',
+      clearFilters: 'Effacer les filtres',
+      clickToAdd: 'Cliquez pour ajouter un POI à la visite',
+      add: 'Ajouter',
+      remove: 'Supprimer',
+      suggestPOIs: 'Suggérer des POI',
+      suggestPOIsHint: "Ajouter automatiquement des POI près de l'itinéraire",
+      fromRoute: "de l'itinéraire",
+      selectCityFirst:
+        "Sélectionnez d'abord une ville pour voir les POI disponibles",
+      loadError: 'Échec du chargement des POI',
     },
 
     // Footer

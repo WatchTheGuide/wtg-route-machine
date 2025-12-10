@@ -186,6 +186,7 @@ const de = {
         media: 'Medien',
         details: 'Details',
         waypoints: 'Wegpunkte',
+        pois: 'POIs',
         settings: 'Einstellungen',
       },
       basicInfo: {
@@ -407,6 +408,29 @@ const de = {
       import: 'Importieren',
       export: 'Exportieren',
       importedWaypoint: 'Importiert {{number}}',
+    },
+
+    // Tour POI Selector
+    tourPOI: {
+      mapTitle: 'POI-Karte',
+      selectedPOIs: 'Ausgewählte POIs',
+      availablePOIs: 'Verfügbare POIs',
+      noSelectedPOIs:
+        'Keine POIs ausgewählt. Klicken Sie auf die Karte oder Liste zum Hinzufügen.',
+      noPOIs: 'Keine POIs für diese Stadt',
+      noResults: 'Keine Ergebnisse für die angegebenen Filter',
+      searchPlaceholder: 'POIs suchen...',
+      filterByCategory: 'Nach Kategorie filtern',
+      clearFilters: 'Filter löschen',
+      clickToAdd: 'Klicken Sie, um POI zur Tour hinzuzufügen',
+      add: 'Hinzufügen',
+      remove: 'Entfernen',
+      suggestPOIs: 'POIs vorschlagen',
+      suggestPOIsHint: 'Automatisch POIs in der Nähe der Route hinzufügen',
+      fromRoute: 'von Route',
+      selectCityFirst:
+        'Wählen Sie zuerst eine Stadt aus, um verfügbare POIs zu sehen',
+      loadError: 'POIs konnten nicht geladen werden',
     },
 
     // Footer

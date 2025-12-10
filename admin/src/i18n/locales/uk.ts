@@ -186,6 +186,7 @@ const uk = {
         media: 'Медіа',
         details: 'Деталі',
         waypoints: 'Точки маршруту',
+        pois: 'POI',
         settings: 'Налаштування',
       },
       basicInfo: {
@@ -406,6 +407,28 @@ const uk = {
       import: 'Імпортувати',
       export: 'Експортувати',
       importedWaypoint: 'Імпортований {{number}}',
+    },
+
+    // Tour POI Selector
+    tourPOI: {
+      mapTitle: 'Карта POI',
+      selectedPOIs: 'Обрані POI',
+      availablePOIs: 'Доступні POI',
+      noSelectedPOIs:
+        'POI не обрано. Клікніть на карту або список, щоб додати.',
+      noPOIs: 'Немає POI для цього міста',
+      noResults: 'Немає результатів для заданих фільтрів',
+      searchPlaceholder: 'Пошук POI...',
+      filterByCategory: 'Фільтрувати за категорією',
+      clearFilters: 'Очистити фільтри',
+      clickToAdd: 'Клікніть, щоб додати POI до екскурсії',
+      add: 'Додати',
+      remove: 'Видалити',
+      suggestPOIs: 'Запропонувати POI',
+      suggestPOIsHint: 'Автоматично додати POI поблизу маршруту',
+      fromRoute: 'від маршруту',
+      selectCityFirst: 'Спочатку оберіть місто, щоб побачити доступні POI',
+      loadError: 'Не вдалося завантажити POI',
     },
 
     // Footer

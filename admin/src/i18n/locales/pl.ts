@@ -132,6 +132,7 @@ const pl = {
         poisCount: 'Liczba POI',
       },
       categories: {
+        history: 'Historia',
         historical: 'Historyczne',
         cultural: 'Kulturalne',
         nature: 'Przyroda',
@@ -139,6 +140,8 @@ const pl = {
         religious: 'Religijne',
         nightlife: 'Życie nocne',
         urban: 'Miejskie',
+        food: 'Jedzenie i gastronomia',
+        art: 'Sztuka i kultura',
       },
       status: {
         published: 'Opublikowana',
@@ -186,6 +189,7 @@ const pl = {
         media: 'Media',
         details: 'Szczegóły',
         waypoints: 'Punkty trasy',
+        pois: 'POI',
         settings: 'Ustawienia',
       },
       basicInfo: {
@@ -405,6 +409,28 @@ const pl = {
       import: 'Importuj',
       export: 'Eksportuj',
       importedWaypoint: 'Importowany {{number}}',
+    },
+
+    // Tour POI Selector
+    tourPOI: {
+      mapTitle: 'Mapa POI',
+      selectedPOIs: 'Wybrane POI',
+      availablePOIs: 'Dostępne POI',
+      noSelectedPOIs:
+        'Nie wybrano żadnych POI. Kliknij na mapę lub listę, aby dodać.',
+      noPOIs: 'Brak POI dla tego miasta',
+      noResults: 'Brak wyników dla podanych filtrów',
+      searchPlaceholder: 'Szukaj POI...',
+      filterByCategory: 'Filtruj wg kategorii',
+      clearFilters: 'Wyczyść filtry',
+      clickToAdd: 'Kliknij, aby dodać POI do wycieczki',
+      add: 'Dodaj',
+      remove: 'Usuń',
+      suggestPOIs: 'Sugeruj POI',
+      suggestPOIsHint: 'Automatycznie dodaj POI w pobliżu trasy',
+      fromRoute: 'od trasy',
+      selectCityFirst: 'Najpierw wybierz miasto, aby zobaczyć dostępne POI',
+      loadError: 'Nie udało się załadować POI',
     },
 
     // Footer

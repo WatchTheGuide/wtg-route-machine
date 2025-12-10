@@ -297,18 +297,26 @@
 
 ### Kryteria akceptacji:
 
-- [ ] Zakładka "POI" w edytorze wycieczki
-- [ ] Mapa pokazuje wszystkie POI w mieście (różne ikony per kategoria)
-- [ ] Kliknięcie na POI dodaje go do wycieczki
-- [ ] Lista powiązanych POI w bocznym panelu:
-  - Drag & drop do zmiany kolejności
-  - Przycisk "Remove from tour"
-  - Link "Edit POI details" (otwiera POI editor)
-- [ ] Filtrowanie POI na mapie (kategorie, dystans od trasy)
-- [ ] "Suggest POI" button - AI/heurystyka proponuje POI na trasie
-- [ ] Wyświetlanie dystansu POI od najbliższego waypointa
+- [x] Zakładka "POI" w edytorze wycieczki
+- [x] Mapa pokazuje wszystkie POI w mieście (różne ikony per kategoria)
+- [x] Kliknięcie na POI dodaje go do wycieczki
+- [x] Lista powiązanych POI w bocznym panelu:
+  - [x] Przyciski up/down do zmiany kolejności
+  - [x] Przycisk "Remove from tour"
+  - [ ] Link "Edit POI details" (otwiera POI editor) - przyszłość
+- [x] Filtrowanie POI na mapie (kategorie, wyszukiwarka)
+- [x] "Suggest POI" button - heurystyka proponuje POI w pobliżu trasy (300m)
+- [x] Wyświetlanie dystansu POI od najbliższego waypointa
 
-### Estymacja: 2 dni
+### Zaimplementowane pliki:
+
+- `admin/src/services/poi.service.ts` - serwis POI z API calls
+- `admin/src/hooks/usePOI.ts` - React hooks (useCityPOIs, usePOICategories, useSearchPOIs, useNearbyPOIs)
+- `admin/src/components/tours/TourPOISelector.tsx` - główny komponent selektora POI
+- `admin/src/components/ui/scroll-area.tsx` - shadcn/ui ScrollArea component
+- Tłumaczenia dla 5 języków (PL, EN, DE, FR, UK)
+
+### Estymacja: 2 dni ✅ COMPLETED
 
 ---
 

@@ -53,7 +53,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/sonner';
-import { MapEditor, WaypointsList } from '@/components/tours';
+import { MapEditor, WaypointsList, TourPOISelector } from '@/components/tours';
+import type { CityPOI } from '@/services/poi.service';
 import {
   ArrowLeft,
   Save,
@@ -71,6 +72,7 @@ import {
   Loader2,
   AlertCircle,
   RefreshCw,
+  Landmark,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -197,6 +199,9 @@ export function TourEditorPage() {
     null
   );
 
+  // POI selection state
+  const [selectedPOIs, setSelectedPOIs] = useState<CityPOI[]>([]);
+
   // Initialize form
   const form = useForm<TourFormValues>({
     resolver: zodResolver(tourFormSchema),
@@ -242,6 +247,12 @@ export function TourEditorPage() {
   // Handle waypoints change
   const handleWaypointsChange = useCallback((newWaypoints: Waypoint[]) => {
     setTourWaypoints(newWaypoints);
+    setIsDirty(true);
+  }, []);
+
+  // Handle POIs change
+  const handleSelectedPOIsChange = useCallback((pois: CityPOI[]) => {
+    setSelectedPOIs(pois);
     setIsDirty(true);
   }, []);
 
@@ -551,7 +562,7 @@ export function TourEditorPage() {
           <Form {...form}>
             <form className="space-y-6">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-5">
+                <TabsList className="grid w-full grid-cols-6">
                   <TabsTrigger
                     value="basic"
                     className="flex items-center gap-2">
@@ -582,6 +593,12 @@ export function TourEditorPage() {
                     <MapPin className="h-4 w-4" />
                     <span className="hidden sm:inline">
                       {t('tourEditor.tabs.waypoints')}
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger value="pois" className="flex items-center gap-2">
+                    <Landmark className="h-4 w-4" />
+                    <span className="hidden sm:inline">
+                      {t('tourEditor.tabs.pois')}
                     </span>
                   </TabsTrigger>
                   <TabsTrigger
@@ -886,6 +903,16 @@ export function TourEditorPage() {
                       onCalculateRoute={handleCalculateRoute}
                     />
                   </div>
+                </TabsContent>
+
+                {/* POIs Tab */}
+                <TabsContent value="pois" className="space-y-4 mt-4">
+                  <TourPOISelector
+                    cityId={selectedCityId}
+                    selectedPOIs={selectedPOIs}
+                    waypoints={tourWaypoints}
+                    onSelectedPOIsChange={handleSelectedPOIsChange}
+                  />
                 </TabsContent>
 
                 {/* Settings Tab */}
