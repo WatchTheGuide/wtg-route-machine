@@ -6,14 +6,14 @@ Migracja z obecnego in-memory storage i plików JSON na trwałą bazę danych SQ
 
 ## Obecny stan storage
 
-| Dane              | Obecny typ    | Status                                   |
-| ----------------- | ------------- | ---------------------------------------- |
-| Admin Tours       | SQLite (DB)   | ✅ Zmigrowane - US 14.3                  |
-| Users             | SQLite (DB)   | ✅ Zmigrowane - US 14.2                  |
-| Refresh Tokens    | SQLite (DB)   | ✅ Zmigrowane - US 14.2                  |
-| Admin POI         | SQLite (DB)   | ✅ Zmigrowane - US 14.4 (79 POI)         |
-| Tours (publiczne) | JSON files    | ⚠️ OK dla read-only                      |
-| POI (publiczne)   | JSON files    | ⚠️ OK dla read-only (fallback)           |
+| Dane              | Obecny typ  | Status                           |
+| ----------------- | ----------- | -------------------------------- |
+| Admin Tours       | SQLite (DB) | ✅ Zmigrowane - US 14.3          |
+| Users             | SQLite (DB) | ✅ Zmigrowane - US 14.2          |
+| Refresh Tokens    | SQLite (DB) | ✅ Zmigrowane - US 14.2          |
+| Admin POI         | SQLite (DB) | ✅ Zmigrowane - US 14.4 (79 POI) |
+| Tours (publiczne) | JSON files  | ⚠️ OK dla read-only              |
+| POI (publiczne)   | JSON files  | ⚠️ OK dla read-only (fallback)   |
 
 ## Cel
 
@@ -502,30 +502,33 @@ DATABASE_URL=postgresql://user:pass@host:5432/wtg?schema=public
 
 ## Podsumowanie estymacji
 
-| User Story | Nazwa                    | Estymacja   | Status       |
-| ---------- | ------------------------ | ----------- | ------------ |
-| US 14.1    | Setup Drizzle ORM        | 0.5 dnia    | ✅ COMPLETED |
-| US 14.2    | Auth Service Migration   | 1 dzień     | ✅ COMPLETED |
-| US 14.3    | Tours Service Migration  | 1.5 dnia    | ✅ COMPLETED |
-| US 14.4    | POI Service Migration    | 1.5 dnia    | ✅ COMPLETED |
-| US 14.5    | Migracje DB              | 0.5 dnia    | ⏳ Partial   |
-| US 14.6    | PostgreSQL Production    | 1 dzień     | 📋 Planned   |
-| US 14.7    | Seedy i Import           | 0.5 dnia    | ⏳ Partial   |
-| **TOTAL**  |                          | **6.5 dni** | **4/7 done** |
+| User Story | Nazwa                   | Estymacja   | Status       |
+| ---------- | ----------------------- | ----------- | ------------ |
+| US 14.1    | Setup Drizzle ORM       | 0.5 dnia    | ✅ COMPLETED |
+| US 14.2    | Auth Service Migration  | 1 dzień     | ✅ COMPLETED |
+| US 14.3    | Tours Service Migration | 1.5 dnia    | ✅ COMPLETED |
+| US 14.4    | POI Service Migration   | 1.5 dnia    | ✅ COMPLETED |
+| US 14.5    | Migracje DB             | 0.5 dnia    | ⏳ Partial   |
+| US 14.6    | PostgreSQL Production   | 1 dzień     | 📋 Planned   |
+| US 14.7    | Seedy i Import          | 0.5 dnia    | ⏳ Partial   |
+| **TOTAL**  |                         | **6.5 dni** | **4/7 done** |
 
 ## Postęp implementacji
 
 ### Ukończone (4/7):
+
 - ✅ **US 14.1**: Setup Drizzle ORM - schema, konfiguracja, typy
 - ✅ **US 14.2**: Auth Service - users i refresh_tokens w DB
 - ✅ **US 14.3**: Admin Tours Service - tours w DB z poisJson
 - ✅ **US 14.4**: Admin POI Service - CRUD dla POI + import 79 POI
 
 ### Częściowo ukończone:
+
 - ⏳ **US 14.5**: Migracje - podstawowa konfiguracja działa
 - ⏳ **US 14.7**: Seedy - `db:seed` i `db:import-pois` działają
 
 ### Do zrobienia:
+
 - 📋 **US 14.6**: PostgreSQL dla produkcji
 
 ## Kolejność implementacji
