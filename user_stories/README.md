@@ -17,7 +17,7 @@ Ten katalog zawiera dokumentację user stories dla rozwoju aplikacji GuideTracke
 | 7    | [Aplikacja Mobilna](./epic_7_mobile_app.md)                            | 🔴 Wysoki | 🚧 W trakcie              | 15 dni          |
 | 8    | [Panel Admin i Strona Projektu](./epic_8_admin_panel_and_website.md)   | 🟡 Średni | 📋 Zaplanowany            | 30 dni          |
 | 9-12 | [Backend Deployment & Security](./backend_deployment.md)               | 🔴 Wysoki | 📋 Zaplanowany            | 10 dni          |
-| 13   | [API Rate Limiting & Throttling](./epic_13_api_rate_limiting.md)       | 🔴 Wysoki | 🚧 W trakcie (US 13.6 ✅) | 1.5 dni         |
+| 13   | [API Rate Limiting & Throttling](./epic_13_api_rate_limiting.md)       | 🔴 Wysoki | 🚧 W trakcie (6/8 US ✅)  | 1.5 dni         |
 
 **Łączna estymacja:** ~106 dni robocze
 

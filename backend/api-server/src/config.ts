@@ -30,6 +30,16 @@ export const config = {
     10
   ), // 5 attempts
 
+  // Rate limiting - Admin CRUD (POST/PUT/DELETE operations)
+  adminCrudRateLimitWindowMs: parseInt(
+    process.env.ADMIN_CRUD_RATE_LIMIT_WINDOW_MS || '60000',
+    10
+  ), // 1 minute
+  adminCrudRateLimitMaxRequests: parseInt(
+    process.env.ADMIN_CRUD_RATE_LIMIT_MAX_REQUESTS || '30',
+    10
+  ), // 30 operations per minute
+
   // CORS
   corsOrigin: process.env.CORS_ORIGIN || '*',
 } as const;

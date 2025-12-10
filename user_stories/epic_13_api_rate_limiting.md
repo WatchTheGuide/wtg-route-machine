@@ -31,7 +31,7 @@
 
 ---
 
-## US 13.1: Express Rate Limiting Middleware
+## US 13.1: Express Rate Limiting Middleware ✅
 
 **Jako** Backend Developer  
 **Chcę** zaimplementować middleware do rate limitingu na poziomie Express  
@@ -39,15 +39,15 @@
 
 ### Kryteria akceptacji
 
-- [ ] Zainstalowana biblioteka `express-rate-limit`.
-- [ ] Utworzony plik `backend/api-server/src/middleware/rate-limit.middleware.ts`.
-- [ ] Zaimplementowany ogólny rate limiter dla wszystkich endpointów:
+- [x] Zainstalowana biblioteka `express-rate-limit`.
+- [x] Utworzony plik `backend/api-server/src/middleware/rate-limit.middleware.ts`.
+- [x] Zaimplementowany ogólny rate limiter dla wszystkich endpointów:
   - **Window**: 15 minut (900 000 ms)
   - **Max requests**: 100 zapytań na IP
   - **Status code**: 429 Too Many Requests
   - **Message**: "Too many requests, please try again later."
-- [ ] Rate limiter używa konfiguracji z `config.ts` (`rateLimitWindowMs`, `rateLimitMaxRequests`).
-- [ ] Middleware eksportowany z `middleware/index.ts`.
+- [x] Rate limiter używa konfiguracji z `config.ts` (`rateLimitWindowMs`, `rateLimitMaxRequests`).
+- [x] Middleware eksportowany z `middleware/index.ts`.
 
 ### Implementacja
 
@@ -80,7 +80,7 @@ app.use('/api', apiRateLimiter);
 
 ---
 
-## US 13.2: Stricter Throttling dla Auth Endpoints
+## US 13.2: Stricter Throttling dla Auth Endpoints ✅
 
 **Jako** Security Engineer  
 **Chcę** zastosować znacznie ostrzejsze limity dla endpointów uwierzytelniania  
@@ -88,14 +88,14 @@ app.use('/api', apiRateLimiter);
 
 ### Kryteria akceptacji
 
-- [ ] Utworzony dedykowany rate limiter dla endpointów `/api/admin/auth/*`.
-- [ ] Parametry auth rate limitera:
+- [x] Utworzony dedykowany rate limiter dla endpointów `/api/admin/auth/*`.
+- [x] Parametry auth rate limitera:
   - **Window**: 15 minut (900 000 ms)
   - **Max requests**: 5 prób logowania na IP
   - **Status code**: 429 Too Many Requests
   - **Message**: "Too many login attempts, please try again in 15 minutes."
-- [ ] Rate limiter używa konfiguracji z `config.ts` (`authRateLimitWindowMs`, `authRateLimitMaxRequests`).
-- [ ] Middleware zastosowany tylko do endpointu `/api/admin/auth/login`.
+- [x] Rate limiter używa konfiguracji z `config.ts` (`authRateLimitWindowMs`, `authRateLimitMaxRequests`).
+- [x] Middleware zastosowany tylko do endpointu `/api/admin/auth/login`.
 
 ### Implementacja
 
@@ -124,7 +124,7 @@ router.post('/login', authRateLimiter, async (req, res) => {
 
 ---
 
-## US 13.3: Throttling dla Admin CRUD Operations
+## US 13.3: Throttling dla Admin CRUD Operations ✅
 
 **Jako** System Administrator  
 **Chcę** ograniczyć częstotliwość operacji CRUD w panelu admina  
@@ -132,14 +132,14 @@ router.post('/login', authRateLimiter, async (req, res) => {
 
 ### Kryteria akceptacji
 
-- [ ] Utworzony dedykowany rate limiter dla operacji admin CRUD.
-- [ ] Parametry admin CRUD rate limitera:
+- [x] Utworzony dedykowany rate limiter dla operacji admin CRUD.
+- [x] Parametry admin CRUD rate limitera:
   - **Window**: 1 minuta (60 000 ms)
   - **Max requests**: 30 operacji na użytkownika (po JWT token)
   - **Status code**: 429 Too Many Requests
   - **Message**: "Too many operations, please slow down."
-- [ ] Rate limiter identyfikuje użytkownika po `req.user.id` (z JWT), nie po IP.
-- [ ] Middleware zastosowany do wszystkich endpointów POST/PUT/DELETE w:
+- [x] Rate limiter identyfikuje użytkownika po `req.user.id` (z JWT), nie po IP.
+- [x] Middleware zastosowany do wszystkich endpointów POST/PUT/DELETE w:
   - `/api/admin/tours/*` (create, update, delete, duplicate, publish, archive, bulk-delete)
   - `/api/admin/poi/*` (jeśli istnieje)
 
@@ -174,7 +174,7 @@ router.use(adminCrudRateLimiter);
 
 ---
 
-## US 13.4: Configurable Rate Limits via Environment
+## US 13.4: Configurable Rate Limits via Environment ✅
 
 **Jako** DevOps Engineer  
 **Chcę** móc konfigurować limity rate limitingu przez zmienne środowiskowe  
@@ -182,8 +182,8 @@ router.use(adminCrudRateLimiter);
 
 ### Kryteria akceptacji
 
-- [ ] Wszystkie parametry rate limitingu wczytywane z `config.ts`.
-- [ ] Dodane zmienne środowiskowe do `.env.example`:
+- [x] Wszystkie parametry rate limitingu wczytywane z `config.ts`.
+- [x] Dodane zmienne środowiskowe do `.env.example`:
 
   ```env
   # General API Rate Limiting
@@ -199,7 +199,8 @@ router.use(adminCrudRateLimiter);
   ADMIN_CRUD_RATE_LIMIT_MAX_REQUESTS=30  # operations per window
   ```
 
-- [ ] Dodane zmienne do `config.ts`:
+- [x] Dodane zmienne do `config.ts`:
+
   ```typescript
   export const config = {
     // ... existing config
@@ -215,11 +216,12 @@ router.use(adminCrudRateLimiter);
     ),
   } as const;
   ```
+
 - [ ] Dokumentacja w `backend/api-server/README.md` opisująca zmienne środowiskowe.
 
 ---
 
-## US 13.5: Rate Limit Response Headers
+## US 13.5: Rate Limit Response Headers ✅
 
 **Jako** Frontend Developer  
 **Chcę** otrzymywać informacje o limitach w nagłówkach HTTP  
@@ -227,12 +229,12 @@ router.use(adminCrudRateLimiter);
 
 ### Kryteria akceptacji
 
-- [ ] Wszystkie rate limitery zwracają standardowe nagłówki `RateLimit-*`:
+- [x] Wszystkie rate limitery zwracają standardowe nagłówki `RateLimit-*`:
   - `RateLimit-Limit`: maksymalna liczba zapytań
   - `RateLimit-Remaining`: pozostałe zapytania w oknie
   - `RateLimit-Reset`: timestamp UTC, kiedy okno się resetuje
-- [ ] Włączone `standardHeaders: true` we wszystkich rate limiterach.
-- [ ] Wyłączone legacy nagłówki `X-RateLimit-*` (`legacyHeaders: false`).
+- [x] Włączone `standardHeaders: true` we wszystkich rate limiterach.
+- [x] Wyłączone legacy nagłówki `X-RateLimit-*` (`legacyHeaders: false`).
 
 ### Przykładowa odpowiedź 429
 

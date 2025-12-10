@@ -472,6 +472,164 @@ docker rm osrm-krakow
    - Always check exit codes: `if [ $? -ne 0 ]; then`
    - Validate file existence before operations
 
+## Backend API Server (Node.js/Express)
+
+The `backend/api-server/` directory contains the REST API built with Node.js, Express, and TypeScript.
+
+### Project Structure
+
+```
+backend/api-server/src/
+├── middleware/              # Express middleware
+│   ├── auth.middleware.ts           # JWT authentication
+│   ├── rate-limit.middleware.ts     # Rate limiting (Epic 13)
+│   └── index.ts                     # Barrel export
+├── routes/                  # API route handlers
+│   ├── admin.auth.routes.ts         # Auth endpoints
+│   ├── admin.tours.routes.ts        # Tour CRUD
+│   ├── poi.routes.ts                # POI endpoints
+│   └── tours.routes.ts              # Public tour endpoints
+├── services/                # Business logic
+├── types/                   # TypeScript types
+├── config.ts                # Environment configuration
+└── app.ts                   # Express app setup
+```
+
+### Test-Driven Development (TDD) - DEFAULT APPROACH
+
+**For all backend development, follow TDD methodology:**
+
+1. **RED** - Write failing tests first
+
+   ```bash
+   # Create test file
+   touch src/middleware/new-feature.middleware.test.ts
+
+   # Write tests that define expected behavior
+   # Run tests - they should FAIL
+   npm test -- --run src/middleware/new-feature.middleware.test.ts
+   ```
+
+2. **GREEN** - Implement minimum code to pass tests
+
+   ```bash
+   # Create implementation
+   touch src/middleware/new-feature.middleware.ts
+
+   # Write code to make tests pass
+   # Run tests - they should PASS
+   npm test -- --run src/middleware/new-feature.middleware.test.ts
+   ```
+
+3. **REFACTOR** - Improve code quality
+   ```bash
+   # Refactor while keeping tests passing
+   npm test -- --run src/middleware/new-feature.middleware.test.ts
+   ```
+
+### Testing Commands
+
+```bash
+cd backend/api-server
+
+# Run all tests
+npm test -- --run
+
+# Run specific test file
+npm test -- --run src/middleware/rate-limit.middleware.test.ts
+
+# Run tests with coverage
+npm test -- --run --coverage
+
+# Run tests in watch mode (during development)
+npm test -- --watch
+```
+
+### Test File Naming Convention
+
+- Test files must be co-located with source files
+- Naming pattern: `<name>.test.ts`
+- Examples:
+  - `src/middleware/auth.middleware.ts` → `src/middleware/auth.middleware.test.ts`
+  - `src/services/tour.service.ts` → `src/services/tour.service.test.ts`
+
+### Testing Guidelines
+
+1. **Use isolated test apps** - Create fresh Express instances per test to avoid state leakage:
+
+   ```typescript
+   function createTestApp(config: TestConfig): Express {
+     const app = express();
+     // Configure app for specific test scenario
+     return app;
+   }
+   ```
+
+2. **Test structure** - Follow AAA pattern (Arrange, Act, Assert):
+
+   ```typescript
+   it('should return 429 when rate limit exceeded', async () => {
+     // Arrange
+     const testApp = createTestApp({ limit: 2 });
+
+     // Act
+     await request(testApp).get('/api/test');
+     await request(testApp).get('/api/test');
+     const response = await request(testApp).get('/api/test');
+
+     // Assert
+     expect(response.status).toBe(429);
+   });
+   ```
+
+3. **Group tests by User Story** - Match Epic documentation:
+
+   ```typescript
+   describe('Rate Limiting Middleware (Epic 13)', () => {
+     describe('US 13.1: General API Rate Limiter', () => {
+       it('should allow requests within the limit', async () => {});
+       it('should block requests exceeding limit with 429', async () => {});
+     });
+   });
+   ```
+
+4. **Mock external dependencies** - Use Vitest mocking:
+
+   ```typescript
+   vi.mock('../services/external.service.js', () => ({
+     externalCall: vi.fn().mockResolvedValue({ data: 'mocked' }),
+   }));
+   ```
+
+### API Development Workflow
+
+1. **Document User Story** in `user_stories/` directory
+2. **Write tests** that define acceptance criteria
+3. **Run tests** - verify they fail (RED)
+4. **Implement feature** with minimum code
+5. **Run tests** - verify they pass (GREEN)
+6. **Refactor** - improve code quality
+7. **Update documentation** - mark User Story as complete
+8. **Commit** with descriptive message
+
+### Rate Limiting Configuration
+
+Environment variables for rate limiting (Epic 13):
+
+```env
+# General API Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000        # 15 minutes
+RATE_LIMIT_MAX_REQUESTS=100        # requests per window
+
+# Auth Rate Limiting (stricter for login)
+AUTH_RATE_LIMIT_WINDOW_MS=900000   # 15 minutes
+AUTH_RATE_LIMIT_MAX_REQUESTS=5     # login attempts per window
+
+# Admin CRUD Rate Limiting
+ADMIN_CRUD_RATE_LIMIT_WINDOW_MS=60000  # 1 minute
+ADMIN_CRUD_RATE_LIMIT_MAX_REQUESTS=30  # operations per window
+```
+
 ## Resource Optimization
 
 Keep in mind the AWS deployment target:

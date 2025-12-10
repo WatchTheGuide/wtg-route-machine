@@ -5,44 +5,16 @@
 
 import express from 'express';
 import cors from 'cors';
-import rateLimit from 'express-rate-limit';
 import {
   poiRouter,
   toursRouter,
   adminAuthRouter,
   adminToursRouter,
 } from './routes/index.js';
+import { generalLimiter, authLimiter } from './middleware/index.js';
 import config from './config.js';
 
 const app = express();
-
-// Check if running in test mode
-const isTestMode = process.env.NODE_ENV === 'test';
-
-// Rate limiters (disabled in test mode)
-const generalLimiter = rateLimit({
-  windowMs: config.rateLimitWindowMs,
-  max: config.rateLimitMaxRequests,
-  message: {
-    error: 'Too Many Requests',
-    message: 'Too many requests, please try again later',
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: () => isTestMode, // Skip rate limiting in tests
-});
-
-const authLimiter = rateLimit({
-  windowMs: config.authRateLimitWindowMs,
-  max: config.authRateLimitMaxRequests,
-  message: {
-    error: 'Too Many Requests',
-    message: 'Too many login attempts, please try again later',
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: () => isTestMode, // Skip rate limiting in tests
-});
 
 // Middleware
 app.use(
