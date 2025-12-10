@@ -6,18 +6,20 @@ Ten katalog zawiera dokumentację user stories dla rozwoju aplikacji GuideTracke
 
 ## Lista Epików
 
-| #   | Epic                                                                   | Priorytet | Status                    | Estymacja       |
-| --- | ---------------------------------------------------------------------- | --------- | ------------------------- | --------------- |
-| 1   | [Migracja Frontendu na Ionic/React](./epic_1_ionic_react_migration.md) | 🔴 Wysoki | ✅ Ukończony              | 8 dni           |
-| 2   | [Obsługa Wielu Miast (Frontend)](./epic_2_multi_city_frontend.md)      | 🔴 Wysoki | 📋 Zaplanowany            | 3 dni           |
-| 3   | [Backend Multi-City](./epic_3_backend_multi_city.md)                   | 🔴 Wysoki | ✅ Ukończony              | 6 dni           |
-| 4   | [Punkty Turystyczne (POI)](./epic_4_points_of_interest.md)             | 🟡 Średni | 🟡 Backend ✅ Frontend 📋 | 4 dni (Backend) |
-| 5   | [Gotowe Wycieczki](./epic_5_curated_tours.md)                          | 🟡 Średni | 🚧 W trakcie (Backend ✅) | 8.5 dni         |
-| 6   | [Nawigacja Turn-by-Turn](./epic_6_turn_by_turn_navigation.md)          | 🟢 Niski  | 📋 Zaplanowany            | 12 dni          |
-| 7   | [Aplikacja Mobilna](./epic_7_mobile_app.md)                            | 🔴 Wysoki | 🚧 W trakcie              | 15 dni          |
-| 8   | [Panel Admin i Strona Projektu](./epic_8_admin_panel_and_website.md)   | 🟡 Średni | 📋 Zaplanowany            | 30 dni          |
+| #    | Epic                                                                   | Priorytet | Status                    | Estymacja       |
+| ---- | ---------------------------------------------------------------------- | --------- | ------------------------- | --------------- |
+| 1    | [Migracja Frontendu na Ionic/React](./epic_1_ionic_react_migration.md) | 🔴 Wysoki | ✅ Ukończony              | 8 dni           |
+| 2    | [Obsługa Wielu Miast (Frontend)](./epic_2_multi_city_frontend.md)      | 🔴 Wysoki | 📋 Zaplanowany            | 3 dni           |
+| 3    | [Backend Multi-City](./epic_3_backend_multi_city.md)                   | 🔴 Wysoki | ✅ Ukończony              | 6 dni           |
+| 4    | [Punkty Turystyczne (POI)](./epic_4_points_of_interest.md)             | 🟡 Średni | 🟡 Backend ✅ Frontend 📋 | 4 dni (Backend) |
+| 5    | [Gotowe Wycieczki](./epic_5_curated_tours.md)                          | 🟡 Średni | 🚧 W trakcie (Backend ✅) | 8.5 dni         |
+| 6    | [Nawigacja Turn-by-Turn](./epic_6_turn_by_turn_navigation.md)          | 🟢 Niski  | 📋 Zaplanowany            | 12 dni          |
+| 7    | [Aplikacja Mobilna](./epic_7_mobile_app.md)                            | 🔴 Wysoki | 🚧 W trakcie              | 15 dni          |
+| 8    | [Panel Admin i Strona Projektu](./epic_8_admin_panel_and_website.md)   | 🟡 Średni | 📋 Zaplanowany            | 30 dni          |
+| 9-12 | [Backend Deployment & Security](./backend_deployment.md)               | 🔴 Wysoki | 📋 Zaplanowany            | 10 dni          |
+| 13   | [API Rate Limiting & Throttling](./epic_13_api_rate_limiting.md)       | 🔴 Wysoki | 🚧 W trakcie (US 13.6 ✅) | 1.5 dni         |
 
-**Łączna estymacja:** ~94.5 dni robocze
+**Łączna estymacja:** ~106 dni robocze
 
 ## Obsługiwane Miasta
 
