@@ -1,11 +1,20 @@
 /**
  * Auth Service - handles user authentication logic
+ * Uses Drizzle ORM for database operations
  */
 
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { eq } from 'drizzle-orm';
 import config from '../config.js';
+import { db, users, refreshTokens } from '../db/index.js';
+import type {
+  User as DbUser,
+  NewUser,
+  RefreshToken as DbRefreshToken,
+  NewRefreshToken,
+} from '../db/schema/index.js';
 import type {
   User,
   UserPublic,
@@ -14,31 +23,46 @@ import type {
   LoginResponse,
 } from '../types/index.js';
 
-// In-memory storage (replace with database in production)
-const users: Map<string, User> = new Map();
-const refreshTokens: Map<string, RefreshToken> = new Map();
+const SALT_ROUNDS = 10;
 
 // Promise to track initialization completion
 let initPromise: Promise<void> | null = null;
 
-// Initialize default admin user
+/**
+ * Initialize default admin user if not exists
+ */
 const initDefaultAdmin = async () => {
-  const adminId = 'admin-1';
-  if (!users.has(adminId)) {
-    const passwordHash = await bcrypt.hash('admin123', 10);
-    users.set(adminId, {
-      id: adminId,
-      email: 'admin@wtg.pl',
-      passwordHash,
-      role: 'admin',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    });
-    console.log('Default admin user created: admin@wtg.pl / admin123');
+  try {
+    // Check if admin already exists
+    const existingAdmin = db
+      .select()
+      .from(users)
+      .where(eq(users.email, 'admin@wtg.pl'))
+      .get();
+
+    if (!existingAdmin) {
+      const passwordHash = await bcrypt.hash('admin123', SALT_ROUNDS);
+      const now = new Date().toISOString();
+
+      db.insert(users)
+        .values({
+          id: 'admin-1',
+          email: 'admin@wtg.pl',
+          passwordHash,
+          role: 'admin',
+          createdAt: now,
+          updatedAt: now,
+        })
+        .run();
+
+      console.log('Default admin user created: admin@wtg.pl / admin123');
+    }
+  } catch (error) {
+    console.error('Failed to initialize default admin:', error);
   }
 };
 
-// Initialize on module load and store the promise
+// Initialize on module load
 initPromise = initDefaultAdmin();
 
 /**
@@ -51,7 +75,32 @@ export const ensureInitialized = async (): Promise<void> => {
   }
 };
 
-const SALT_ROUNDS = 10;
+/**
+ * Convert DB user to domain User type
+ */
+function dbUserToUser(dbUser: DbUser): User {
+  return {
+    id: dbUser.id,
+    email: dbUser.email,
+    passwordHash: dbUser.passwordHash,
+    role: dbUser.role as User['role'],
+    createdAt: dbUser.createdAt,
+    updatedAt: dbUser.updatedAt,
+  };
+}
+
+/**
+ * Convert DB refresh token to domain RefreshToken type
+ */
+function dbTokenToToken(dbToken: DbRefreshToken): RefreshToken {
+  return {
+    id: dbToken.id,
+    userId: dbToken.userId,
+    token: dbToken.token,
+    expiresAt: dbToken.expiresAt,
+    createdAt: dbToken.createdAt,
+  };
+}
 
 class AuthService {
   /**
@@ -59,11 +108,13 @@ class AuthService {
    */
   async login(email: string, password: string): Promise<LoginResponse | null> {
     // Find user by email
-    const user = Array.from(users.values()).find((u) => u.email === email);
+    const dbUser = db.select().from(users).where(eq(users.email, email)).get();
 
-    if (!user) {
+    if (!dbUser) {
       return null;
     }
+
+    const user = dbUserToUser(dbUser);
 
     // Verify password
     const isValid = await bcrypt.compare(password, user.passwordHash);
@@ -87,14 +138,12 @@ class AuthService {
    * Logout - invalidate refresh token
    */
   async logout(refreshToken: string): Promise<boolean> {
-    // Find and remove refresh token
-    for (const [id, token] of refreshTokens.entries()) {
-      if (token.token === refreshToken) {
-        refreshTokens.delete(id);
-        return true;
-      }
-    }
-    return false;
+    const result = db
+      .delete(refreshTokens)
+      .where(eq(refreshTokens.token, refreshToken))
+      .run();
+
+    return result.changes > 0;
   }
 
   /**
@@ -104,29 +153,39 @@ class AuthService {
     refreshToken: string
   ): Promise<{ accessToken: string; expiresIn: number } | null> {
     // Find refresh token
-    let storedToken: RefreshToken | undefined;
-    for (const token of refreshTokens.values()) {
-      if (token.token === refreshToken) {
-        storedToken = token;
-        break;
-      }
-    }
+    const dbToken = db
+      .select()
+      .from(refreshTokens)
+      .where(eq(refreshTokens.token, refreshToken))
+      .get();
 
-    if (!storedToken) {
+    if (!dbToken) {
       return null;
     }
 
+    const storedToken = dbTokenToToken(dbToken);
+
     // Check if expired
     if (new Date(storedToken.expiresAt) < new Date()) {
-      refreshTokens.delete(storedToken.id);
+      // Delete expired token
+      db.delete(refreshTokens)
+        .where(eq(refreshTokens.id, storedToken.id))
+        .run();
       return null;
     }
 
     // Get user
-    const user = users.get(storedToken.userId);
-    if (!user) {
+    const dbUser = db
+      .select()
+      .from(users)
+      .where(eq(users.id, storedToken.userId))
+      .get();
+
+    if (!dbUser) {
       return null;
     }
+
+    const user = dbUserToUser(dbUser);
 
     // Generate new access token
     const accessToken = this.generateAccessToken(user);
@@ -141,8 +200,13 @@ class AuthService {
    * Get user by ID
    */
   async getUserById(userId: string): Promise<UserPublic | null> {
-    const user = users.get(userId);
-    return user ? this.toPublicUser(user) : null;
+    const dbUser = db.select().from(users).where(eq(users.id, userId)).get();
+
+    if (!dbUser) {
+      return null;
+    }
+
+    return this.toPublicUser(dbUserToUser(dbUser));
   }
 
   /**
@@ -175,7 +239,7 @@ class AuthService {
   }
 
   /**
-   * Generate refresh token and store it
+   * Generate refresh token and store it in DB
    */
   private async generateRefreshToken(userId: string): Promise<RefreshToken> {
     const token = crypto.randomBytes(64).toString('hex');
@@ -206,7 +270,7 @@ class AuthService {
       expiresAt.setDate(expiresAt.getDate() + 7);
     }
 
-    const refreshToken: RefreshToken = {
+    const refreshToken: NewRefreshToken = {
       id: crypto.randomUUID(),
       userId,
       token,
@@ -214,8 +278,10 @@ class AuthService {
       createdAt: new Date().toISOString(),
     };
 
-    refreshTokens.set(refreshToken.id, refreshToken);
-    return refreshToken;
+    // Store in database
+    db.insert(refreshTokens).values(refreshToken).run();
+
+    return refreshToken as RefreshToken;
   }
 
   /**
@@ -253,7 +319,7 @@ class AuthService {
   }
 
   /**
-   * Create a new user (for future use)
+   * Create a new user
    */
   async createUser(
     email: string,
@@ -262,25 +328,65 @@ class AuthService {
   ): Promise<UserPublic> {
     const id = crypto.randomUUID();
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+    const now = new Date().toISOString();
 
-    const user: User = {
+    const newUser: NewUser = {
       id,
       email,
       passwordHash,
       role,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
     };
 
-    users.set(id, user);
-    return this.toPublicUser(user);
+    db.insert(users).values(newUser).run();
+
+    return this.toPublicUser(dbUserToUser(newUser as DbUser));
   }
 
   /**
    * Check if email already exists
    */
   async emailExists(email: string): Promise<boolean> {
-    return Array.from(users.values()).some((u) => u.email === email);
+    const existingUser = db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.email, email))
+      .get();
+
+    return !!existingUser;
+  }
+
+  /**
+   * Delete all refresh tokens for a user (for cleanup/logout all sessions)
+   */
+  async deleteAllUserTokens(userId: string): Promise<number> {
+    const result = db
+      .delete(refreshTokens)
+      .where(eq(refreshTokens.userId, userId))
+      .run();
+
+    return result.changes;
+  }
+
+  /**
+   * Clean up expired refresh tokens (for maintenance)
+   */
+  async cleanupExpiredTokens(): Promise<number> {
+    const now = new Date().toISOString();
+
+    // SQLite string comparison works for ISO dates
+    const allTokens = db.select().from(refreshTokens).all();
+    let deleted = 0;
+
+    for (const token of allTokens) {
+      if (token.expiresAt < now) {
+        db.delete(refreshTokens).where(eq(refreshTokens.id, token.id)).run();
+        deleted++;
+      }
+    }
+
+    return deleted;
   }
 }
 

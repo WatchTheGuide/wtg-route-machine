@@ -1,20 +1,23 @@
 /**
  * Admin Tours Service - CRUD operations for admin panel
- * Extends tours.service.ts with write operations
+ * Uses Drizzle ORM for database operations
+ * POIs are stored as JSON for simplicity and backward compatibility
  */
 
 import crypto from 'crypto';
+import { eq, like, or, sql, count, sum, and, desc } from 'drizzle-orm';
+import { db, tours } from '../db/index.js';
+import type { Tour as DbTour, NewTour } from '../db/schema/index.js';
 import type {
   AdminTour,
   AdminTourSummary,
   TourInput,
   TourStatus,
   TourCity,
+  TourPOI,
+  TourCategory,
+  TourDifficulty,
 } from '../types/index.js';
-
-// In-memory storage for admin tours
-// In production, this would be replaced with a database
-const adminTours: Map<string, AdminTour> = new Map();
 
 const CITIES = ['krakow', 'warszawa', 'wroclaw', 'trojmiasto'] as const;
 type CityId = (typeof CITIES)[number];
@@ -26,41 +29,52 @@ const CITY_NAMES: Record<CityId, string> = {
   trojmiasto: 'Trójmiasto',
 };
 
-// Initialize with some sample data
-const initializeSampleTours = () => {
-  const sampleTour: AdminTour = {
-    id: 'sample-tour-1',
-    cityId: 'krakow',
+/**
+ * Parse POIs from JSON string
+ */
+function parsePois(poisJson: string | null | undefined): TourPOI[] {
+  if (!poisJson) return [];
+  try {
+    return JSON.parse(poisJson);
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Convert DB tour to AdminTour type
+ */
+function dbTourToAdminTour(dbTour: DbTour): AdminTour {
+  return {
+    id: dbTour.id,
+    cityId: dbTour.cityId,
     name: {
-      pl: 'Droga Królewska',
-      en: 'Royal Road',
-      de: 'Königsweg',
-      fr: 'Route Royale',
-      uk: 'Королівська дорога',
+      pl: dbTour.namePl,
+      en: dbTour.nameEn || dbTour.namePl,
+      de: dbTour.nameDe || dbTour.namePl,
+      fr: dbTour.nameFr || dbTour.namePl,
+      uk: dbTour.nameUk || dbTour.namePl,
     },
     description: {
-      pl: 'Spacer śladami królów przez Kraków',
-      en: 'A walk following the footsteps of kings through Krakow',
-      de: 'Ein Spaziergang auf den Spuren der Könige durch Krakau',
-      fr: 'Une promenade sur les traces des rois à travers Cracovie',
-      uk: 'Прогулянка слідами королів через Краків',
+      pl: dbTour.descriptionPl,
+      en: dbTour.descriptionEn || dbTour.descriptionPl,
+      de: dbTour.descriptionDe || dbTour.descriptionPl,
+      fr: dbTour.descriptionFr || dbTour.descriptionPl,
+      uk: dbTour.descriptionUk || dbTour.descriptionPl,
     },
-    category: 'history',
-    difficulty: 'easy',
-    distance: 2500,
-    duration: 5400,
-    imageUrl: '/images/tours/royal-road.jpg',
-    pois: [],
-    status: 'published',
-    featured: true,
-    views: 1234,
-    createdAt: '2024-01-15T10:00:00Z',
-    updatedAt: '2024-12-01T14:30:00Z',
+    category: dbTour.category as TourCategory,
+    difficulty: dbTour.difficulty as TourDifficulty,
+    distance: dbTour.distance,
+    duration: dbTour.duration,
+    imageUrl: dbTour.imageUrl || '',
+    pois: parsePois(dbTour.poisJson),
+    status: dbTour.status as TourStatus,
+    featured: dbTour.featured,
+    views: dbTour.views,
+    createdAt: dbTour.createdAt,
+    updatedAt: dbTour.updatedAt,
   };
-  adminTours.set(sampleTour.id, sampleTour);
-};
-
-initializeSampleTours();
+}
 
 class AdminToursService {
   /**
@@ -73,46 +87,58 @@ class AdminToursService {
     difficulty?: string;
     search?: string;
   }): Promise<AdminTourSummary[]> {
-    let tours = Array.from(adminTours.values());
+    // Build conditions array
+    const conditions = [];
 
-    // Apply filters
-    if (filters) {
-      if (filters.cityId) {
-        tours = tours.filter((t) => t.cityId === filters.cityId);
-      }
-      if (filters.status) {
-        tours = tours.filter((t) => t.status === filters.status);
-      }
-      if (filters.category) {
-        tours = tours.filter((t) => t.category === filters.category);
-      }
-      if (filters.difficulty) {
-        tours = tours.filter((t) => t.difficulty === filters.difficulty);
-      }
-      if (filters.search) {
-        const searchLower = filters.search.toLowerCase();
-        tours = tours.filter((t) =>
-          Object.values(t.name).some((n) =>
-            n.toLowerCase().includes(searchLower)
-          )
-        );
-      }
+    if (filters?.cityId) {
+      conditions.push(eq(tours.cityId, filters.cityId));
+    }
+    if (filters?.status) {
+      conditions.push(eq(tours.status, filters.status));
+    }
+    if (filters?.category) {
+      conditions.push(eq(tours.category, filters.category));
+    }
+    if (filters?.difficulty) {
+      conditions.push(eq(tours.difficulty, filters.difficulty));
+    }
+    if (filters?.search) {
+      const searchPattern = `%${filters.search.toLowerCase()}%`;
+      conditions.push(
+        or(
+          like(sql`lower(${tours.namePl})`, searchPattern),
+          like(sql`lower(${tours.nameEn})`, searchPattern)
+        )
+      );
     }
 
-    // Sort by updatedAt descending (newest first)
-    tours.sort(
-      (a, b) =>
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-    );
+    // Execute query with optional conditions
+    let result;
+    if (conditions.length > 0) {
+      result = db
+        .select()
+        .from(tours)
+        .where(and(...conditions))
+        .orderBy(desc(tours.updatedAt))
+        .all();
+    } else {
+      result = db.select().from(tours).orderBy(desc(tours.updatedAt)).all();
+    }
 
-    return tours.map((t) => this.toSummary(t));
+    return result.map((t) => this.dbTourToSummary(t));
   }
 
   /**
    * Get a single tour by ID
    */
   async getTourById(tourId: string): Promise<AdminTour | null> {
-    return adminTours.get(tourId) || null;
+    const dbTour = db.select().from(tours).where(eq(tours.id, tourId)).get();
+
+    if (!dbTour) {
+      return null;
+    }
+
+    return dbTourToAdminTour(dbTour);
   }
 
   /**
@@ -122,17 +148,25 @@ class AdminToursService {
     const now = new Date().toISOString();
     const id = `tour-${crypto.randomUUID()}`;
 
-    const tour: AdminTour = {
+    const newTour: NewTour = {
       id,
       cityId: input.cityId,
-      name: input.name,
-      description: input.description,
+      namePl: input.name.pl,
+      nameEn: input.name.en,
+      nameDe: input.name.de,
+      nameFr: input.name.fr,
+      nameUk: input.name.uk,
+      descriptionPl: input.description.pl,
+      descriptionEn: input.description.en,
+      descriptionDe: input.description.de,
+      descriptionFr: input.description.fr,
+      descriptionUk: input.description.uk,
       category: input.category,
       difficulty: input.difficulty,
       distance: input.distance,
       duration: input.duration,
       imageUrl: input.imageUrl,
-      pois: input.pois,
+      poisJson: JSON.stringify(input.pois || []),
       status: input.status || 'draft',
       featured: input.featured || false,
       views: 0,
@@ -140,8 +174,9 @@ class AdminToursService {
       updatedAt: now,
     };
 
-    adminTours.set(id, tour);
-    return tour;
+    db.insert(tours).values(newTour).run();
+
+    return dbTourToAdminTour(newTour as DbTour);
   }
 
   /**
@@ -151,36 +186,50 @@ class AdminToursService {
     tourId: string,
     input: Partial<TourInput>
   ): Promise<AdminTour | null> {
-    const existing = adminTours.get(tourId);
+    const existing = db.select().from(tours).where(eq(tours.id, tourId)).get();
     if (!existing) {
       return null;
     }
 
-    const updated: AdminTour = {
-      ...existing,
-      ...(input.cityId && { cityId: input.cityId }),
-      ...(input.name && { name: input.name }),
-      ...(input.description && { description: input.description }),
-      ...(input.category && { category: input.category }),
-      ...(input.difficulty && { difficulty: input.difficulty }),
-      ...(input.distance !== undefined && { distance: input.distance }),
-      ...(input.duration !== undefined && { duration: input.duration }),
-      ...(input.imageUrl && { imageUrl: input.imageUrl }),
-      ...(input.pois && { pois: input.pois }),
-      ...(input.status && { status: input.status }),
-      ...(input.featured !== undefined && { featured: input.featured }),
+    const updates: Partial<NewTour> = {
       updatedAt: new Date().toISOString(),
     };
 
-    adminTours.set(tourId, updated);
-    return updated;
+    if (input.cityId !== undefined) updates.cityId = input.cityId;
+    if (input.name) {
+      updates.namePl = input.name.pl;
+      updates.nameEn = input.name.en;
+      updates.nameDe = input.name.de;
+      updates.nameFr = input.name.fr;
+      updates.nameUk = input.name.uk;
+    }
+    if (input.description) {
+      updates.descriptionPl = input.description.pl;
+      updates.descriptionEn = input.description.en;
+      updates.descriptionDe = input.description.de;
+      updates.descriptionFr = input.description.fr;
+      updates.descriptionUk = input.description.uk;
+    }
+    if (input.category !== undefined) updates.category = input.category;
+    if (input.difficulty !== undefined) updates.difficulty = input.difficulty;
+    if (input.distance !== undefined) updates.distance = input.distance;
+    if (input.duration !== undefined) updates.duration = input.duration;
+    if (input.imageUrl !== undefined) updates.imageUrl = input.imageUrl;
+    if (input.pois !== undefined) updates.poisJson = JSON.stringify(input.pois);
+    if (input.status !== undefined) updates.status = input.status;
+    if (input.featured !== undefined) updates.featured = input.featured;
+
+    db.update(tours).set(updates).where(eq(tours.id, tourId)).run();
+
+    return this.getTourById(tourId);
   }
 
   /**
    * Delete a tour
    */
   async deleteTour(tourId: string): Promise<boolean> {
-    return adminTours.delete(tourId);
+    const result = db.delete(tours).where(eq(tours.id, tourId)).run();
+    return result.changes > 0;
   }
 
   /**
@@ -189,7 +238,8 @@ class AdminToursService {
   async bulkDelete(tourIds: string[]): Promise<{ deleted: number }> {
     let deleted = 0;
     for (const id of tourIds) {
-      if (adminTours.delete(id)) {
+      const result = db.delete(tours).where(eq(tours.id, id)).run();
+      if (result.changes > 0) {
         deleted++;
       }
     }
@@ -200,7 +250,7 @@ class AdminToursService {
    * Duplicate a tour
    */
   async duplicateTour(tourId: string): Promise<AdminTour | null> {
-    const original = adminTours.get(tourId);
+    const original = db.select().from(tours).where(eq(tours.id, tourId)).get();
     if (!original) {
       return null;
     }
@@ -208,16 +258,25 @@ class AdminToursService {
     const now = new Date().toISOString();
     const newId = `tour-${crypto.randomUUID()}`;
 
-    const duplicate: AdminTour = {
-      ...original,
+    const duplicate: NewTour = {
       id: newId,
-      name: {
-        pl: `${original.name.pl} (kopia)`,
-        en: `${original.name.en} (copy)`,
-        de: `${original.name.de} (Kopie)`,
-        fr: `${original.name.fr} (copie)`,
-        uk: `${original.name.uk} (копія)`,
-      },
+      cityId: original.cityId,
+      namePl: `${original.namePl} (kopia)`,
+      nameEn: original.nameEn ? `${original.nameEn} (copy)` : null,
+      nameDe: original.nameDe ? `${original.nameDe} (Kopie)` : null,
+      nameFr: original.nameFr ? `${original.nameFr} (copie)` : null,
+      nameUk: original.nameUk ? `${original.nameUk} (копія)` : null,
+      descriptionPl: original.descriptionPl,
+      descriptionEn: original.descriptionEn,
+      descriptionDe: original.descriptionDe,
+      descriptionFr: original.descriptionFr,
+      descriptionUk: original.descriptionUk,
+      category: original.category,
+      difficulty: original.difficulty,
+      distance: original.distance,
+      duration: original.duration,
+      imageUrl: original.imageUrl,
+      poisJson: original.poisJson,
       status: 'draft',
       featured: false,
       views: 0,
@@ -225,8 +284,9 @@ class AdminToursService {
       updatedAt: now,
     };
 
-    adminTours.set(newId, duplicate);
-    return duplicate;
+    db.insert(tours).values(duplicate).run();
+
+    return dbTourToAdminTour(duplicate as DbTour);
   }
 
   /**
@@ -247,12 +307,21 @@ class AdminToursService {
    * Get cities with tour counts (for admin)
    */
   async getCities(): Promise<TourCity[]> {
-    const tours = Array.from(adminTours.values());
+    const cityCounts = new Map<string, number>();
+
+    for (const cityId of CITIES) {
+      const result = db
+        .select({ count: count() })
+        .from(tours)
+        .where(eq(tours.cityId, cityId))
+        .get();
+      cityCounts.set(cityId, result?.count || 0);
+    }
 
     return CITIES.map((cityId) => ({
       id: cityId,
       name: CITY_NAMES[cityId],
-      toursCount: tours.filter((t) => t.cityId === cityId).length,
+      toursCount: cityCounts.get(cityId) || 0,
     }));
   }
 
@@ -269,49 +338,138 @@ class AdminToursService {
     toursByCity: Record<string, number>;
     toursByCategory: Record<string, number>;
   }> {
-    const tours = Array.from(adminTours.values());
+    // Total tours
+    const totalResult = db.select({ count: count() }).from(tours).get();
+    const totalTours = totalResult?.count || 0;
 
+    // Published tours
+    const publishedResult = db
+      .select({ count: count() })
+      .from(tours)
+      .where(eq(tours.status, 'published'))
+      .get();
+    const publishedTours = publishedResult?.count || 0;
+
+    // Draft tours
+    const draftResult = db
+      .select({ count: count() })
+      .from(tours)
+      .where(eq(tours.status, 'draft'))
+      .get();
+    const draftTours = draftResult?.count || 0;
+
+    // Archived tours
+    const archivedResult = db
+      .select({ count: count() })
+      .from(tours)
+      .where(eq(tours.status, 'archived'))
+      .get();
+    const archivedTours = archivedResult?.count || 0;
+
+    // Featured tours
+    const featuredResult = db
+      .select({ count: count() })
+      .from(tours)
+      .where(eq(tours.featured, true))
+      .get();
+    const featuredTours = featuredResult?.count || 0;
+
+    // Total views
+    const viewsResult = db
+      .select({ total: sum(tours.views) })
+      .from(tours)
+      .get();
+    const totalViews = Number(viewsResult?.total) || 0;
+
+    // Tours by city
     const toursByCity: Record<string, number> = {};
-    const toursByCategory: Record<string, number> = {};
+    for (const cityId of CITIES) {
+      const result = db
+        .select({ count: count() })
+        .from(tours)
+        .where(eq(tours.cityId, cityId))
+        .get();
+      if ((result?.count || 0) > 0) {
+        toursByCity[cityId] = result?.count || 0;
+      }
+    }
 
-    for (const tour of tours) {
-      toursByCity[tour.cityId] = (toursByCity[tour.cityId] || 0) + 1;
-      toursByCategory[tour.category] =
-        (toursByCategory[tour.category] || 0) + 1;
+    // Tours by category
+    const categories = [
+      'history',
+      'architecture',
+      'nature',
+      'food',
+      'art',
+      'nightlife',
+    ];
+    const toursByCategory: Record<string, number> = {};
+    for (const category of categories) {
+      const result = db
+        .select({ count: count() })
+        .from(tours)
+        .where(eq(tours.category, category))
+        .get();
+      if ((result?.count || 0) > 0) {
+        toursByCategory[category] = result?.count || 0;
+      }
     }
 
     return {
-      totalTours: tours.length,
-      publishedTours: tours.filter((t) => t.status === 'published').length,
-      draftTours: tours.filter((t) => t.status === 'draft').length,
-      archivedTours: tours.filter((t) => t.status === 'archived').length,
-      featuredTours: tours.filter((t) => t.featured).length,
-      totalViews: tours.reduce((sum, t) => sum + t.views, 0),
+      totalTours,
+      publishedTours,
+      draftTours,
+      archivedTours,
+      featuredTours,
+      totalViews,
       toursByCity,
       toursByCategory,
     };
   }
 
   /**
-   * Convert AdminTour to AdminTourSummary
+   * Increment view count for a tour
    */
-  private toSummary(tour: AdminTour): AdminTourSummary {
+  async incrementViews(tourId: string): Promise<void> {
+    db.update(tours)
+      .set({ views: sql`${tours.views} + 1` })
+      .where(eq(tours.id, tourId))
+      .run();
+  }
+
+  /**
+   * Convert DB tour to AdminTourSummary
+   */
+  private dbTourToSummary(dbTour: DbTour): AdminTourSummary {
+    const pois = parsePois(dbTour.poisJson);
     return {
-      id: tour.id,
-      cityId: tour.cityId,
-      name: tour.name,
-      description: tour.description,
-      category: tour.category,
-      difficulty: tour.difficulty,
-      distance: tour.distance,
-      duration: tour.duration,
-      imageUrl: tour.imageUrl,
-      poisCount: tour.pois.length,
-      status: tour.status,
-      featured: tour.featured,
-      views: tour.views,
-      createdAt: tour.createdAt,
-      updatedAt: tour.updatedAt,
+      id: dbTour.id,
+      cityId: dbTour.cityId,
+      name: {
+        pl: dbTour.namePl,
+        en: dbTour.nameEn || dbTour.namePl,
+        de: dbTour.nameDe || dbTour.namePl,
+        fr: dbTour.nameFr || dbTour.namePl,
+        uk: dbTour.nameUk || dbTour.namePl,
+      },
+      description: {
+        pl: dbTour.descriptionPl,
+        en: dbTour.descriptionEn || dbTour.descriptionPl,
+        de: dbTour.descriptionDe || dbTour.descriptionPl,
+        fr: dbTour.descriptionFr || dbTour.descriptionPl,
+        uk: dbTour.descriptionUk || dbTour.descriptionPl,
+      },
+      category: dbTour.category as TourCategory,
+      difficulty: dbTour.difficulty as TourDifficulty,
+      distance: dbTour.distance,
+      duration: dbTour.duration,
+      imageUrl: dbTour.imageUrl || '',
+      poisCount: pois.length,
+      status: dbTour.status as TourStatus,
+      featured: dbTour.featured,
+      views: dbTour.views,
+      createdAt: dbTour.createdAt,
+      updatedAt: dbTour.updatedAt,
     };
   }
 }
