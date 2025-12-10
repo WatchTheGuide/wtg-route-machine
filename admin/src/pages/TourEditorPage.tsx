@@ -5,6 +5,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {
+  useTour,
+  useCreateTour,
+  useUpdateTour,
+  useDeleteTour,
+  usePublishTour,
+} from '@/hooks/useTours';
+import type { TourInput, POI } from '@/services/tours.service';
+import {
   Card,
   CardContent,
   CardDescription,
@@ -60,11 +68,15 @@ import {
   X,
   Plus,
   Clock,
+  Loader2,
+  AlertCircle,
+  RefreshCw,
 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import type {
   TourCategory,
   TourDifficulty,
-  TourStatus,
   Waypoint,
   Coordinate,
 } from '@/types';
@@ -83,7 +95,7 @@ const tourFormSchema = z.object({
   category: z
     .string()
     .min(1, { message: 'tourEditor.validation.categoryRequired' }),
-  difficulty: z.enum(['easy', 'moderate', 'challenging']),
+  difficulty: z.enum(['easy', 'medium', 'hard']),
   estimatedDuration: z.number().min(5).max(480),
   tags: z.array(z.string()),
   status: z.enum(['draft', 'published', 'archived']),
@@ -109,59 +121,61 @@ const cities = [
 ];
 
 const categories: TourCategory[] = [
-  'historical',
-  'cultural',
+  'history',
+  'architecture',
   'nature',
   'food',
-  'architecture',
-  'family',
-  'romantic',
-  'adventure',
+  'art',
+  'nightlife',
 ];
 
-const difficulties: TourDifficulty[] = ['easy', 'moderate', 'challenging'];
+const difficulties: TourDifficulty[] = ['easy', 'medium', 'hard'];
 
-// Mock tour data for editing
-const mockTourData = {
-  id: '1',
-  name: { pl: 'Najważniejsze zabytki Krakowa', en: 'Krakow Main Landmarks' },
-  description: {
-    pl: 'Odkryj najpiękniejsze zabytki Krakowa na tej fascynującej wycieczce. Przejdź przez Rynek Główny, odwiedź Wawel i poznaj historię miasta.',
-    en: 'Discover the most beautiful landmarks of Krakow on this fascinating tour. Walk through the Main Square, visit Wawel and learn the history of the city.',
-  },
-  cityId: 'krakow',
-  category: 'historical' as TourCategory,
-  difficulty: 'easy' as TourDifficulty,
-  estimatedDuration: 120,
-  distance: 4500,
-  waypoints: [
-    {
-      id: '1',
-      name: 'Rynek Główny',
-      coordinates: [19.9373, 50.0619] as [number, number],
-      order: 1,
-    },
-    {
-      id: '2',
-      name: 'Wawel',
-      coordinates: [19.9355, 50.0541] as [number, number],
-      order: 2,
-    },
-  ] as Waypoint[],
-  pois: ['poi1', 'poi2', 'poi3'],
-  images: [],
-  tags: ['zabytki', 'historia', 'centrum'],
-  status: 'draft' as TourStatus,
-  featured: false,
-  createdAt: '2024-12-01',
-  updatedAt: '2024-12-07',
-};
+// Helper to convert POIs to Waypoints
+function poisToWaypoints(pois: POI[]): Waypoint[] {
+  return pois.map((poi, index) => ({
+    id: poi.id,
+    name: poi.name,
+    description: poi.description,
+    coordinates: poi.coordinate,
+    order: index + 1,
+  }));
+}
+
+// Helper to convert Waypoints to POIs
+function waypointsToPois(waypoints: Waypoint[]): POI[] {
+  return waypoints.map((wp) => ({
+    id: wp.id,
+    name: wp.name,
+    description: wp.description || '',
+    category: 'waypoint',
+    coordinate: wp.coordinates,
+    address: '',
+  }));
+}
 
 export function TourEditorPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const isEditMode = Boolean(id);
+
+  // API Mutations
+  const createTourMutation = useCreateTour();
+  const updateTourMutation = useUpdateTour();
+  const deleteTourMutation = useDeleteTour();
+  const publishTourMutation = usePublishTour();
+
+  // Fetch tour data if editing
+  const {
+    data: tourData,
+    isLoading: isTourLoading,
+    isError: isTourError,
+    error: tourError,
+    refetch: refetchTour,
+  } = useTour(id || '', {
+    enabled: isEditMode && Boolean(id),
+  });
 
   // State
   const [activeTab, setActiveTab] = useState('basic');
@@ -207,25 +221,23 @@ export function TourEditorPage() {
 
   // Load tour data for editing
   useEffect(() => {
-    if (isEditMode && id) {
-      // In real app, fetch tour data from API
-      const tour = mockTourData;
+    if (isEditMode && tourData) {
       form.reset({
-        name: tour.name.pl,
-        description: tour.description.pl,
-        cityId: tour.cityId,
-        category: tour.category,
-        difficulty: tour.difficulty,
-        estimatedDuration: tour.estimatedDuration,
-        tags: tour.tags,
-        status: tour.status,
-        featured: tour.featured,
+        name: tourData.name.pl || tourData.name.en || '',
+        description: tourData.description.pl || tourData.description.en || '',
+        cityId: tourData.cityId,
+        category: tourData.category,
+        difficulty: tourData.difficulty,
+        estimatedDuration: tourData.duration,
+        tags: [], // Tags not in API yet
+        status: tourData.status,
+        featured: tourData.featured,
       });
-      // Load waypoints separately
-      setTourWaypoints(tour.waypoints);
-      setLastSaved(new Date(tour.updatedAt));
+      // Load waypoints from POIs
+      setTourWaypoints(poisToWaypoints(tourData.pois));
+      setLastSaved(new Date(tourData.updatedAt));
     }
-  }, [isEditMode, id, form]);
+  }, [isEditMode, tourData, form]);
 
   // Handle waypoints change
   const handleWaypointsChange = useCallback((newWaypoints: Waypoint[]) => {
@@ -246,14 +258,34 @@ export function TourEditorPage() {
 
   // Handle auto-save
   const handleAutoSave = useCallback(
-    (values: TourFormValues) => {
-      // In real app, call API to save draft
-      console.log('Auto-saving draft:', values, 'waypoints:', tourWaypoints);
-      setLastSaved(new Date());
-      setIsDirty(false);
-      toast.success(t('tourEditor.autoSaved'));
+    async (values: TourFormValues) => {
+      if (!isEditMode || !id) return;
+
+      const tourInput: Partial<TourInput> = {
+        name: { pl: values.name, en: values.name },
+        description: { pl: values.description, en: values.description },
+        cityId: values.cityId,
+        category: values.category as TourInput['category'],
+        difficulty: values.difficulty as TourInput['difficulty'],
+        duration: values.estimatedDuration,
+        distance: 0, // Will be calculated from route
+        imageUrl: '',
+        pois: waypointsToPois(tourWaypoints),
+        status: values.status as TourInput['status'],
+        featured: values.featured,
+      };
+
+      try {
+        await updateTourMutation.mutateAsync({ id, input: tourInput });
+        setLastSaved(new Date());
+        setIsDirty(false);
+        toast.success(t('tourEditor.autoSaved'));
+      } catch (error) {
+        console.error('Auto-save failed:', error);
+        // Don't show error toast for auto-save failures
+      }
     },
-    [t, tourWaypoints]
+    [t, tourWaypoints, isEditMode, id, updateTourMutation]
   );
 
   // Watch form changes for dirty state
@@ -290,36 +322,65 @@ export function TourEditorPage() {
   };
 
   // Handle form submit
-  const onSubmit = (values: TourFormValues, publish: boolean = false) => {
-    const finalValues = {
-      ...values,
-      status: publish ? 'published' : values.status,
+  const onSubmit = async (values: TourFormValues, publish: boolean = false) => {
+    const tourInput: TourInput = {
+      name: { pl: values.name, en: values.name },
+      description: { pl: values.description, en: values.description },
+      cityId: values.cityId,
+      category: values.category as TourInput['category'],
+      difficulty: values.difficulty as TourInput['difficulty'],
+      duration: values.estimatedDuration,
+      distance: 0, // Will be calculated from route
+      imageUrl: '',
+      pois: waypointsToPois(tourWaypoints),
+      status: publish ? 'published' : (values.status as TourInput['status']),
+      featured: values.featured,
     };
 
-    // In real app, call API to save tour
-    console.log('Saving tour:', finalValues);
+    try {
+      if (isEditMode && id) {
+        await updateTourMutation.mutateAsync({ id, input: tourInput });
+        if (publish) {
+          await publishTourMutation.mutateAsync(id);
+        }
+      } else {
+        const newTour = await createTourMutation.mutateAsync(tourInput);
+        if (publish) {
+          await publishTourMutation.mutateAsync(newTour.id);
+        }
+      }
 
-    setIsDirty(false);
-    setLastSaved(new Date());
+      setIsDirty(false);
+      setLastSaved(new Date());
 
-    if (publish) {
-      toast.success(t('tourEditor.published'));
-    } else {
-      toast.success(t('tourEditor.saved'));
+      if (publish) {
+        toast.success(t('tourEditor.published'));
+      } else {
+        toast.success(t('tourEditor.saved'));
+      }
+
+      // Navigate back to list after short delay
+      setTimeout(() => {
+        navigate('/admin/tours');
+      }, 1500);
+    } catch (error) {
+      toast.error(t('tourEditor.saveError'));
+      console.error('Save failed:', error);
     }
-
-    // Navigate back to list after short delay
-    setTimeout(() => {
-      navigate('/admin/tours');
-    }, 1500);
   };
 
   // Handle delete
-  const handleDelete = () => {
-    // In real app, call API to delete tour
-    console.log('Deleting tour:', id);
-    toast.success(t('tourEditor.deleted'));
-    navigate('/admin/tours');
+  const handleDelete = async () => {
+    if (!id) return;
+
+    try {
+      await deleteTourMutation.mutateAsync(id);
+      toast.success(t('tourEditor.deleted'));
+      navigate('/admin/tours');
+    } catch (error) {
+      toast.error(t('tourEditor.deleteError'));
+      console.error('Delete failed:', error);
+    }
   };
 
   // Handle tag input
@@ -350,6 +411,63 @@ export function TourEditorPage() {
     }
     return `${mins}min`;
   };
+
+  // Loading state
+  if (isEditMode && isTourLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="sm" disabled>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            {t('common.back')}
+          </Button>
+          <Skeleton className="h-8 w-[300px]" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-4">
+            <Skeleton className="h-[400px]" />
+          </div>
+          <div>
+            <Skeleton className="h-[300px]" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (isEditMode && isTourError) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/admin/tours')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            {t('common.back')}
+          </Button>
+        </div>
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>{t('common.error')}</AlertTitle>
+          <AlertDescription>
+            {tourError?.message || t('tourEditor.loadError')}
+          </AlertDescription>
+        </Alert>
+        <Button onClick={() => refetchTour()} variant="outline">
+          <RefreshCw className="h-4 w-4 mr-2" />
+          {t('common.retry')}
+        </Button>
+      </div>
+    );
+  }
+
+  // Check if saving
+  const isSaving =
+    createTourMutation.isPending ||
+    updateTourMutation.isPending ||
+    publishTourMutation.isPending;
 
   return (
     <div className="space-y-6">
@@ -405,14 +523,22 @@ export function TourEditorPage() {
           <Button
             variant="outline"
             onClick={() => form.handleSubmit((v) => onSubmit(v, false))()}
-            disabled={!form.formState.isValid}>
-            <Save className="h-4 w-4 mr-2" />
+            disabled={!form.formState.isValid || isSaving}>
+            {isSaving ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4 mr-2" />
+            )}
             {t('tourEditor.saveDraft')}
           </Button>
           <Button
             onClick={() => form.handleSubmit((v) => onSubmit(v, true))()}
-            disabled={!form.formState.isValid}>
-            <Send className="h-4 w-4 mr-2" />
+            disabled={!form.formState.isValid || isSaving}>
+            {isSaving ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4 mr-2" />
+            )}
             {t('tourEditor.publish')}
           </Button>
         </div>

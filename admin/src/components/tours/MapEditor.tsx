@@ -34,6 +34,12 @@ import {
   ZoomOut,
   LocateFixed,
 } from 'lucide-react';
+import { AddressSearch } from './AddressSearch';
+import { geocodingService } from '@/services/geocoding.service';
+import type {
+  GeocodingResult,
+  BoundingBox,
+} from '@/services/geocoding.service';
 import type { Waypoint, Coordinate } from '@/types';
 
 // Map layer types
@@ -44,6 +50,8 @@ interface MapEditorProps {
   onWaypointsChange: (waypoints: Waypoint[]) => void;
   cityCenter?: Coordinate;
   routeGeometry?: Coordinate[];
+  /** City bounding box for geocoding search */
+  cityBoundingBox?: BoundingBox;
 }
 
 // City centers for initial map view
@@ -108,6 +116,7 @@ export function MapEditor({
   onWaypointsChange,
   cityCenter,
   routeGeometry,
+  cityBoundingBox,
 }: MapEditorProps) {
   const { t } = useTranslation();
   const mapRef = useRef<HTMLDivElement>(null);
@@ -120,6 +129,63 @@ export function MapEditor({
   const [isAddingMode, setIsAddingMode] = useState(false);
   const [selectedWaypointId, setSelectedWaypointId] = useState<string | null>(
     null
+  );
+
+  /**
+   * Add waypoint from geocoding result (US 8.6.1)
+   */
+  const handleAddressSelect = useCallback(
+    (result: GeocodingResult) => {
+      const newWaypoint: Waypoint = {
+        id: `wp-${Date.now()}`,
+        name: result.displayName.split(',')[0],
+        description: '',
+        coordinates: [result.lon, result.lat] as Coordinate,
+        order: waypoints.length + 1,
+        stopDuration: 5,
+      };
+
+      onWaypointsChange([...waypoints, newWaypoint]);
+
+      // Center map on new waypoint
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.getView().animate({
+          center: fromLonLat([result.lon, result.lat]),
+          zoom: 16,
+          duration: 500,
+        });
+      }
+    },
+    [waypoints, onWaypointsChange]
+  );
+
+  /**
+   * Auto-fill waypoint name using reverse geocoding (US 8.6.1)
+   */
+  const autoFillWaypointName = useCallback(
+    async (waypointId: string, lat: number, lon: number) => {
+      try {
+        const result = await geocodingService.getAddressFromCoordinates(
+          lat,
+          lon
+        );
+        if (result) {
+          const updatedWaypoints = waypoints.map((wp) =>
+            wp.id === waypointId
+              ? {
+                  ...wp,
+                  name:
+                    result.formattedAddress || result.displayName.split(',')[0],
+                }
+              : wp
+          );
+          onWaypointsChange(updatedWaypoints);
+        }
+      } catch (error) {
+        console.error('Reverse geocoding failed:', error);
+      }
+    },
+    [waypoints, onWaypointsChange]
   );
 
   // Refs to hold current values for event handlers (closure fix)
@@ -225,14 +291,18 @@ export function MapEditor({
 
     map.addInteraction(select);
 
+    // Reference for autoFillWaypointName (will be set via ref)
+    const autoFillRef = { current: autoFillWaypointName };
+
     // Click handler for adding waypoints
     map.on('click', (event) => {
       if (!isAddingModeRef.current) return;
 
       const coords = toLonLat(event.coordinate);
       const currentWaypoints = waypointsRef.current;
+      const waypointId = `wp-${Date.now()}`;
       const newWaypoint: Waypoint = {
-        id: `wp-${Date.now()}`,
+        id: waypointId,
         name: tRef.current('mapEditor.newWaypoint', {
           number: currentWaypoints.length + 1,
         }),
@@ -242,6 +312,9 @@ export function MapEditor({
 
       onWaypointsChangeRef.current([...currentWaypoints, newWaypoint]);
       setIsAddingMode(false);
+
+      // Auto-fill waypoint name using reverse geocoding (US 8.6.1)
+      autoFillRef.current(waypointId, coords[1], coords[0]);
     });
 
     mapInstanceRef.current = map;
@@ -427,6 +500,19 @@ export function MapEditor({
         </div>
       </CardHeader>
       <CardContent className="p-0 flex-1 flex flex-col min-h-0">
+        {/* Address Search (US 8.6.1) */}
+        <div className="p-2 border-b">
+          <AddressSearch
+            onSelect={handleAddressSelect}
+            boundingBox={cityBoundingBox}
+            placeholder={t(
+              'tourEditor.map.searchAddress',
+              'Search address to add waypoint...'
+            )}
+            addWaypointOnSelect
+          />
+        </div>
+
         {/* Map container */}
         <div className="relative flex-1 min-h-[300px]">
           <div

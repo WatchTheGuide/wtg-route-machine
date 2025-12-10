@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -44,6 +45,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { toast } from '@/components/ui/sonner';
 import {
   Map,
   Search,
@@ -59,13 +62,25 @@ import {
   Upload,
   Filter,
   X,
+  AlertCircle,
+  RefreshCw,
 } from 'lucide-react';
+import {
+  useTours,
+  useCities,
+  useDeleteTour,
+  useBulkDeleteTours,
+  useDuplicateTour,
+  usePublishTour,
+} from '@/hooks/useTours';
+import type { AdminTourSummary } from '@/services/tours.service';
 
-// Types
-interface Tour {
+// Local Tour type for table display (with flattened name)
+interface TourRow {
   id: string;
   name: string;
   city: string;
+  cityId: string;
   category: string;
   difficulty: 'easy' | 'medium' | 'hard';
   poisCount: number;
@@ -75,171 +90,92 @@ interface Tour {
   updatedAt: string;
 }
 
-// Mock data
-const mockTours: Tour[] = [
-  {
-    id: '1',
-    name: 'Najważniejsze zabytki Krakowa',
-    city: 'Kraków',
-    category: 'historical',
-    difficulty: 'easy',
-    poisCount: 12,
-    status: 'published',
-    views: 420,
-    createdAt: '2024-11-15',
-    updatedAt: '2024-12-06',
-  },
-  {
-    id: '2',
-    name: 'Droga Królewska',
-    city: 'Kraków',
-    category: 'historical',
-    difficulty: 'medium',
-    poisCount: 8,
-    status: 'published',
-    views: 380,
-    createdAt: '2024-10-20',
-    updatedAt: '2024-12-05',
-  },
-  {
-    id: '3',
-    name: 'Wrocławskie mosty',
-    city: 'Wrocław',
-    category: 'architecture',
-    difficulty: 'easy',
-    poisCount: 15,
-    status: 'published',
-    views: 290,
-    createdAt: '2024-09-10',
-    updatedAt: '2024-12-04',
-  },
-  {
-    id: '4',
-    name: 'Stare Miasto Gdańsk',
-    city: 'Trójmiasto',
-    category: 'historical',
-    difficulty: 'medium',
-    poisCount: 10,
-    status: 'published',
-    views: 240,
-    createdAt: '2024-08-05',
-    updatedAt: '2024-12-03',
-  },
-  {
-    id: '5',
-    name: 'Warszawskie parki',
-    city: 'Warszawa',
-    category: 'nature',
-    difficulty: 'easy',
-    poisCount: 7,
-    status: 'published',
-    views: 210,
-    createdAt: '2024-07-22',
-    updatedAt: '2024-12-02',
-  },
-  {
-    id: '6',
-    name: 'Krakowskie legendy',
-    city: 'Kraków',
-    category: 'cultural',
-    difficulty: 'easy',
-    poisCount: 6,
-    status: 'draft',
-    views: 0,
-    createdAt: '2024-12-07',
-    updatedAt: '2024-12-07',
-  },
-  {
-    id: '7',
-    name: 'Historyczne kościoły Warszawy',
-    city: 'Warszawa',
-    category: 'religious',
-    difficulty: 'medium',
-    poisCount: 8,
-    status: 'draft',
-    views: 0,
-    createdAt: '2024-12-06',
-    updatedAt: '2024-12-06',
-  },
-  {
-    id: '8',
-    name: 'Wrocław nocą',
-    city: 'Wrocław',
-    category: 'nightlife',
-    difficulty: 'easy',
-    poisCount: 5,
-    status: 'archived',
-    views: 150,
-    createdAt: '2024-05-15',
-    updatedAt: '2024-11-01',
-  },
-  {
-    id: '9',
-    name: 'Sopot - spacer po molo',
-    city: 'Trójmiasto',
-    category: 'nature',
-    difficulty: 'easy',
-    poisCount: 4,
-    status: 'published',
-    views: 180,
-    createdAt: '2024-06-10',
-    updatedAt: '2024-11-20',
-  },
-  {
-    id: '10',
-    name: 'Kazimierz - dzielnica żydowska',
-    city: 'Kraków',
-    category: 'cultural',
-    difficulty: 'medium',
-    poisCount: 11,
-    status: 'published',
-    views: 320,
-    createdAt: '2024-04-18',
-    updatedAt: '2024-10-15',
-  },
-  {
-    id: '11',
-    name: 'Warszawa - Praga',
-    city: 'Warszawa',
-    category: 'urban',
-    difficulty: 'hard',
-    poisCount: 9,
-    status: 'draft',
-    views: 0,
-    createdAt: '2024-12-05',
-    updatedAt: '2024-12-05',
-  },
-  {
-    id: '12',
-    name: 'Ostrów Tumski',
-    city: 'Wrocław',
-    category: 'religious',
-    difficulty: 'easy',
-    poisCount: 6,
-    status: 'published',
-    views: 195,
-    createdAt: '2024-03-20',
-    updatedAt: '2024-09-10',
-  },
-];
+// Convert API tour to table row
+function toTourRow(tour: AdminTourSummary): TourRow {
+  return {
+    id: tour.id,
+    name: tour.name.pl || tour.name.en || 'Unnamed',
+    city: getCityName(tour.cityId),
+    cityId: tour.cityId,
+    category: tour.category,
+    difficulty: tour.difficulty,
+    poisCount: tour.poisCount,
+    status: tour.status,
+    views: tour.views,
+    createdAt: tour.createdAt,
+    updatedAt: tour.updatedAt,
+  };
+}
 
-const cities = ['Kraków', 'Warszawa', 'Wrocław', 'Trójmiasto'];
+// Get display name for city ID
+function getCityName(cityId: string): string {
+  const cityNames: Record<string, string> = {
+    krakow: 'Kraków',
+    warszawa: 'Warszawa',
+    wroclaw: 'Wrocław',
+    trojmiasto: 'Trójmiasto',
+  };
+  return cityNames[cityId] || cityId;
+}
+
 const categories = [
-  'historical',
-  'cultural',
-  'nature',
+  'history',
   'architecture',
-  'religious',
+  'nature',
+  'food',
+  'art',
   'nightlife',
-  'urban',
 ];
 const statuses = ['published', 'draft', 'archived'];
 const difficulties = ['easy', 'medium', 'hard'];
 const pageSizes = [10, 25, 50, 100];
 
+// Loading skeleton for table
+function TableSkeleton() {
+  return (
+    <div className="space-y-3">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="flex items-center gap-4 p-4">
+          <Skeleton className="h-4 w-4" />
+          <Skeleton className="h-4 w-[200px]" />
+          <Skeleton className="h-4 w-[100px]" />
+          <Skeleton className="h-4 w-[80px]" />
+          <Skeleton className="h-4 w-[60px]" />
+          <Skeleton className="h-4 w-[40px]" />
+          <Skeleton className="h-4 w-[40px]" />
+          <Skeleton className="h-6 w-[70px]" />
+          <Skeleton className="h-8 w-8 ml-auto" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function ToursPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  // API Hooks
+  const { data: toursData, isLoading, isError, error, refetch } = useTours();
+  const { data: citiesData } = useCities();
+  const deleteTourMutation = useDeleteTour();
+  const bulkDeleteMutation = useBulkDeleteTours();
+  const duplicateMutation = useDuplicateTour();
+  const publishMutation = usePublishTour();
+
+  // Convert tours to table rows
+  const tours = useMemo(() => {
+    if (!toursData) return [];
+    return toursData.map(toTourRow);
+  }, [toursData]);
+
+  // Get unique cities from API or use default
+  const cities = useMemo(() => {
+    if (citiesData && citiesData.length > 0) {
+      return citiesData.map((c) => c.name);
+    }
+    return ['Kraków', 'Warszawa', 'Wrocław', 'Trójmiasto'];
+  }, [citiesData]);
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
@@ -253,11 +189,12 @@ export function ToursPage() {
   const [pageSize, setPageSize] = useState(10);
   const [selectedTours, setSelectedTours] = useState<string[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [tourToDelete, setTourToDelete] = useState<Tour | null>(null);
+  const [tourToDelete, setTourToDelete] = useState<TourRow | null>(null);
+  const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false);
 
   // Filter and sort tours
   const filteredTours = useMemo(() => {
-    let result = [...mockTours];
+    let result = [...tours];
 
     // Search filter
     if (searchQuery) {
@@ -321,6 +258,7 @@ export function ToursPage() {
 
     return result;
   }, [
+    tours,
     searchQuery,
     selectedCity,
     selectedCategory,
@@ -369,36 +307,69 @@ export function ToursPage() {
   };
 
   // Action handlers
-  const handleDelete = (tour: Tour) => {
+  const handleDelete = (tour: TourRow) => {
     setTourToDelete(tour);
     setDeleteDialogOpen(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (tourToDelete) {
-      // In real app, call API to delete
-      console.log('Deleting tour:', tourToDelete.id);
+      try {
+        await deleteTourMutation.mutateAsync(tourToDelete.id);
+        toast.success(t('tours.deleteSuccess', { name: tourToDelete.name }));
+      } catch {
+        toast.error(t('tours.deleteError'));
+      }
     }
     setDeleteDialogOpen(false);
     setTourToDelete(null);
   };
 
   const handleBulkDelete = () => {
-    // In real app, call API to delete selected tours
-    console.log('Deleting tours:', selectedTours);
-    setSelectedTours([]);
+    setBulkDeleteDialogOpen(true);
   };
 
-  const handleBulkPublish = () => {
-    // In real app, call API to publish selected tours
-    console.log('Publishing tours:', selectedTours);
-    setSelectedTours([]);
+  const confirmBulkDelete = async () => {
+    try {
+      await bulkDeleteMutation.mutateAsync(selectedTours);
+      toast.success(
+        t('tours.bulkDeleteSuccess', { count: selectedTours.length })
+      );
+      setSelectedTours([]);
+    } catch {
+      toast.error(t('tours.bulkDeleteError'));
+    }
+    setBulkDeleteDialogOpen(false);
+  };
+
+  const handleBulkPublish = async () => {
+    try {
+      // Publish tours one by one
+      await Promise.all(
+        selectedTours.map((id) => publishMutation.mutateAsync(id))
+      );
+      toast.success(
+        t('tours.bulkPublishSuccess', { count: selectedTours.length })
+      );
+      setSelectedTours([]);
+    } catch {
+      toast.error(t('tours.bulkPublishError'));
+    }
+  };
+
+  const handleDuplicate = async (tourId: string) => {
+    try {
+      await duplicateMutation.mutateAsync(tourId);
+      toast.success(t('tours.duplicateSuccess'));
+    } catch {
+      toast.error(t('tours.duplicateError'));
+    }
   };
 
   const handleExport = () => {
     const toursToExport =
       selectedTours.length > 0
-        ? mockTours.filter((t) => selectedTours.includes(t.id))
+        ? tours.filter((t) => selectedTours.includes(t.id))
         : filteredTours;
     const json = JSON.stringify(toursToExport, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
@@ -454,6 +425,31 @@ export function ToursPage() {
     }
   };
 
+  // Error state
+  if (isError) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">{t('tours.title')}</h1>
+            <p className="text-muted-foreground">{t('tours.subtitle')}</p>
+          </div>
+        </div>
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>{t('common.error')}</AlertTitle>
+          <AlertDescription>
+            {error?.message || t('tours.loadError')}
+          </AlertDescription>
+        </Alert>
+        <Button onClick={() => refetch()} variant="outline">
+          <RefreshCw className="h-4 w-4 mr-2" />
+          {t('common.retry')}
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Page header */}
@@ -463,7 +459,7 @@ export function ToursPage() {
           <p className="text-muted-foreground">{t('tours.subtitle')}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handleExport}>
+          <Button variant="outline" onClick={handleExport} disabled={isLoading}>
             <Download className="h-4 w-4 mr-2" />
             {t('tours.export')}
           </Button>
@@ -609,11 +605,18 @@ export function ToursPage() {
                 {t('tours.listTitle')}
               </CardTitle>
               <CardDescription>
-                {t('tours.showing', {
-                  from: (currentPage - 1) * pageSize + 1,
-                  to: Math.min(currentPage * pageSize, filteredTours.length),
-                  total: filteredTours.length,
-                })}
+                {isLoading ? (
+                  <Skeleton className="h-4 w-[200px] mt-1" />
+                ) : (
+                  t('tours.showing', {
+                    from:
+                      filteredTours.length > 0
+                        ? (currentPage - 1) * pageSize + 1
+                        : 0,
+                    to: Math.min(currentPage * pageSize, filteredTours.length),
+                    total: filteredTours.length,
+                  })
+                )}
               </CardDescription>
             </div>
 
@@ -623,14 +626,19 @@ export function ToursPage() {
                 <span className="text-sm text-muted-foreground">
                   {t('tours.selected', { count: selectedTours.length })}
                 </span>
-                <Button variant="outline" size="sm" onClick={handleBulkPublish}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBulkPublish}
+                  disabled={publishMutation.isPending}>
                   <Upload className="h-4 w-4 mr-1" />
                   {t('tours.bulkPublish')}
                 </Button>
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={handleBulkDelete}>
+                  onClick={handleBulkDelete}
+                  disabled={bulkDeleteMutation.isPending}>
                   <Trash2 className="h-4 w-4 mr-1" />
                   {t('tours.bulkDelete')}
                 </Button>
@@ -674,119 +682,128 @@ export function ToursPage() {
 
           {/* Table */}
           <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">
-                    <Checkbox
-                      checked={isAllSelected}
-                      onCheckedChange={toggleSelectAll}
-                      aria-label={t('tours.selectAll')}
-                    />
-                  </TableHead>
-                  <TableHead>{t('tours.table.name')}</TableHead>
-                  <TableHead>{t('tours.table.city')}</TableHead>
-                  <TableHead>{t('tours.table.category')}</TableHead>
-                  <TableHead>{t('tours.table.difficulty')}</TableHead>
-                  <TableHead className="text-center">
-                    {t('tours.table.pois')}
-                  </TableHead>
-                  <TableHead className="text-center">
-                    {t('tours.table.views')}
-                  </TableHead>
-                  <TableHead>{t('tours.table.status')}</TableHead>
-                  <TableHead className="text-right">
-                    {t('tours.table.actions')}
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {paginatedTours.length === 0 ? (
+            {isLoading ? (
+              <TableSkeleton />
+            ) : (
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell
-                      colSpan={9}
-                      className="text-center py-8 text-muted-foreground">
-                      {t('tours.noResults')}
-                    </TableCell>
+                    <TableHead className="w-12">
+                      <Checkbox
+                        checked={isAllSelected}
+                        onCheckedChange={toggleSelectAll}
+                        aria-label={t('tours.selectAll')}
+                      />
+                    </TableHead>
+                    <TableHead>{t('tours.table.name')}</TableHead>
+                    <TableHead>{t('tours.table.city')}</TableHead>
+                    <TableHead>{t('tours.table.category')}</TableHead>
+                    <TableHead>{t('tours.table.difficulty')}</TableHead>
+                    <TableHead className="text-center">
+                      {t('tours.table.pois')}
+                    </TableHead>
+                    <TableHead className="text-center">
+                      {t('tours.table.views')}
+                    </TableHead>
+                    <TableHead>{t('tours.table.status')}</TableHead>
+                    <TableHead className="text-right">
+                      {t('tours.table.actions')}
+                    </TableHead>
                   </TableRow>
-                ) : (
-                  paginatedTours.map((tour) => (
-                    <TableRow key={tour.id}>
-                      <TableCell>
-                        <Checkbox
-                          checked={selectedTours.includes(tour.id)}
-                          onCheckedChange={() => toggleSelectTour(tour.id)}
-                          aria-label={t('tours.selectTour', {
-                            name: tour.name,
-                          })}
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">{tour.name}</TableCell>
-                      <TableCell>{tour.city}</TableCell>
-                      <TableCell>
-                        {t(`tours.categories.${tour.category}`)}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getDifficultyVariant(tour.difficulty)}>
-                          {t(`tours.difficulty.${tour.difficulty}`)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {tour.poisCount}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {tour.views}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getStatusVariant(tour.status)}>
-                          {t(`tours.status.${tour.status}`)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">
-                                {t('tours.actions.menu')}
-                              </span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                              <Eye className="h-4 w-4 mr-2" />
-                              {t('tours.actions.preview')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() =>
-                                navigate(`/admin/tours/${tour.id}/edit`)
-                              }>
-                              <Pencil className="h-4 w-4 mr-2" />
-                              {t('tours.actions.edit')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Copy className="h-4 w-4 mr-2" />
-                              {t('tours.actions.duplicate')}
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              className="text-destructive"
-                              onClick={() => handleDelete(tour)}>
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              {t('tours.actions.delete')}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                </TableHeader>
+                <TableBody>
+                  {paginatedTours.length === 0 ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={9}
+                        className="text-center py-8 text-muted-foreground">
+                        {t('tours.noResults')}
                       </TableCell>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+                  ) : (
+                    paginatedTours.map((tour) => (
+                      <TableRow key={tour.id}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedTours.includes(tour.id)}
+                            onCheckedChange={() => toggleSelectTour(tour.id)}
+                            aria-label={t('tours.selectTour', {
+                              name: tour.name,
+                            })}
+                          />
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {tour.name}
+                        </TableCell>
+                        <TableCell>{tour.city}</TableCell>
+                        <TableCell>
+                          {t(`tours.categories.${tour.category}`)}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={getDifficultyVariant(tour.difficulty)}>
+                            {t(`tours.difficulty.${tour.difficulty}`)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {tour.poisCount}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {tour.views}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={getStatusVariant(tour.status)}>
+                            {t(`tours.status.${tour.status}`)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">
+                                  {t('tours.actions.menu')}
+                                </span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem>
+                                <Eye className="h-4 w-4 mr-2" />
+                                {t('tours.actions.preview')}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  navigate(`/admin/tours/${tour.id}/edit`)
+                                }>
+                                <Pencil className="h-4 w-4 mr-2" />
+                                {t('tours.actions.edit')}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleDuplicate(tour.id)}
+                                disabled={duplicateMutation.isPending}>
+                                <Copy className="h-4 w-4 mr-2" />
+                                {t('tours.actions.duplicate')}
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                className="text-destructive"
+                                onClick={() => handleDelete(tour)}>
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                {t('tours.actions.delete')}
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            )}
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
+          {!isLoading && totalPages > 1 && (
             <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">
@@ -853,8 +870,40 @@ export function ToursPage() {
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
+              disabled={deleteTourMutation.isPending}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              {t('common.delete')}
+              {deleteTourMutation.isPending
+                ? t('common.deleting')
+                : t('common.delete')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk delete confirmation dialog */}
+      <AlertDialog
+        open={bulkDeleteDialogOpen}
+        onOpenChange={setBulkDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t('tours.bulkDeleteDialog.title')}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('tours.bulkDeleteDialog.description', {
+                count: selectedTours.length,
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmBulkDelete}
+              disabled={bulkDeleteMutation.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              {bulkDeleteMutation.isPending
+                ? t('common.deleting')
+                : t('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

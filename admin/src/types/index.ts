@@ -58,22 +58,20 @@ export interface Waypoint {
   order: number;
 }
 
-// Tour difficulty levels
-export type TourDifficulty = 'easy' | 'moderate' | 'challenging';
+// Tour difficulty levels (aligned with backend API)
+export type TourDifficulty = 'easy' | 'medium' | 'hard';
 
 // Tour status
 export type TourStatus = 'draft' | 'published' | 'archived';
 
-// Tour category
+// Tour category (aligned with backend API)
 export type TourCategory =
-  | 'historical'
-  | 'cultural'
+  | 'history'
+  | 'architecture'
   | 'nature'
   | 'food'
-  | 'architecture'
-  | 'family'
-  | 'romantic'
-  | 'adventure';
+  | 'art'
+  | 'nightlife';
 
 // Curated Tour
 export interface Tour {
