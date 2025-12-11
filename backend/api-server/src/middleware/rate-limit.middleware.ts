@@ -78,11 +78,11 @@ export const adminCrudLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => isTestMode || req.method === 'GET', // Skip in tests and for GET requests
-  validate: { xForwardedForHeader: false },
+  validate: { xForwardedForHeader: false, ip: false },
   // Use user ID from JWT instead of IP (when available)
   keyGenerator: (req) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const user = (req as any).user;
-    return user?.id || req.ip || 'unknown';
+    return user?.id || 'anonymous';
   },
 });

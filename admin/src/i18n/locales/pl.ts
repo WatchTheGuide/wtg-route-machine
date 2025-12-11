@@ -132,6 +132,7 @@ const pl = {
         poisCount: 'Liczba POI',
       },
       categories: {
+        history: 'Historia',
         historical: 'Historyczne',
         cultural: 'Kulturalne',
         nature: 'Przyroda',
@@ -139,6 +140,8 @@ const pl = {
         religious: 'Religijne',
         nightlife: 'Życie nocne',
         urban: 'Miejskie',
+        food: 'Jedzenie i gastronomia',
+        art: 'Sztuka i kultura',
       },
       status: {
         published: 'Opublikowana',
@@ -186,6 +189,7 @@ const pl = {
         media: 'Media',
         details: 'Szczegóły',
         waypoints: 'Punkty trasy',
+        pois: 'POI',
         settings: 'Ustawienia',
       },
       basicInfo: {
@@ -236,6 +240,8 @@ const pl = {
       hints: {
         name: 'Od 5 do 100 znaków',
         description: '{{current}}/{{max}} znaków (min. {{min}})',
+        descriptionLocalized:
+          'Wprowadź opis w co najmniej 2 językach (polski i angielski są wymagane)',
         duration: 'Przeciągnij suwak, aby ustawić szacowany czas wycieczki',
         tags: 'Naciśnij Enter, aby dodać tag. Kliknij tag, aby go usunąć.',
         waypoints:
@@ -251,6 +257,8 @@ const pl = {
         descriptionMax: 'Opis może mieć maksymalnie 2000 znaków',
         cityRequired: 'Wybierz miasto',
         categoryRequired: 'Wybierz kategorię',
+        plRequired: 'Wersja polska jest wymagana',
+        enRequired: 'Wersja angielska jest wymagana',
       },
       preview: {
         title: 'Podgląd',
@@ -274,6 +282,92 @@ const pl = {
       title: 'Punkty POI',
       subtitle: 'Zarządzaj punktami turystycznymi',
       listTitle: 'Lista punktów POI',
+      addPoi: 'Dodaj POI',
+      editPoi: 'Edytuj POI',
+      deletePoi: 'Usuń POI',
+      export: 'Eksportuj',
+      exported: 'POI zostały wyeksportowane',
+      showing: 'Wyświetlanie {{from}}-{{to}} z {{total}}',
+      selected: 'Wybrano: {{count}}',
+      selectAll: 'Zaznacz wszystkie',
+      selectPoi: 'Zaznacz POI: {{name}}',
+      noResults: 'Nie znaleziono POI',
+      deleted: 'POI został usunięty',
+      bulkDelete: 'Usuń wybrane',
+      bulkDeleted: 'Usunięto {{count}} POI',
+      loadError: 'Błąd ładowania POI',
+      stats: {
+        total: 'Łączna liczba POI',
+      },
+      table: {
+        name: 'Nazwa',
+        city: 'Miasto',
+        category: 'Kategoria',
+        coordinates: 'Współrzędne',
+        actions: 'Akcje',
+      },
+      filters: {
+        city: 'Miasto',
+        selectCity: 'Wybierz miasto',
+        category: 'Kategoria',
+        allCities: 'Wszystkie miasta',
+        allCategories: 'Wszystkie kategorie',
+        searchPlaceholder: 'Szukaj POI...',
+        clear: 'Wyczyść filtry',
+      },
+      actions: {
+        menu: 'Menu akcji',
+        edit: 'Edytuj',
+        delete: 'Usuń',
+        viewOnMap: 'Zobacz na mapie',
+      },
+      pagination: {
+        perPage: 'Na stronę',
+        page: 'Strona {{current}} z {{total}}',
+      },
+      deleteDialog: {
+        title: 'Czy na pewno chcesz usunąć?',
+        description:
+          'Ta operacja jest nieodwracalna. POI "{{name}}" zostanie trwale usunięty.',
+      },
+      bulkDeleteDialog: {
+        title: 'Czy na pewno chcesz usunąć wybrane POI?',
+        description:
+          'Ta operacja jest nieodwracalna. {{count}} POI zostanie trwale usuniętych.',
+      },
+      categories: {
+        landmark: 'Punkt orientacyjny',
+        museum: 'Muzeum',
+        park: 'Park',
+        restaurant: 'Restauracja',
+        viewpoint: 'Punkt widokowy',
+        church: 'Kościół',
+      },
+      editor: {
+        createTitle: 'Nowy POI',
+        editTitle: 'Edycja POI',
+        createDescription: 'Dodaj nowy punkt turystyczny',
+        editDescription: 'Edytuj informacje o punkcie turystycznym',
+        name: 'Nazwa',
+        namePlaceholder: 'Np. Sukiennice',
+        description: 'Opis',
+        descriptionPlaceholder: 'Opisz punkt turystyczny...',
+        longitude: 'Długość geograficzna',
+        latitude: 'Szerokość geograficzna',
+        address: 'Adres',
+        addressPlaceholder: 'Np. Rynek Główny 1',
+        website: 'Strona WWW',
+        openingHours: 'Godziny otwarcia',
+        openingHoursPlaceholder: 'Np. 10:00-18:00',
+        estimatedTime: 'Szacowany czas',
+        tags: 'Tagi',
+        tagsPlaceholder: 'Wpisz tagi oddzielone przecinkami',
+        created: 'POI został utworzony',
+        updated: 'POI został zaktualizowany',
+        validation: {
+          required: 'Nazwa i opis są wymagane',
+        },
+      },
     },
 
     // Settings page
@@ -407,6 +501,28 @@ const pl = {
       importedWaypoint: 'Importowany {{number}}',
     },
 
+    // Tour POI Selector
+    tourPOI: {
+      mapTitle: 'Mapa POI',
+      selectedPOIs: 'Wybrane POI',
+      availablePOIs: 'Dostępne POI',
+      noSelectedPOIs:
+        'Nie wybrano żadnych POI. Kliknij na mapę lub listę, aby dodać.',
+      noPOIs: 'Brak POI dla tego miasta',
+      noResults: 'Brak wyników dla podanych filtrów',
+      searchPlaceholder: 'Szukaj POI...',
+      filterByCategory: 'Filtruj wg kategorii',
+      clearFilters: 'Wyczyść filtry',
+      clickToAdd: 'Kliknij, aby dodać POI do wycieczki',
+      add: 'Dodaj',
+      remove: 'Usuń',
+      suggestPOIs: 'Sugeruj POI',
+      suggestPOIsHint: 'Automatycznie dodaj POI w pobliżu trasy',
+      fromRoute: 'od trasy',
+      selectCityFirst: 'Najpierw wybierz miasto, aby zobaczyć dostępne POI',
+      loadError: 'Nie udało się załadować POI',
+    },
+
     // Footer
     footer: {
       description:
@@ -456,6 +572,25 @@ const pl = {
         passwordRequired: 'Hasło jest wymagane',
         passwordMinLength: 'Hasło musi mieć co najmniej 6 znaków',
       },
+    },
+
+    // Language Tabs
+    languageTabs: {
+      languages: {
+        pl: 'Polski',
+        en: 'English',
+        de: 'Deutsch',
+        fr: 'Français',
+        uk: 'Українська',
+      },
+      required: 'Wymagane',
+      optional: 'Opcjonalne',
+      copyFromPolish: 'Kopiuj z polskiego',
+      copied: 'Skopiowano do pustych pól',
+      completeness: 'Kompletność tłumaczeń',
+      complete: 'Kompletne',
+      incomplete: 'Niekompletne',
+      fillRequired: 'Wypełnij wymagane pola (PL, EN)',
     },
   },
 };

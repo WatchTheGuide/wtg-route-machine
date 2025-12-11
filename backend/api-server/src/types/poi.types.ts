@@ -2,6 +2,8 @@
  * POI Types
  */
 
+import type { LocalizedString } from './common.types.js';
+
 export type POICategory =
   | 'landmark'
   | 'museum'
@@ -12,8 +14,8 @@ export type POICategory =
 
 export interface POI {
   id: string;
-  name: string;
-  description: string;
+  name: LocalizedString;
+  description: LocalizedString;
   coordinates: [number, number]; // [longitude, latitude]
   category: POICategory;
   imageUrl?: string;

@@ -21,7 +21,6 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -53,7 +52,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/sonner';
-import { MapEditor, WaypointsList } from '@/components/tours';
+import { MapEditor, WaypointsList, TourPOISelector } from '@/components/tours';
+import type { CityPOI } from '@/services/poi.service';
 import {
   ArrowLeft,
   Save,
@@ -71,6 +71,7 @@ import {
   Loader2,
   AlertCircle,
   RefreshCw,
+  Landmark,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -79,18 +80,29 @@ import type {
   TourDifficulty,
   Waypoint,
   Coordinate,
+  LocalizedString,
 } from '@/types';
+import { LanguageTabs } from '@/components/common/LanguageTabs';
+
+// LocalizedString schema for multi-language fields
+const localizedStringSchema = z.object({
+  pl: z.string().min(1, { message: 'tourEditor.validation.plRequired' }),
+  en: z.string().min(1, { message: 'tourEditor.validation.enRequired' }),
+  de: z.string().optional(),
+  fr: z.string().optional(),
+  uk: z.string().optional(),
+});
 
 // Form validation schema
 const tourFormSchema = z.object({
-  name: z
-    .string()
-    .min(5, { message: 'tourEditor.validation.nameMin' })
-    .max(100, { message: 'tourEditor.validation.nameMax' }),
-  description: z
-    .string()
-    .min(50, { message: 'tourEditor.validation.descriptionMin' })
-    .max(2000, { message: 'tourEditor.validation.descriptionMax' }),
+  name: localizedStringSchema.refine(
+    (data) => data.pl.length >= 5 && data.en.length >= 5,
+    { message: 'tourEditor.validation.nameMin' }
+  ),
+  description: localizedStringSchema.refine(
+    (data) => data.pl.length >= 50 && data.en.length >= 50,
+    { message: 'tourEditor.validation.descriptionMin' }
+  ),
   cityId: z.string().min(1, { message: 'tourEditor.validation.cityRequired' }),
   category: z
     .string()
@@ -197,12 +209,15 @@ export function TourEditorPage() {
     null
   );
 
+  // POI selection state
+  const [selectedPOIs, setSelectedPOIs] = useState<CityPOI[]>([]);
+
   // Initialize form
   const form = useForm<TourFormValues>({
     resolver: zodResolver(tourFormSchema),
     defaultValues: {
-      name: '',
-      description: '',
+      name: { pl: '', en: '', de: '', fr: '', uk: '' },
+      description: { pl: '', en: '', de: '', fr: '', uk: '' },
       cityId: '',
       category: '',
       difficulty: 'easy',
@@ -223,8 +238,20 @@ export function TourEditorPage() {
   useEffect(() => {
     if (isEditMode && tourData) {
       form.reset({
-        name: tourData.name.pl || tourData.name.en || '',
-        description: tourData.description.pl || tourData.description.en || '',
+        name: {
+          pl: tourData.name.pl || '',
+          en: tourData.name.en || '',
+          de: tourData.name.de || '',
+          fr: tourData.name.fr || '',
+          uk: tourData.name.uk || '',
+        },
+        description: {
+          pl: tourData.description.pl || '',
+          en: tourData.description.en || '',
+          de: tourData.description.de || '',
+          fr: tourData.description.fr || '',
+          uk: tourData.description.uk || '',
+        },
         cityId: tourData.cityId,
         category: tourData.category,
         difficulty: tourData.difficulty,
@@ -245,6 +272,12 @@ export function TourEditorPage() {
     setIsDirty(true);
   }, []);
 
+  // Handle POIs change
+  const handleSelectedPOIsChange = useCallback((pois: CityPOI[]) => {
+    setSelectedPOIs(pois);
+    setIsDirty(true);
+  }, []);
+
   // Handle calculate route (placeholder - would call OSRM API)
   const handleCalculateRoute = useCallback(() => {
     if (tourWaypoints.length >= 2) {
@@ -262,8 +295,8 @@ export function TourEditorPage() {
       if (!isEditMode || !id) return;
 
       const tourInput: Partial<TourInput> = {
-        name: { pl: values.name, en: values.name },
-        description: { pl: values.description, en: values.description },
+        name: values.name as LocalizedString,
+        description: values.description as LocalizedString,
         cityId: values.cityId,
         category: values.category as TourInput['category'],
         difficulty: values.difficulty as TourInput['difficulty'],
@@ -324,8 +357,8 @@ export function TourEditorPage() {
   // Handle form submit
   const onSubmit = async (values: TourFormValues, publish: boolean = false) => {
     const tourInput: TourInput = {
-      name: { pl: values.name, en: values.name },
-      description: { pl: values.description, en: values.description },
+      name: values.name as LocalizedString,
+      description: values.description as LocalizedString,
       cityId: values.cityId,
       category: values.category as TourInput['category'],
       difficulty: values.difficulty as TourInput['difficulty'],
@@ -551,7 +584,7 @@ export function TourEditorPage() {
           <Form {...form}>
             <form className="space-y-6">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-5">
+                <TabsList className="grid w-full grid-cols-6">
                   <TabsTrigger
                     value="basic"
                     className="flex items-center gap-2">
@@ -584,6 +617,12 @@ export function TourEditorPage() {
                       {t('tourEditor.tabs.waypoints')}
                     </span>
                   </TabsTrigger>
+                  <TabsTrigger value="pois" className="flex items-center gap-2">
+                    <Landmark className="h-4 w-4" />
+                    <span className="hidden sm:inline">
+                      {t('tourEditor.tabs.pois')}
+                    </span>
+                  </TabsTrigger>
                   <TabsTrigger
                     value="settings"
                     className="flex items-center gap-2">
@@ -609,11 +648,14 @@ export function TourEditorPage() {
                         name="name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{t('tourEditor.fields.name')}</FormLabel>
                             <FormControl>
-                              <Input
+                              <LanguageTabs
+                                value={field.value || { pl: '', en: '' }}
+                                onChange={field.onChange}
+                                fieldType="input"
+                                label={t('tourEditor.fields.name')}
                                 placeholder={t('tourEditor.placeholders.name')}
-                                {...field}
+                                required
                               />
                             </FormControl>
                             <FormDescription>
@@ -629,24 +671,21 @@ export function TourEditorPage() {
                         name="description"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>
-                              {t('tourEditor.fields.description')}
-                            </FormLabel>
                             <FormControl>
-                              <Textarea
+                              <LanguageTabs
+                                value={field.value || { pl: '', en: '' }}
+                                onChange={field.onChange}
+                                fieldType="textarea"
+                                label={t('tourEditor.fields.description')}
                                 placeholder={t(
                                   'tourEditor.placeholders.description'
                                 )}
                                 rows={6}
-                                {...field}
+                                required
                               />
                             </FormControl>
                             <FormDescription>
-                              {t('tourEditor.hints.description', {
-                                current: field.value?.length || 0,
-                                min: 50,
-                                max: 2000,
-                              })}
+                              {t('tourEditor.hints.descriptionLocalized')}
                             </FormDescription>
                             <FormMessage />
                           </FormItem>
@@ -886,6 +925,16 @@ export function TourEditorPage() {
                       onCalculateRoute={handleCalculateRoute}
                     />
                   </div>
+                </TabsContent>
+
+                {/* POIs Tab */}
+                <TabsContent value="pois" className="space-y-4 mt-4">
+                  <TourPOISelector
+                    cityId={selectedCityId}
+                    selectedPOIs={selectedPOIs}
+                    waypoints={tourWaypoints}
+                    onSelectedPOIsChange={handleSelectedPOIsChange}
+                  />
                 </TabsContent>
 
                 {/* Settings Tab */}

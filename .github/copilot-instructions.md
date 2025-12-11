@@ -2,6 +2,32 @@
 
 You are working on **WTG Route Machine** - a lightweight OSRM (Open Source Routing Machine) instance optimized for city-based pedestrian routing, designed for AWS deployment.
 
+## ⚠️ ZASADA DOMYŚLNA: SWARM MODE (Rój Agentów)
+
+> **Każde zadanie implementacyjne MUSI być realizowane w trybie Swarm Mode** - z wykorzystaniem odpowiednich specjalistów jako subagentów (`runSubagent`).
+
+**Wirtualny zespół specjalistów (subagenci):**
+
+- 🔧 **Backend Developer** - Node.js, Express, TypeScript, Docker, OSRM, PostgreSQL
+- 📱 **Mobile Developer** - Ionic React 8, Capacitor 6, Zustand, OpenLayers
+- 🌐 **Web Application Specialist** - React, Vite, Tailwind, shadcn/ui, i18n
+- 🧪 **QA Engineer** - Vitest, Cypress, TDD, testing
+- 📚 **Documentation Specialist** - Epic updates, changelogs, API docs
+- 🏗️ **Software Architect** - Code review, design patterns, security, performance
+
+**Typowy podział pracy dla User Story:**
+
+```
+1. runSubagent("Architect: Design review", "Jako Software Architect...")
+2. runSubagent("Backend Dev: API implementation", "Jako Backend Developer...")
+3. runSubagent("Web Specialist: UI components", "Jako Web Specialist...")
+4. runSubagent("QA Engineer: Unit tests", "Jako QA Engineer...")
+5. runSubagent("Architect: Code review", "Jako Software Architect, przeprowadź code review...")
+6. runSubagent("Doc Specialist: Update Epic", "Jako Documentation Specialist...")
+```
+
+**Dokumentacja zespołu:** [project_documentation/VIRTUAL_TEAM.md](../project_documentation/VIRTUAL_TEAM.md)
+
 ## Project Overview
 
 - **Purpose**: City walking tour routing service

@@ -186,6 +186,7 @@ const fr = {
         media: 'Médias',
         details: 'Détails',
         waypoints: 'Points de passage',
+        pois: 'POIs',
         settings: 'Paramètres',
       },
       basicInfo: {
@@ -236,6 +237,8 @@ const fr = {
       hints: {
         name: '5 à 100 caractères',
         description: '{{current}}/{{max}} caractères (min. {{min}})',
+        descriptionLocalized:
+          'Entrez la description dans au moins 2 langues (polonais et anglais sont requis)',
         duration:
           'Faites glisser le curseur pour définir la durée estimée du circuit',
         tags: 'Appuyez sur Entrée pour ajouter un tag. Cliquez sur un tag pour le supprimer.',
@@ -253,6 +256,8 @@ const fr = {
         descriptionMax: 'La description peut avoir au maximum 2000 caractères',
         cityRequired: 'Veuillez sélectionner une ville',
         categoryRequired: 'Veuillez sélectionner une catégorie',
+        plRequired: 'La version polonaise est requise',
+        enRequired: 'La version anglaise est requise',
       },
       preview: {
         title: 'Aperçu',
@@ -276,6 +281,91 @@ const fr = {
       title: "Points d'intérêt",
       subtitle: "Gérer les points d'intérêt touristiques",
       listTitle: 'Liste des POIs',
+      addPoi: 'Ajouter POI',
+      editPoi: 'Modifier POI',
+      export: 'Exporter',
+      exported: 'POIs exportés',
+      showing: 'Affichage {{from}}-{{to}} sur {{total}}',
+      selected: 'Sélectionnés: {{count}}',
+      selectAll: 'Tout sélectionner',
+      selectPoi: 'Sélectionner POI: {{name}}',
+      noResults: 'Aucun POI trouvé',
+      deleted: 'POI supprimé',
+      bulkDelete: 'Supprimer la sélection',
+      bulkDeleted: '{{count}} POIs supprimés',
+      loadError: 'Erreur de chargement des POIs',
+      stats: {
+        total: 'Total des POIs',
+      },
+      table: {
+        name: 'Nom',
+        city: 'Ville',
+        category: 'Catégorie',
+        coordinates: 'Coordonnées',
+        actions: 'Actions',
+      },
+      filters: {
+        city: 'Ville',
+        selectCity: 'Sélectionner une ville',
+        category: 'Catégorie',
+        allCities: 'Toutes les villes',
+        allCategories: 'Toutes les catégories',
+        searchPlaceholder: 'Rechercher POI...',
+        clear: 'Effacer les filtres',
+      },
+      actions: {
+        menu: "Menu d'actions",
+        edit: 'Modifier',
+        delete: 'Supprimer',
+        viewOnMap: 'Voir sur la carte',
+      },
+      pagination: {
+        perPage: 'Par page',
+        page: 'Page {{current}} sur {{total}}',
+      },
+      deleteDialog: {
+        title: 'Êtes-vous sûr de vouloir supprimer?',
+        description:
+          'Cette action est irréversible. Le POI "{{name}}" sera définitivement supprimé.',
+      },
+      bulkDeleteDialog: {
+        title: 'Êtes-vous sûr de vouloir supprimer les POIs sélectionnés?',
+        description:
+          'Cette action est irréversible. {{count}} POIs seront définitivement supprimés.',
+      },
+      categories: {
+        landmark: 'Monument',
+        museum: 'Musée',
+        park: 'Parc',
+        restaurant: 'Restaurant',
+        viewpoint: 'Point de vue',
+        church: 'Église',
+      },
+      editor: {
+        createTitle: 'Nouveau POI',
+        editTitle: 'Modifier POI',
+        createDescription: "Ajouter un nouveau point d'intérêt",
+        editDescription: "Modifier les informations du point d'intérêt",
+        name: 'Nom',
+        namePlaceholder: 'Ex. Halle aux Draps',
+        description: 'Description',
+        descriptionPlaceholder: "Décrivez le point d'intérêt...",
+        longitude: 'Longitude',
+        latitude: 'Latitude',
+        address: 'Adresse',
+        addressPlaceholder: 'Ex. Place du Marché 1',
+        website: 'Site web',
+        openingHours: "Heures d'ouverture",
+        openingHoursPlaceholder: 'Ex. 10:00-18:00',
+        estimatedTime: 'Temps estimé',
+        tags: 'Tags',
+        tagsPlaceholder: 'Entrez les tags séparés par des virgules',
+        created: 'POI créé',
+        updated: 'POI mis à jour',
+        validation: {
+          required: 'Le nom et la description sont requis',
+        },
+      },
     },
 
     // Settings page
@@ -411,6 +501,29 @@ const fr = {
       importedWaypoint: 'Importé {{number}}',
     },
 
+    // Tour POI Selector
+    tourPOI: {
+      mapTitle: 'Carte des POI',
+      selectedPOIs: 'POI sélectionnés',
+      availablePOIs: 'POI disponibles',
+      noSelectedPOIs:
+        'Aucun POI sélectionné. Cliquez sur la carte ou la liste pour ajouter.',
+      noPOIs: 'Aucun POI pour cette ville',
+      noResults: 'Aucun résultat pour les filtres donnés',
+      searchPlaceholder: 'Rechercher des POI...',
+      filterByCategory: 'Filtrer par catégorie',
+      clearFilters: 'Effacer les filtres',
+      clickToAdd: 'Cliquez pour ajouter un POI à la visite',
+      add: 'Ajouter',
+      remove: 'Supprimer',
+      suggestPOIs: 'Suggérer des POI',
+      suggestPOIsHint: "Ajouter automatiquement des POI près de l'itinéraire",
+      fromRoute: "de l'itinéraire",
+      selectCityFirst:
+        "Sélectionnez d'abord une ville pour voir les POI disponibles",
+      loadError: 'Échec du chargement des POI',
+    },
+
     // Footer
     footer: {
       description:
@@ -461,6 +574,25 @@ const fr = {
         passwordMinLength:
           'Le mot de passe doit contenir au moins 6 caractères',
       },
+    },
+
+    // Language Tabs
+    languageTabs: {
+      languages: {
+        pl: 'Polski',
+        en: 'English',
+        de: 'Deutsch',
+        fr: 'Français',
+        uk: 'Українська',
+      },
+      required: 'Obligatoire',
+      optional: 'Optionnel',
+      copyFromPolish: 'Copier du polonais',
+      copied: 'Copié dans les champs vides',
+      completeness: 'Complétude des traductions',
+      complete: 'Complet',
+      incomplete: 'Incomplet',
+      fillRequired: 'Remplir les champs obligatoires (PL, EN)',
     },
   },
 };

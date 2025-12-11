@@ -453,16 +453,16 @@ describe('Admin Tours Service', () => {
       input.pois = [
         {
           id: 'poi-1',
-          name: 'Test POI',
-          description: 'Test',
+          name: { pl: 'Test POI' },
+          description: { pl: 'Test' },
           category: 'museum',
           coordinate: [19.9, 50.0],
           address: 'Test Address',
         },
         {
           id: 'poi-2',
-          name: 'Test POI 2',
-          description: 'Test 2',
+          name: { pl: 'Test POI 2' },
+          description: { pl: 'Test 2' },
           category: 'church',
           coordinate: [19.91, 50.01],
           address: 'Test Address 2',

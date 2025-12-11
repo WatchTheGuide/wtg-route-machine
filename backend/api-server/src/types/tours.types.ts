@@ -3,15 +3,17 @@
  * Aligned with mobile app types
  */
 
+import type { LocalizedString } from './common.types.js';
+
 export type Coordinate = [number, number]; // [longitude, latitude]
 
 export interface TourPOI {
   id: string;
-  name: string;
-  description: string;
+  name: LocalizedString;
+  description: LocalizedString;
   category: string;
   coordinate: Coordinate;
-  address: string;
+  address?: string;
   imageUrl?: string;
   openingHours?: string;
   website?: string;
@@ -28,13 +30,8 @@ export type TourCategory =
 
 export type TourDifficulty = 'easy' | 'medium' | 'hard';
 
-export interface LocalizedString {
-  pl: string;
-  en: string;
-  de: string;
-  fr: string;
-  uk: string;
-}
+// Re-export LocalizedString for backwards compatibility
+export type { LocalizedString } from './common.types.js';
 
 export interface Tour {
   id: string;

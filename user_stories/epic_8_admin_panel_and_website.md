@@ -297,18 +297,26 @@
 
 ### Kryteria akceptacji:
 
-- [ ] Zakładka "POI" w edytorze wycieczki
-- [ ] Mapa pokazuje wszystkie POI w mieście (różne ikony per kategoria)
-- [ ] Kliknięcie na POI dodaje go do wycieczki
-- [ ] Lista powiązanych POI w bocznym panelu:
-  - Drag & drop do zmiany kolejności
-  - Przycisk "Remove from tour"
-  - Link "Edit POI details" (otwiera POI editor)
-- [ ] Filtrowanie POI na mapie (kategorie, dystans od trasy)
-- [ ] "Suggest POI" button - AI/heurystyka proponuje POI na trasie
-- [ ] Wyświetlanie dystansu POI od najbliższego waypointa
+- [x] Zakładka "POI" w edytorze wycieczki
+- [x] Mapa pokazuje wszystkie POI w mieście (różne ikony per kategoria)
+- [x] Kliknięcie na POI dodaje go do wycieczki
+- [x] Lista powiązanych POI w bocznym panelu:
+  - [x] Przyciski up/down do zmiany kolejności
+  - [x] Przycisk "Remove from tour"
+  - [ ] Link "Edit POI details" (otwiera POI editor) - przyszłość
+- [x] Filtrowanie POI na mapie (kategorie, wyszukiwarka)
+- [x] "Suggest POI" button - heurystyka proponuje POI w pobliżu trasy (300m)
+- [x] Wyświetlanie dystansu POI od najbliższego waypointa
 
-### Estymacja: 2 dni
+### Zaimplementowane pliki:
+
+- `admin/src/services/poi.service.ts` - serwis POI z API calls
+- `admin/src/hooks/usePOI.ts` - React hooks (useCityPOIs, usePOICategories, useSearchPOIs, useNearbyPOIs)
+- `admin/src/components/tours/TourPOISelector.tsx` - główny komponent selektora POI
+- `admin/src/components/ui/scroll-area.tsx` - shadcn/ui ScrollArea component
+- Tłumaczenia dla 5 języków (PL, EN, DE, FR, UK)
+
+### Estymacja: 2 dni ✅ COMPLETED
 
 ---
 
@@ -320,28 +328,49 @@
 
 ### Kryteria akceptacji:
 
-- [ ] Strona `/admin/poi` z listą wszystkich POI
-- [ ] Tabela podobna do Tours List:
-  - Nazwa, miasto, kategoria, typ, współrzędne
+- [x] Strona `/admin/pois` z listą wszystkich POI
+- [x] Tabela podobna do Tours List:
+  - Nazwa, miasto, kategoria, współrzędne
   - Akcje: Edit, Delete, View on map
-- [ ] Filtry: miasto, kategoria, źródło (manual/overpass)
-- [ ] Formularz dodawania/edycji POI:
-  - Nazwa (multi-language: pl, en, de, fr, uk)
-  - Opis (multi-language)
-  - Kategoria (heritage, nature, culture, food, etc.)
-  - Typ (museum, restaurant, monument, etc.)
-  - Współrzędne (lat/lon)
+- [x] Filtry: miasto, kategoria, wyszukiwarka tekstowa
+- [x] Formularz dodawania/edycji POI:
+  - Nazwa
+  - Opis
+  - Kategoria (landmark, museum, park, restaurant, viewpoint, church)
+  - Współrzędne (lon/lat)
+  - Adres
+  - Strona WWW
+  - Godziny otwarcia
+  - Szacowany czas zwiedzania
   - Tagi (array)
-  - Zdjęcia (upload)
-  - External links (Wikipedia, OpenStreetMap, etc.)
-- [ ] Import POI from Overpass API (search in bbox)
-- [ ] Bulk import from CSV/JSON
+- [x] Paginacja z możliwością wyboru liczby wyników na stronę
+- [x] Bulk delete (masowe usuwanie)
+- [x] Export do JSON
+- [x] Karty statystyk (łączna liczba POI, per miasto)
+- [x] Tłumaczenia dla 5 języków (PL, EN, DE, FR, UK)
+- [ ] Import POI from Overpass API (search in bbox) - do zrobienia w przyszłości
+- [ ] Bulk import from CSV/JSON - do zrobienia w przyszłości
+- [ ] Multi-language content (LocalizedString) - do zrobienia w US 8.9
+
+### Zaimplementowane pliki:
+
+**Backend:**
+
+- `backend/api-server/src/routes/admin.poi.routes.ts` - rozszerzono o GET /api/admin/poi, GET /api/admin/poi/stats, POST /api/admin/poi/bulk-delete
+- `backend/api-server/src/services/poi.service.ts` - dodano getAllPOIs(), getPOIStats(), bulkDeletePOIs()
+
+**Frontend:**
+
+- `admin/src/pages/PoisPage.tsx` - główna strona POI Manager
+- `admin/src/services/poi.service.ts` - rozszerzono o admin methods
+- `admin/src/hooks/usePOI.ts` - dodano useAdminPOIs(), useAdminPOIStats(), useBulkDeletePOIs()
+- `admin/src/i18n/locales/*.ts` - pełne tłumaczenia POI dla 5 języków
 
 ### Komponenty shadcn/ui:
 
-- `Table`, `Dialog`, `Form`, `Tabs`, `Badge`, `Command` (search)
+- `Table`, `Dialog`, `Form`, `Input`, `Textarea`, `Select`, `Badge`, `Card`, `Checkbox`, `AlertDialog`, `DropdownMenu`, `Skeleton`
 
-### Estymacja: 3 dni
+### Estymacja: 3 dni ✅ COMPLETED
 
 ---
 
@@ -353,18 +382,42 @@
 
 ### Kryteria akceptacji:
 
-- [ ] Language tabs w formularzu (PL, EN, DE, FR, UK)
-- [ ] Pola tekstowe dla każdego języka:
+- [x] Language tabs w formularzu (PL, EN, DE, FR, UK)
+- [x] Pola tekstowe dla każdego języka:
   - Tour name (LocalizedString)
   - Tour description (LocalizedString)
   - POI name (LocalizedString)
   - POI description (LocalizedString)
-- [ ] Wskaźnik kompletności tłumaczeń (progress bar per language)
-- [ ] "Copy from Polish" button (base language)
-- [ ] Integracja z Google Translate API (suggestion mode)
-- [ ] Walidacja: przynajmniej PL i EN wymagane
+- [x] Wskaźnik kompletności tłumaczeń (progress bar per language)
+- [x] "Copy from Polish" button (base language)
+- [ ] Integracja z Google Translate API (suggestion mode) - do zrobienia w przyszłości
+- [x] Walidacja: przynajmniej PL i EN wymagane
 
-### Estymacja: 1.5 dnia
+### Zaimplementowane pliki:
+
+**Frontend (admin):**
+
+- `admin/src/components/common/LanguageTabs.tsx` - reużywalny komponent z tabs, progress bar, copy button
+- `admin/src/components/ui/tabs.tsx` - shadcn/ui Tabs (przez CLI)
+- `admin/src/components/ui/progress.tsx` - shadcn/ui Progress (przez CLI)
+- `admin/src/pages/TourEditorPage.tsx` - integracja LanguageTabs dla name/description
+- `admin/src/pages/PoisPage.tsx` - integracja LanguageTabs dla name/description
+- `admin/src/test/components/LanguageTabs.test.tsx` - 27 testów jednostkowych
+
+**Backend (api-server):**
+
+- `backend/api-server/src/types/common.types.ts` - typ LocalizedString
+- `backend/api-server/src/types/tours.types.ts` - Tour.name/description jako LocalizedString
+- `backend/api-server/src/types/poi.types.ts` - POI.name/description jako LocalizedString
+- `backend/api-server/src/routes/admin.poi.routes.ts` - LocalizedStringSchema dla walidacji
+- `backend/api-server/src/routes/admin.tours.routes.ts` - LocalizedStringSchema dla TourPOI
+- `backend/api-server/src/services/poi.service.ts` - helper localizedStringIncludes() dla wyszukiwania
+
+### Komponenty shadcn/ui:
+
+- `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`, `Progress`, `Badge`, `Button`, `Input`, `Textarea`
+
+### Estymacja: 1.5 dnia ✅ COMPLETED (Swarm Mode)
 
 ---
 
