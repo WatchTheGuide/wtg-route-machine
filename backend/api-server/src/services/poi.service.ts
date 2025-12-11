@@ -3,9 +3,10 @@
  * Handles loading and querying POI data
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
 import type {
   POI,
   POICity,
@@ -53,6 +54,19 @@ function loadCityData(cityId: string): POICity | null {
 
   const data = JSON.parse(readFileSync(filePath, 'utf-8'));
   return data as POICity;
+}
+
+/**
+ * Save POI data for a specific city
+ */
+function saveCityData(cityId: string, data: POICity): void {
+  const filePath = join(DATA_DIR, `${cityId}.json`);
+  writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+
+  // Update cache if it exists
+  if (citiesCache && citiesCache.has(cityId)) {
+    citiesCache.set(cityId, data);
+  }
 }
 
 /**
@@ -143,6 +157,24 @@ export function getPOI(cityId: string, poiId: string): POI | null {
 }
 
 /**
+ * Helper function to search in LocalizedString
+ */
+function localizedStringIncludes(
+  ls: { pl: string; en?: string; de?: string; fr?: string; uk?: string },
+  query: string
+): boolean {
+  const q = query.toLowerCase();
+  return (
+    ls.pl?.toLowerCase().includes(q) ||
+    ls.en?.toLowerCase().includes(q) ||
+    ls.de?.toLowerCase().includes(q) ||
+    ls.fr?.toLowerCase().includes(q) ||
+    ls.uk?.toLowerCase().includes(q) ||
+    false
+  );
+}
+
+/**
  * Search POIs by query string
  */
 export function searchPOIs(cityId: string, query: string): POI[] | null {
@@ -156,12 +188,12 @@ export function searchPOIs(cityId: string, query: string): POI[] | null {
   const lowerQuery = query.toLowerCase();
 
   return city.pois.filter((poi) => {
-    // Search in name
-    if (poi.name.toLowerCase().includes(lowerQuery)) {
+    // Search in name (all languages)
+    if (localizedStringIncludes(poi.name, lowerQuery)) {
       return true;
     }
-    // Search in description
-    if (poi.description.toLowerCase().includes(lowerQuery)) {
+    // Search in description (all languages)
+    if (localizedStringIncludes(poi.description, lowerQuery)) {
       return true;
     }
     // Search in tags
@@ -274,4 +306,175 @@ export function parseCategories(categoryParam?: string): POICategory[] {
     .split(',')
     .map((c) => c.trim().toLowerCase())
     .filter(isValidCategory) as POICategory[];
+}
+
+/**
+ * Create a new POI
+ */
+export function createPOI(cityId: string, poi: Omit<POI, 'id'>): POI {
+  const cityData = loadCityData(cityId);
+  if (!cityData) {
+    throw new Error(`City ${cityId} not found`);
+  }
+
+  const newPOI: POI = {
+    ...poi,
+    id: randomUUID(),
+  };
+
+  cityData.pois.push(newPOI);
+  saveCityData(cityId, cityData);
+  return newPOI;
+}
+
+/**
+ * Update an existing POI
+ */
+export function updatePOI(
+  cityId: string,
+  poiId: string,
+  updates: Partial<POI>
+): POI | null {
+  const cityData = loadCityData(cityId);
+  if (!cityData) return null;
+
+  const index = cityData.pois.findIndex((p) => p.id === poiId);
+  if (index === -1) return null;
+
+  // Prevent ID update
+  const { id, ...safeUpdates } = updates as any;
+
+  const updatedPOI = { ...cityData.pois[index], ...safeUpdates, id: poiId };
+  cityData.pois[index] = updatedPOI;
+  saveCityData(cityId, cityData);
+  return updatedPOI;
+}
+
+/**
+ * Delete a POI
+ */
+export function deletePOI(cityId: string, poiId: string): boolean {
+  const cityData = loadCityData(cityId);
+  if (!cityData) return false;
+
+  const initialLength = cityData.pois.length;
+  cityData.pois = cityData.pois.filter((p) => p.id !== poiId);
+
+  if (cityData.pois.length !== initialLength) {
+    saveCityData(cityId, cityData);
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Get all POIs from all cities (for admin)
+ */
+export interface POIWithCity extends POI {
+  cityId: string;
+  cityName: string;
+}
+
+export function getAllPOIs(options?: {
+  cityId?: string;
+  category?: POICategory;
+  search?: string;
+}): POIWithCity[] {
+  const cities = loadAllCities();
+  const result: POIWithCity[] = [];
+
+  for (const [cityId, city] of cities) {
+    // Filter by city if specified
+    if (options?.cityId && cityId !== options.cityId) {
+      continue;
+    }
+
+    for (const poi of city.pois) {
+      // Filter by category if specified
+      if (options?.category && poi.category !== options.category) {
+        continue;
+      }
+
+      // Filter by search query if specified
+      if (options?.search) {
+        const lowerQuery = options.search.toLowerCase();
+        const matches =
+          localizedStringIncludes(poi.name, lowerQuery) ||
+          localizedStringIncludes(poi.description, lowerQuery) ||
+          poi.address?.toLowerCase().includes(lowerQuery) ||
+          poi.tags?.some((tag) => tag.toLowerCase().includes(lowerQuery));
+        if (!matches) {
+          continue;
+        }
+      }
+
+      result.push({
+        ...poi,
+        cityId,
+        cityName: city.name,
+      });
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Get POI statistics for admin dashboard
+ */
+export function getPOIStats(): {
+  totalPOIs: number;
+  byCity: { cityId: string; cityName: string; count: number }[];
+  byCategory: { category: POICategory; count: number }[];
+} {
+  const cities = loadAllCities();
+  const byCity: { cityId: string; cityName: string; count: number }[] = [];
+  const categoryCount = new Map<POICategory, number>();
+  let totalPOIs = 0;
+
+  for (const [cityId, city] of cities) {
+    byCity.push({
+      cityId,
+      cityName: city.name,
+      count: city.pois.length,
+    });
+    totalPOIs += city.pois.length;
+
+    for (const poi of city.pois) {
+      categoryCount.set(
+        poi.category,
+        (categoryCount.get(poi.category) || 0) + 1
+      );
+    }
+  }
+
+  const byCategory = Array.from(categoryCount.entries()).map(
+    ([category, count]) => ({
+      category,
+      count,
+    })
+  );
+
+  return { totalPOIs, byCity, byCategory };
+}
+
+/**
+ * Bulk delete POIs
+ */
+export function bulkDeletePOIs(items: { cityId: string; poiId: string }[]): {
+  deleted: number;
+  failed: number;
+} {
+  let deleted = 0;
+  let failed = 0;
+
+  for (const { cityId, poiId } of items) {
+    if (deletePOI(cityId, poiId)) {
+      deleted++;
+    } else {
+      failed++;
+    }
+  }
+
+  return { deleted, failed };
 }

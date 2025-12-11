@@ -10,6 +10,7 @@ import {
   toursRouter,
   adminAuthRouter,
   adminToursRouter,
+  adminPoiRouter,
 } from './routes/index.js';
 import { generalLimiter, authLimiter } from './middleware/index.js';
 import config from './config.js';
@@ -68,6 +69,9 @@ app.use('/api/admin/auth', adminAuthRouter);
 
 // Admin Tours API - /api/admin/tours/*
 app.use('/api/admin/tours', adminToursRouter);
+
+// Admin POI API - /api/admin/poi/*
+app.use('/api/admin/poi', adminPoiRouter);
 
 // ============================================
 // ERROR HANDLING

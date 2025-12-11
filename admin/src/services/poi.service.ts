@@ -4,6 +4,7 @@
  */
 
 import apiClient from './api.client';
+import type { LocalizedString } from '@/types';
 
 // POI category aligned with backend
 export type POICategory =
@@ -17,8 +18,8 @@ export type POICategory =
 // POI from backend API
 export interface CityPOI {
   id: string;
-  name: string;
-  description: string;
+  name: LocalizedString;
+  description: LocalizedString;
   coordinates: [number, number]; // [longitude, latitude]
   category: POICategory;
   imageUrl?: string;
@@ -67,6 +68,39 @@ export interface NearbyPOIResponse {
   pois: (CityPOI & { distance: number })[];
 }
 
+// Admin POI with city info
+export interface AdminPOI extends CityPOI {
+  cityId: string;
+  cityName: string;
+}
+
+// Admin POI list response
+export interface AdminPOIListResponse {
+  pois: AdminPOI[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+// Admin POI stats response
+export interface AdminPOIStatsResponse {
+  totalPOIs: number;
+  byCity: { cityId: string; cityName: string; count: number }[];
+  byCategory: { category: POICategory; count: number }[];
+  categories: CategoryInfo[];
+  cities: CityInfo[];
+}
+
+// Admin POI filters
+export interface AdminPOIFilters {
+  cityId?: string;
+  category?: POICategory;
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
 /**
  * POI Service
  */
@@ -87,6 +121,43 @@ export const poiService = {
       '/api/poi/categories'
     );
     return response.categories;
+  },
+
+  // ============================================
+  // ADMIN POI METHODS
+  // ============================================
+
+  /**
+   * Get all POIs with filters (admin)
+   */
+  async getAllPOIs(filters?: AdminPOIFilters): Promise<AdminPOIListResponse> {
+    const params: Record<string, string> = {};
+    if (filters?.cityId) params.cityId = filters.cityId;
+    if (filters?.category) params.category = filters.category;
+    if (filters?.search) params.search = filters.search;
+    if (filters?.page) params.page = String(filters.page);
+    if (filters?.limit) params.limit = String(filters.limit);
+
+    return apiClient.get<AdminPOIListResponse>('/api/admin/poi', params);
+  },
+
+  /**
+   * Get POI statistics (admin)
+   */
+  async getPOIStats(): Promise<AdminPOIStatsResponse> {
+    return apiClient.get<AdminPOIStatsResponse>('/api/admin/poi/stats');
+  },
+
+  /**
+   * Bulk delete POIs (admin)
+   */
+  async bulkDeletePOIs(
+    items: { cityId: string; poiId: string }[]
+  ): Promise<{ deleted: number; failed: number }> {
+    return apiClient.post<{ deleted: number; failed: number }>(
+      '/api/admin/poi/bulk-delete',
+      { items }
+    );
   },
 
   /**
@@ -157,6 +228,31 @@ export const poiService = {
       }
     );
     return response.pois;
+  },
+
+  /**
+   * Create a new POI
+   */
+  async createPOI(cityId: string, poi: Omit<CityPOI, 'id'>): Promise<CityPOI> {
+    return apiClient.post<CityPOI>(`/api/admin/poi/${cityId}`, poi);
+  },
+
+  /**
+   * Update an existing POI
+   */
+  async updatePOI(
+    cityId: string,
+    poiId: string,
+    poi: Partial<CityPOI>
+  ): Promise<CityPOI> {
+    return apiClient.put<CityPOI>(`/api/admin/poi/${cityId}/${poiId}`, poi);
+  },
+
+  /**
+   * Delete a POI
+   */
+  async deletePOI(cityId: string, poiId: string): Promise<void> {
+    return apiClient.delete<void>(`/api/admin/poi/${cityId}/${poiId}`);
   },
 };
 

@@ -2,12 +2,16 @@
  * usePOI hook - TanStack Query hooks for POI operations
  */
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import poiService, {
   type CityPOI,
   type CityInfo,
   type CategoryInfo,
   type POICategory,
+  type AdminPOI,
+  type AdminPOIListResponse,
+  type AdminPOIStatsResponse,
+  type AdminPOIFilters,
 } from '@/services/poi.service';
 
 // Query keys
@@ -24,6 +28,11 @@ export const poiKeys = {
     [...poiKeys.all, 'nearby', cityId, lon, lat, radius] as const,
   detail: (cityId: string, poiId: string) =>
     [...poiKeys.all, 'detail', cityId, poiId] as const,
+  // Admin keys
+  admin: () => [...poiKeys.all, 'admin'] as const,
+  adminList: (filters?: AdminPOIFilters) =>
+    [...poiKeys.admin(), 'list', filters] as const,
+  adminStats: () => [...poiKeys.admin(), 'stats'] as const,
 };
 
 /**
@@ -127,5 +136,140 @@ export function usePOIDetail(
     queryFn: () => poiService.getPOI(cityId, poiId),
     enabled: enabled && Boolean(cityId) && Boolean(poiId),
     staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+}
+
+// ============================================
+// MUTATION HOOKS (CRUD)
+// ============================================
+
+/**
+ * Hook to create a new POI
+ */
+export function useCreatePOI() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      cityId,
+      poi,
+    }: {
+      cityId: string;
+      poi: Omit<CityPOI, 'id'>;
+    }) => poiService.createPOI(cityId, poi),
+    onSuccess: (_data, variables) => {
+      // Invalidate city POIs to refetch
+      queryClient.invalidateQueries({
+        queryKey: poiKeys.city(variables.cityId),
+      });
+      // Invalidate cities list (POI count changed)
+      queryClient.invalidateQueries({
+        queryKey: poiKeys.cities(),
+      });
+    },
+  });
+}
+
+/**
+ * Hook to update an existing POI
+ */
+export function useUpdatePOI() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      cityId,
+      poiId,
+      updates,
+    }: {
+      cityId: string;
+      poiId: string;
+      updates: Partial<CityPOI>;
+    }) => poiService.updatePOI(cityId, poiId, updates),
+    onSuccess: (data, variables) => {
+      // Update the POI in the cache
+      queryClient.setQueryData(
+        poiKeys.detail(variables.cityId, variables.poiId),
+        data
+      );
+      // Invalidate city POIs to refetch
+      queryClient.invalidateQueries({
+        queryKey: poiKeys.city(variables.cityId),
+      });
+    },
+  });
+}
+
+/**
+ * Hook to delete a POI
+ */
+export function useDeletePOI() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ cityId, poiId }: { cityId: string; poiId: string }) =>
+      poiService.deletePOI(cityId, poiId),
+    onSuccess: (_data, variables) => {
+      // Remove from cache
+      queryClient.removeQueries({
+        queryKey: poiKeys.detail(variables.cityId, variables.poiId),
+      });
+      // Invalidate city POIs
+      queryClient.invalidateQueries({
+        queryKey: poiKeys.city(variables.cityId),
+      });
+      // Invalidate cities list (POI count changed)
+      queryClient.invalidateQueries({
+        queryKey: poiKeys.cities(),
+      });
+      // Invalidate admin list
+      queryClient.invalidateQueries({
+        queryKey: poiKeys.admin(),
+      });
+    },
+  });
+}
+
+// ============================================
+// ADMIN HOOKS
+// ============================================
+
+/**
+ * Hook to get all POIs with filters (admin)
+ */
+export function useAdminPOIs(filters?: AdminPOIFilters) {
+  return useQuery<AdminPOIListResponse, Error>({
+    queryKey: poiKeys.adminList(filters),
+    queryFn: () => poiService.getAllPOIs(filters),
+    staleTime: 30 * 1000, // 30 seconds
+  });
+}
+
+/**
+ * Hook to get POI statistics (admin)
+ */
+export function useAdminPOIStats() {
+  return useQuery<AdminPOIStatsResponse, Error>({
+    queryKey: poiKeys.adminStats(),
+    queryFn: () => poiService.getPOIStats(),
+    staleTime: 60 * 1000, // 1 minute
+  });
+}
+
+/**
+ * Hook to bulk delete POIs (admin)
+ */
+export function useBulkDeletePOIs() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (items: { cityId: string; poiId: string }[]) =>
+      poiService.bulkDeletePOIs(items),
+    onSuccess: () => {
+      // Invalidate all POI-related queries
+      queryClient.invalidateQueries({
+        queryKey: poiKeys.all,
+      });
+    },
   });
 }

@@ -43,11 +43,11 @@ const localizedStringSchema = z.object({
 
 const poiSchema = z.object({
   id: z.string(),
-  name: z.string(),
-  description: z.string(),
+  name: localizedStringSchema,
+  description: localizedStringSchema,
   category: z.string(),
   coordinate: z.tuple([z.number(), z.number()]),
-  address: z.string(),
+  address: z.string().optional(),
   imageUrl: z.string().optional(),
   openingHours: z.string().optional(),
   website: z.string().optional(),

@@ -240,6 +240,8 @@ const en = {
       hints: {
         name: '5 to 100 characters',
         description: '{{current}}/{{max}} characters (min. {{min}})',
+        descriptionLocalized:
+          'Enter description in at least 2 languages (Polish and English are required)',
         duration: 'Drag the slider to set estimated tour duration',
         tags: 'Press Enter to add a tag. Click a tag to remove it.',
         waypoints:
@@ -255,6 +257,8 @@ const en = {
         descriptionMax: 'Description can be at most 2000 characters',
         cityRequired: 'Please select a city',
         categoryRequired: 'Please select a category',
+        plRequired: 'Polish version is required',
+        enRequired: 'English version is required',
       },
       preview: {
         title: 'Preview',
@@ -278,6 +282,92 @@ const en = {
       title: 'Points of Interest',
       subtitle: 'Manage tourist points of interest',
       listTitle: 'POI List',
+      addPoi: 'Add POI',
+      editPoi: 'Edit POI',
+      deletePoi: 'Delete POI',
+      export: 'Export',
+      exported: 'POIs have been exported',
+      showing: 'Showing {{from}}-{{to}} of {{total}}',
+      selected: 'Selected: {{count}}',
+      selectAll: 'Select all',
+      selectPoi: 'Select POI: {{name}}',
+      noResults: 'No POIs found',
+      deleted: 'POI has been deleted',
+      bulkDelete: 'Delete selected',
+      bulkDeleted: 'Deleted {{count}} POIs',
+      loadError: 'Error loading POIs',
+      stats: {
+        total: 'Total POIs',
+      },
+      table: {
+        name: 'Name',
+        city: 'City',
+        category: 'Category',
+        coordinates: 'Coordinates',
+        actions: 'Actions',
+      },
+      filters: {
+        city: 'City',
+        selectCity: 'Select city',
+        category: 'Category',
+        allCities: 'All cities',
+        allCategories: 'All categories',
+        searchPlaceholder: 'Search POI...',
+        clear: 'Clear filters',
+      },
+      actions: {
+        menu: 'Actions menu',
+        edit: 'Edit',
+        delete: 'Delete',
+        viewOnMap: 'View on map',
+      },
+      pagination: {
+        perPage: 'Per page',
+        page: 'Page {{current}} of {{total}}',
+      },
+      deleteDialog: {
+        title: 'Are you sure you want to delete?',
+        description:
+          'This action cannot be undone. POI "{{name}}" will be permanently deleted.',
+      },
+      bulkDeleteDialog: {
+        title: 'Are you sure you want to delete selected POIs?',
+        description:
+          'This action cannot be undone. {{count}} POIs will be permanently deleted.',
+      },
+      categories: {
+        landmark: 'Landmark',
+        museum: 'Museum',
+        park: 'Park',
+        restaurant: 'Restaurant',
+        viewpoint: 'Viewpoint',
+        church: 'Church',
+      },
+      editor: {
+        createTitle: 'New POI',
+        editTitle: 'Edit POI',
+        createDescription: 'Add a new point of interest',
+        editDescription: 'Edit point of interest information',
+        name: 'Name',
+        namePlaceholder: 'E.g. Cloth Hall',
+        description: 'Description',
+        descriptionPlaceholder: 'Describe the point of interest...',
+        longitude: 'Longitude',
+        latitude: 'Latitude',
+        address: 'Address',
+        addressPlaceholder: 'E.g. Main Square 1',
+        website: 'Website',
+        openingHours: 'Opening hours',
+        openingHoursPlaceholder: 'E.g. 10:00-18:00',
+        estimatedTime: 'Estimated time',
+        tags: 'Tags',
+        tagsPlaceholder: 'Enter tags separated by commas',
+        created: 'POI has been created',
+        updated: 'POI has been updated',
+        validation: {
+          required: 'Name and description are required',
+        },
+      },
     },
 
     // Settings page
@@ -480,6 +570,25 @@ const en = {
         passwordRequired: 'Password is required',
         passwordMinLength: 'Password must be at least 6 characters',
       },
+    },
+
+    // Language Tabs
+    languageTabs: {
+      languages: {
+        pl: 'Polski',
+        en: 'English',
+        de: 'Deutsch',
+        fr: 'Français',
+        uk: 'Українська',
+      },
+      required: 'Required',
+      optional: 'Optional',
+      copyFromPolish: 'Copy from Polish',
+      copied: 'Copied to empty fields',
+      completeness: 'Translation completeness',
+      complete: 'Complete',
+      incomplete: 'Incomplete',
+      fillRequired: 'Fill required fields (PL, EN)',
     },
   },
 };

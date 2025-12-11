@@ -237,6 +237,8 @@ const uk = {
       hints: {
         name: 'Від 5 до 100 символів',
         description: '{{current}}/{{max}} символів (мін. {{min}})',
+        descriptionLocalized:
+          "Введіть опис щонайменше 2 мовами (польська та англійська обов'язкові)",
         duration:
           'Перетягніть повзунок, щоб встановити орієнтовну тривалість екскурсії',
         tags: 'Натисніть Enter, щоб додати тег. Натисніть на тег, щоб видалити його.',
@@ -253,6 +255,8 @@ const uk = {
         descriptionMax: 'Опис може містити максимум 2000 символів',
         cityRequired: 'Будь ласка, виберіть місто',
         categoryRequired: 'Будь ласка, виберіть категорію',
+        plRequired: "Польська версія обов'язкова",
+        enRequired: "Англійська версія обов'язкова",
       },
       preview: {
         title: 'Перегляд',
@@ -276,6 +280,91 @@ const uk = {
       title: 'Визначні місця',
       subtitle: 'Керування туристичними визначними місцями',
       listTitle: 'Список POI',
+      addPoi: 'Додати POI',
+      editPoi: 'Редагувати POI',
+      export: 'Експортувати',
+      exported: 'POI експортовано',
+      showing: 'Показано {{from}}-{{to}} з {{total}}',
+      selected: 'Вибрано: {{count}}',
+      selectAll: 'Вибрати всі',
+      selectPoi: 'Вибрати POI: {{name}}',
+      noResults: 'POI не знайдено',
+      deleted: 'POI видалено',
+      bulkDelete: 'Видалити вибрані',
+      bulkDeleted: 'Видалено {{count}} POI',
+      loadError: 'Помилка завантаження POI',
+      stats: {
+        total: 'Всього POI',
+      },
+      table: {
+        name: 'Назва',
+        city: 'Місто',
+        category: 'Категорія',
+        coordinates: 'Координати',
+        actions: 'Дії',
+      },
+      filters: {
+        city: 'Місто',
+        selectCity: 'Вибрати місто',
+        category: 'Категорія',
+        allCities: 'Всі міста',
+        allCategories: 'Всі категорії',
+        searchPlaceholder: 'Пошук POI...',
+        clear: 'Очистити фільтри',
+      },
+      actions: {
+        menu: 'Меню дій',
+        edit: 'Редагувати',
+        delete: 'Видалити',
+        viewOnMap: 'Переглянути на карті',
+      },
+      pagination: {
+        perPage: 'На сторінку',
+        page: 'Сторінка {{current}} з {{total}}',
+      },
+      deleteDialog: {
+        title: 'Ви впевнені, що хочете видалити?',
+        description:
+          'Цю дію неможливо скасувати. POI "{{name}}" буде остаточно видалено.',
+      },
+      bulkDeleteDialog: {
+        title: 'Ви впевнені, що хочете видалити вибрані POI?',
+        description:
+          'Цю дію неможливо скасувати. {{count}} POI буде остаточно видалено.',
+      },
+      categories: {
+        landmark: "Пам'ятка",
+        museum: 'Музей',
+        park: 'Парк',
+        restaurant: 'Ресторан',
+        viewpoint: 'Оглядовий майданчик',
+        church: 'Церква',
+      },
+      editor: {
+        createTitle: 'Новий POI',
+        editTitle: 'Редагувати POI',
+        createDescription: 'Додати нове визначне місце',
+        editDescription: 'Редагувати інформацію про визначне місце',
+        name: 'Назва',
+        namePlaceholder: 'Напр. Сукенниці',
+        description: 'Опис',
+        descriptionPlaceholder: 'Опишіть визначне місце...',
+        longitude: 'Довгота',
+        latitude: 'Широта',
+        address: 'Адреса',
+        addressPlaceholder: 'Напр. Ринок 1',
+        website: 'Вебсайт',
+        openingHours: 'Години роботи',
+        openingHoursPlaceholder: 'Напр. 10:00-18:00',
+        estimatedTime: 'Орієнтовний час',
+        tags: 'Теги',
+        tagsPlaceholder: 'Введіть теги через кому',
+        created: 'POI створено',
+        updated: 'POI оновлено',
+        validation: {
+          required: "Назва та опис обов'язкові",
+        },
+      },
     },
 
     // Settings page
@@ -480,6 +569,25 @@ const uk = {
         passwordRequired: "Пароль обов'язковий",
         passwordMinLength: 'Пароль повинен містити принаймні 6 символів',
       },
+    },
+
+    // Language Tabs
+    languageTabs: {
+      languages: {
+        pl: 'Polski',
+        en: 'English',
+        de: 'Deutsch',
+        fr: 'Français',
+        uk: 'Українська',
+      },
+      required: "Обов'язково",
+      optional: "Необов'язково",
+      copyFromPolish: 'Скопіювати з польської',
+      copied: 'Скопійовано в порожні поля',
+      completeness: 'Повнота перекладу',
+      complete: 'Повний',
+      incomplete: 'Неповний',
+      fillRequired: "Заповніть обов'язкові поля (PL, EN)",
     },
   },
 };
