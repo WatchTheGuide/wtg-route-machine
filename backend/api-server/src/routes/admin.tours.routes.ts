@@ -77,7 +77,39 @@ const tourInputSchema = z.object({
   featured: z.boolean().optional(),
 });
 
+// Schema for draft tours - minimal validation
+const tourDraftSchema = z.object({
+  cityId: z.string().optional().default(''),
+  name: z.object({
+    pl: z.string().default(''),
+    en: z.string().default(''),
+    de: z.string().optional().default(''),
+    fr: z.string().optional().default(''),
+    uk: z.string().optional().default(''),
+  }),
+  description: z.object({
+    pl: z.string().default(''),
+    en: z.string().default(''),
+    de: z.string().optional().default(''),
+    fr: z.string().optional().default(''),
+    uk: z.string().optional().default(''),
+  }),
+  category: z.string().optional().default(''),
+  difficulty: z.enum(['easy', 'medium', 'hard']).optional(),
+  distance: z.number().min(0).optional().default(0),
+  duration: z.number().min(0).optional().default(0),
+  imageUrl: z.string().optional().default(''),
+  pois: z.array(z.any()).optional().default([]),
+  waypoints: z.array(z.any()).optional().default([]),
+  status: z.literal('draft'),
+  featured: z.boolean().optional().default(false),
+  mediaIds: z.array(z.string()).optional().default([]),
+});
+
 const tourUpdateSchema = tourInputSchema.partial();
+const tourDraftUpdateSchema = tourDraftSchema.partial().extend({
+  status: z.literal('draft'),
+});
 
 const bulkDeleteSchema = z.object({
   ids: z.array(z.string()).min(1),
@@ -253,7 +285,10 @@ router.post(
     res: Response<{ tour: AdminTour } | ErrorResponse>
   ): Promise<void> => {
     try {
-      const validation = tourInputSchema.safeParse(req.body);
+      const isDraft = req.body.status === 'draft';
+      const schema = isDraft ? tourDraftSchema : tourInputSchema;
+
+      const validation = schema.safeParse(req.body);
       if (!validation.success) {
         res.status(400).json({
           error: 'Validation Error',
@@ -287,8 +322,10 @@ router.put(
   ): Promise<void> => {
     try {
       const { id } = req.params;
+      const isDraft = req.body.status === 'draft';
+      const schema = isDraft ? tourDraftUpdateSchema : tourUpdateSchema;
 
-      const validation = tourUpdateSchema.safeParse(req.body);
+      const validation = schema.safeParse(req.body);
       if (!validation.success) {
         res.status(400).json({
           error: 'Validation Error',
