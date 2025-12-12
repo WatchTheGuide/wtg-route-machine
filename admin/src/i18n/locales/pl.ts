@@ -172,6 +172,16 @@ const pl = {
         description:
           'Ta operacja jest nieodwracalna. Wycieczka "{{name}}" zostanie trwale usunięta.',
       },
+      // Toast messages
+      deleteSuccess: 'Wycieczka "{{name}}" została usunięta',
+      deleteError: 'Nie udało się usunąć wycieczki',
+      bulkDeleteSuccess: 'Usunięto {{count}} wycieczek',
+      bulkDeleteError: 'Nie udało się usunąć wycieczek',
+      bulkPublishSuccess: 'Opublikowano {{count}} wycieczek',
+      bulkPublishError: 'Nie udało się opublikować wycieczek',
+      duplicateSuccess: 'Wycieczka została zduplikowana',
+      duplicateError: 'Nie udało się zduplikować wycieczki',
+      loadError: 'Nie udało się załadować wycieczek',
     },
 
     // Tour Editor
@@ -184,6 +194,8 @@ const pl = {
       saved: 'Wycieczka została zapisana',
       published: 'Wycieczka została opublikowana',
       deleted: 'Wycieczka została usunięta',
+      saveError: 'Nie udało się zapisać wycieczki',
+      deleteError: 'Nie udało się usunąć wycieczki',
       saveDraft: 'Zapisz szkic',
       publish: 'Opublikuj',
       previewButton: 'Podgląd',

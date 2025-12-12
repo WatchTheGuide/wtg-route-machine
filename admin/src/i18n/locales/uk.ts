@@ -169,6 +169,16 @@ const uk = {
         description:
           'Ця дія незворотна. Екскурсію "{{name}}" буде остаточно видалено.',
       },
+      // Toast messages
+      deleteSuccess: 'Екскурсію "{{name}}" видалено',
+      deleteError: 'Не вдалося видалити екскурсію',
+      bulkDeleteSuccess: 'Видалено {{count}} екскурсій',
+      bulkDeleteError: 'Не вдалося видалити екскурсії',
+      bulkPublishSuccess: 'Опубліковано {{count}} екскурсій',
+      bulkPublishError: 'Не вдалося опублікувати екскурсії',
+      duplicateSuccess: 'Екскурсію здубльовано',
+      duplicateError: 'Не вдалося здублювати екскурсію',
+      loadError: 'Не вдалося завантажити екскурсії',
     },
 
     // Tour Editor
@@ -181,6 +191,8 @@ const uk = {
       saved: 'Екскурсію збережено',
       published: 'Екскурсію опубліковано',
       deleted: 'Екскурсію видалено',
+      saveError: 'Не вдалося зберегти екскурсію',
+      deleteError: 'Не вдалося видалити екскурсію',
       saveDraft: 'Зберегти чернетку',
       publish: 'Опублікувати',
       previewButton: 'Перегляд',
@@ -629,6 +641,34 @@ const uk = {
       sortByDate: 'Сортувати за Датою',
       sortByTitle: 'Сортувати за Назвою',
       sortBySize: 'Сортувати за Розміром',
+    },
+
+    // Media Picker (Tour Media)
+    mediaPicker: {
+      selectedTitle: 'Вибрані зображення',
+      selectedCount: '({{count}}/{{max}})',
+      clearAll: 'Очистити все',
+      emptySelected: 'Немає вибраних зображень',
+      emptySelectedHint:
+        'Натисніть на зображення в бібліотеці нижче, щоб додати його',
+      libraryTitle: 'Бібліотека медіа',
+      searchPlaceholder: 'Пошук за назвою...',
+      filterAll: 'Всі',
+      filterUnused: 'Не призначені',
+      addToTour: 'Додати до туру',
+      removeFromTour: 'Видалити з туру',
+      setAsPrimary: 'Встановити як головне',
+      isPrimary: 'Головне зображення',
+      alreadySelected: 'Вибрано',
+      maxLimitReached: 'Досягнуто ліміт {{max}} зображень',
+      dndHint: 'Перетягніть картки для зміни порядку',
+      toasts: {
+        added: '"{{name}}" додано до туру',
+        removed: '"{{name}}" видалено з туру',
+        clearedAll: 'Всі зображення видалено',
+        setPrimary: '"{{name}}" встановлено як головне зображення',
+        reordered: 'Порядок зображень змінено',
+      },
     },
 
     // Language Tabs

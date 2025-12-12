@@ -172,6 +172,16 @@ const en = {
         description:
           'This action cannot be undone. The tour "{{name}}" will be permanently deleted.',
       },
+      // Toast messages
+      deleteSuccess: 'Tour "{{name}}" has been deleted',
+      deleteError: 'Failed to delete tour',
+      bulkDeleteSuccess: '{{count}} tours deleted',
+      bulkDeleteError: 'Failed to delete tours',
+      bulkPublishSuccess: '{{count}} tours published',
+      bulkPublishError: 'Failed to publish tours',
+      duplicateSuccess: 'Tour has been duplicated',
+      duplicateError: 'Failed to duplicate tour',
+      loadError: 'Failed to load tours',
     },
 
     // Tour Editor
@@ -184,6 +194,8 @@ const en = {
       saved: 'Tour has been saved',
       published: 'Tour has been published',
       deleted: 'Tour has been deleted',
+      saveError: 'Failed to save tour',
+      deleteError: 'Failed to delete tour',
       saveDraft: 'Save Draft',
       publish: 'Publish',
       previewButton: 'Preview',

@@ -169,6 +169,16 @@ const de = {
         description:
           'Diese Aktion kann nicht rückgängig gemacht werden. Die Tour "{{name}}" wird dauerhaft gelöscht.',
       },
+      // Toast messages
+      deleteSuccess: 'Tour "{{name}}" wurde gelöscht',
+      deleteError: 'Tour konnte nicht gelöscht werden',
+      bulkDeleteSuccess: '{{count}} Touren gelöscht',
+      bulkDeleteError: 'Touren konnten nicht gelöscht werden',
+      bulkPublishSuccess: '{{count}} Touren veröffentlicht',
+      bulkPublishError: 'Touren konnten nicht veröffentlicht werden',
+      duplicateSuccess: 'Tour wurde dupliziert',
+      duplicateError: 'Tour konnte nicht dupliziert werden',
+      loadError: 'Touren konnten nicht geladen werden',
     },
 
     // Tour Editor
@@ -181,6 +191,8 @@ const de = {
       saved: 'Tour wurde gespeichert',
       published: 'Tour wurde veröffentlicht',
       deleted: 'Tour wurde gelöscht',
+      saveError: 'Tour konnte nicht gespeichert werden',
+      deleteError: 'Tour konnte nicht gelöscht werden',
       saveDraft: 'Entwurf speichern',
       publish: 'Veröffentlichen',
       previewButton: 'Vorschau',
@@ -632,6 +644,34 @@ const de = {
       sortByDate: 'Nach Datum sortieren',
       sortByTitle: 'Nach Titel sortieren',
       sortBySize: 'Nach Größe sortieren',
+    },
+
+    // Media Picker (Tour Media)
+    mediaPicker: {
+      selectedTitle: 'Ausgewählte Bilder',
+      selectedCount: '({{count}}/{{max}})',
+      clearAll: 'Alle löschen',
+      emptySelected: 'Keine Bilder ausgewählt',
+      emptySelectedHint:
+        'Klicken Sie auf ein Bild in der Bibliothek unten, um es hinzuzufügen',
+      libraryTitle: 'Medienbibliothek',
+      searchPlaceholder: 'Nach Namen suchen...',
+      filterAll: 'Alle',
+      filterUnused: 'Nicht zugewiesen',
+      addToTour: 'Zur Tour hinzufügen',
+      removeFromTour: 'Von Tour entfernen',
+      setAsPrimary: 'Als Hauptbild festlegen',
+      isPrimary: 'Hauptbild',
+      alreadySelected: 'Ausgewählt',
+      maxLimitReached: 'Limit von {{max}} Bildern erreicht',
+      dndHint: 'Karten ziehen, um die Reihenfolge zu ändern',
+      toasts: {
+        added: '"{{name}}" zur Tour hinzugefügt',
+        removed: '"{{name}}" von Tour entfernt',
+        clearedAll: 'Alle Bilder entfernt',
+        setPrimary: '"{{name}}" als Hauptbild festgelegt',
+        reordered: 'Bildreihenfolge geändert',
+      },
     },
 
     // Language Tabs

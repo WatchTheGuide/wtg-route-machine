@@ -115,23 +115,26 @@ category: ''                        // ❌ Puste = invalid
 
 ## Historia zmian
 
-| Data       | Zmiana                                                       |
-| ---------- | ------------------------------------------------------------ |
-| 12.12.2025 | Utworzono bug report                                         |
+| Data       | Zmiana                                                         |
+| ---------- | -------------------------------------------------------------- |
+| 12.12.2025 | Utworzono bug report                                           |
 | 12.12.2025 | ✅ Fix Frontend - zmieniono logikę przycisku w liniach 590-603 |
-| 12.12.2025 | ✅ Fix Backend - dodano `tourDraftSchema` z lżejszą walidacją |
-| 12.12.2025 | ✅ Fix Backend - domyślne wartości w `createTour` service |
+| 12.12.2025 | ✅ Fix Backend - dodano `tourDraftSchema` z lżejszą walidacją  |
+| 12.12.2025 | ✅ Fix Backend - domyślne wartości w `createTour` service      |
 
 ## Rozwiązanie (pełne)
 
 ### Frontend (admin/src/pages/TourEditorPage.tsx)
+
 - Przycisk "Zapisz szkic" używa `form.getValues()` zamiast `form.handleSubmit()`
 - Warunek `disabled` sprawdza tylko `isSaving` (nie `isValid`)
 
 ### Backend (backend/api-server/src/routes/admin.tours.routes.ts)
+
 - Dodano `tourDraftSchema` - lżejszy schemat walidacji dla szkiców
 - Endpoint POST/PUT wybiera schemat na podstawie `status === 'draft'`
 
 ### Backend (backend/api-server/src/services/admin.tours.service.ts)
+
 - Domyślne wartości dla pól NOT NULL: `difficulty: 'easy'`, `distance: 0`, `duration: 0`
 - Puste stringi dla opcjonalnych pól: `cityId`, `category`, `imageUrl`
