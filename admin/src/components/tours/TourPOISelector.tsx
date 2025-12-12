@@ -386,9 +386,12 @@ export function TourPOISelector({
 
     source.clear();
 
+    // Create a Set of selected POI IDs for efficient lookup (fixes infinite loop - BUG-010)
+    const selectedPOIIds = new Set(selectedPOIs.map((p) => p.id));
+
     // Add all POI markers
     filteredPOIs.forEach((poi) => {
-      const isSelected = isPOISelected(poi.id);
+      const isSelected = selectedPOIIds.has(poi.id); // Inline check instead of isPOISelected
       const isHovered = hoveredPOIId === poi.id;
 
       const feature = new Feature({
@@ -399,7 +402,7 @@ export function TourPOISelector({
       feature.setStyle(createPOIStyle(poi, isSelected, isHovered));
       source.addFeature(feature);
     });
-  }, [filteredPOIs, selectedPOIs, hoveredPOIId, isPOISelected, createPOIStyle]);
+  }, [filteredPOIs, selectedPOIs, hoveredPOIId, createPOIStyle]); // Removed isPOISelected - was causing infinite loop
 
   // Update waypoints on map
   useEffect(() => {
