@@ -161,6 +161,7 @@ export function MapEditor({
 
   /**
    * Auto-fill waypoint name using reverse geocoding (US 8.6.1)
+   * Uses refs to avoid stale closure issues in async operations
    */
   const autoFillWaypointName = useCallback(
     async (waypointId: string, lat: number, lon: number) => {
@@ -170,7 +171,9 @@ export function MapEditor({
           lon
         );
         if (result) {
-          const updatedWaypoints = waypoints.map((wp) =>
+          // Use refs to get current state (fixes stale closure - BUG-009)
+          const currentWaypoints = waypointsRef.current;
+          const updatedWaypoints = currentWaypoints.map((wp) =>
             wp.id === waypointId
               ? {
                   ...wp,
@@ -179,13 +182,13 @@ export function MapEditor({
                 }
               : wp
           );
-          onWaypointsChange(updatedWaypoints);
+          onWaypointsChangeRef.current(updatedWaypoints);
         }
       } catch (error) {
         console.error('Reverse geocoding failed:', error);
       }
     },
-    [waypoints, onWaypointsChange]
+    [] // Empty deps - function uses only refs
   );
 
   // Refs to hold current values for event handlers (closure fix)
@@ -291,9 +294,6 @@ export function MapEditor({
 
     map.addInteraction(select);
 
-    // Reference for autoFillWaypointName (will be set via ref)
-    const autoFillRef = { current: autoFillWaypointName };
-
     // Click handler for adding waypoints
     map.on('click', (event) => {
       if (!isAddingModeRef.current) return;
@@ -314,7 +314,8 @@ export function MapEditor({
       setIsAddingMode(false);
 
       // Auto-fill waypoint name using reverse geocoding (US 8.6.1)
-      autoFillRef.current(waypointId, coords[1], coords[0]);
+      // autoFillWaypointName now uses refs internally, safe to call directly
+      autoFillWaypointName(waypointId, coords[1], coords[0]);
     });
 
     mapInstanceRef.current = map;
