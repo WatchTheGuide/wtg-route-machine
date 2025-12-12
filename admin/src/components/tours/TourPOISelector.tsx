@@ -168,16 +168,17 @@ export function TourPOISelector({
     [selectedPOIs]
   );
 
-  // Toggle POI selection
+  // Toggle POI selection (BUG-010 fix: inline check instead of isPOISelected to avoid stale closure)
   const togglePOISelection = useCallback(
     (poi: CityPOI) => {
-      if (isPOISelected(poi.id)) {
+      const isCurrentlySelected = selectedPOIs.some((p) => p.id === poi.id);
+      if (isCurrentlySelected) {
         onSelectedPOIsChange(selectedPOIs.filter((p) => p.id !== poi.id));
       } else {
         onSelectedPOIsChange([...selectedPOIs, poi]);
       }
     },
-    [selectedPOIs, isPOISelected, onSelectedPOIsChange]
+    [selectedPOIs, onSelectedPOIsChange]
   );
 
   // Remove POI from selection
@@ -236,11 +237,13 @@ export function TourPOISelector({
   );
 
   // Suggest POIs near the route
+  // Suggest POIs along route (BUG-010 fix: inline check instead of isPOISelected)
   const suggestPOIs = useCallback(() => {
     if (waypoints.length === 0) return;
 
+    const selectedPOIIds = new Set(selectedPOIs.map((p) => p.id));
     const nearbyPOIs = allPOIs
-      .filter((poi) => !isPOISelected(poi.id))
+      .filter((poi) => !selectedPOIIds.has(poi.id))
       .map((poi) => ({ poi, distance: getDistanceFromRoute(poi) }))
       .filter((item) => item.distance !== null && item.distance < 300)
       .sort((a, b) => (a.distance || 0) - (b.distance || 0))
@@ -253,7 +256,6 @@ export function TourPOISelector({
   }, [
     waypoints,
     allPOIs,
-    isPOISelected,
     getDistanceFromRoute,
     selectedPOIs,
     onSelectedPOIsChange,
@@ -748,8 +750,7 @@ export function TourPOISelector({
                         onMouseLeave={() => setHoveredPOIId(null)}>
                         <Checkbox
                           checked={isSelected}
-                          onCheckedChange={() => togglePOISelection(poi)}
-                          className="mt-0.5"
+                          className="mt-0.5 pointer-events-none"
                         />
                         <span className="text-lg flex-shrink-0">
                           {categoryStyles[poi.category]?.icon || '📍'}
