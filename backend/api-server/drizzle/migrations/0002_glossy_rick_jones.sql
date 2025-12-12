@@ -1,0 +1,20 @@
+CREATE TABLE `media` (
+	`id` text PRIMARY KEY NOT NULL,
+	`filename` text NOT NULL,
+	`original_name` text NOT NULL,
+	`mime_type` text NOT NULL,
+	`size_bytes` integer NOT NULL,
+	`width` integer NOT NULL,
+	`height` integer NOT NULL,
+	`url` text NOT NULL,
+	`thumbnail_url` text NOT NULL,
+	`title` text,
+	`alt_text` text,
+	`tags` text DEFAULT '[]' NOT NULL,
+	`context_type` text,
+	`context_id` text,
+	`uploaded_by` text NOT NULL,
+	`created_at` text NOT NULL,
+	`updated_at` text NOT NULL,
+	FOREIGN KEY (`uploaded_by`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
+);

@@ -5,12 +5,14 @@
 
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import {
   poiRouter,
   toursRouter,
   adminAuthRouter,
   adminToursRouter,
   adminPoiRouter,
+  adminMediaRouter,
 } from './routes/index.js';
 import { generalLimiter, authLimiter } from './middleware/index.js';
 import config from './config.js';
@@ -26,6 +28,12 @@ app.use(
 );
 app.use(express.json());
 app.use(generalLimiter);
+
+// Static file serving for uploads (Epic 8.10)
+app.use(
+  '/uploads',
+  express.static(path.join(process.cwd(), 'data', 'uploads'))
+);
 
 // Request logging
 app.use((req, _res, next) => {
@@ -72,6 +80,9 @@ app.use('/api/admin/tours', adminToursRouter);
 
 // Admin POI API - /api/admin/poi/*
 app.use('/api/admin/poi', adminPoiRouter);
+
+// Admin Media API - /api/admin/media/*
+app.use('/api/admin/media', adminMediaRouter);
 
 // ============================================
 // ERROR HANDLING

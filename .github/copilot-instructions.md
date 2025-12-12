@@ -11,6 +11,7 @@ You are working on **WTG Route Machine** - a lightweight OSRM (Open Source Routi
 - 🔧 **Backend Developer** - Node.js, Express, TypeScript, Docker, OSRM, PostgreSQL
 - 📱 **Mobile Developer** - Ionic React 8, Capacitor 6, Zustand, OpenLayers
 - 🌐 **Web Application Specialist** - React, Vite, Tailwind, shadcn/ui, i18n
+- 🎨 **UI/UX Designer** - User Experience, Usability, Accessibility, Design Systems
 - 🧪 **QA Engineer** - Vitest, Cypress, TDD, testing
 - 📚 **Documentation Specialist** - Epic updates, changelogs, API docs
 - 🏗️ **Software Architect** - Code review, design patterns, security, performance
@@ -19,11 +20,12 @@ You are working on **WTG Route Machine** - a lightweight OSRM (Open Source Routi
 
 ```
 1. runSubagent("Architect: Design review", "Jako Software Architect...")
-2. runSubagent("Backend Dev: API implementation", "Jako Backend Developer...")
-3. runSubagent("Web Specialist: UI components", "Jako Web Specialist...")
-4. runSubagent("QA Engineer: Unit tests", "Jako QA Engineer...")
-5. runSubagent("Architect: Code review", "Jako Software Architect, przeprowadź code review...")
-6. runSubagent("Doc Specialist: Update Epic", "Jako Documentation Specialist...")
+2. runSubagent("UI/UX Designer: UX review", "Jako UI/UX Designer...")
+3. runSubagent("Backend Dev: API implementation", "Jako Backend Developer...")
+4. runSubagent("Web Specialist: UI components", "Jako Web Specialist...")
+5. runSubagent("QA Engineer: Unit tests", "Jako QA Engineer...")
+6. runSubagent("Architect: Code review", "Jako Software Architect, przeprowadź code review...")
+7. runSubagent("Doc Specialist: Update Epic", "Jako Documentation Specialist...")
 ```
 
 **Dokumentacja zespołu:** [project_documentation/VIRTUAL_TEAM.md](../project_documentation/VIRTUAL_TEAM.md)
@@ -216,6 +218,98 @@ refactor: Simplify extract-city.sh bbox definition
 
 Replace associative arrays with case statement for better
 shell compatibility (zsh/bash differences)
+```
+
+## Bug Documentation
+
+Wszystkie zidentyfikowane błędy powinny być dokumentowane w katalogu `/bugs/`.
+
+### Struktura pliku bug reportu
+
+Każdy bug powinien mieć osobny plik Markdown w formacie:
+
+- **Nazwa pliku**: `BUG-XXX_short_description.md`
+- **Numeracja**: Kolejne numery (BUG-001, BUG-002, itd.)
+
+### Szablon Bug Reportu
+
+```markdown
+# BUG-XXX: Krótki tytuł błędu
+
+## Status
+
+- **Status**: 🔴 Open / 🟡 In Progress / 🟢 Fixed
+- **Priorytet**: 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low
+- **Data zgłoszenia**: YYYY-MM-DD
+- **Data naprawy**: -
+
+## Opis problemu
+
+Szczegółowy opis błędu - co nie działa, jakie są objawy.
+
+## Kroki reprodukcji
+
+1. Krok pierwszy
+2. Krok drugi
+3. ...
+
+## Oczekiwane zachowanie
+
+Co powinno się zadziać.
+
+## Rzeczywiste zachowanie
+
+Co faktycznie się dzieje.
+
+## Analiza techniczna
+
+### Lokalizacja błędu
+
+- **Plik**: `ścieżka/do/pliku.tsx`
+- **Komponent/Funkcja**: NazwaKomponentu
+- **Linia**: XX-YY
+
+### Root Cause
+
+Wyjaśnienie przyczyny problemu.
+
+### Kod problematyczny
+
+\`\`\`tsx
+// Fragment kodu powodujący błąd
+\`\`\`
+
+## Proponowane rozwiązanie
+
+Opis jak naprawić błąd z przykładowym kodem.
+
+## Powiązane pliki
+
+- `plik1.tsx` - opis związku
+- `plik2.ts` - opis związku
+
+## Testy weryfikujące
+
+Jak zweryfikować że naprawy działają.
+```
+
+### Workflow dokumentowania bugów
+
+1. **Identyfikacja** - zauważenie błędu podczas testów lub zgłoszenie użytkownika
+2. **Analiza** - uruchom subagenta Architect do analizy root cause
+3. **Dokumentacja** - utwórz plik `BUG-XXX_*.md` w `/bugs/`
+4. **Naprawa** - implementacja poprawki
+5. **Weryfikacja** - testy potwierdzające naprawę
+6. **Update statusu** - zmiana statusu na 🟢 Fixed
+
+### Przykładowe komendy
+
+```bash
+# Przegląd otwartych bugów
+ls bugs/
+
+# Szukanie bugów o określonym statusie
+grep -l "🔴 Open" bugs/*.md
 ```
 
 ## Code Guidelines

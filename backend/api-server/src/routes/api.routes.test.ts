@@ -594,5 +594,142 @@ describe('API Routes', () => {
         expect(response.body.tours.length).toBeGreaterThanOrEqual(1);
       });
     });
+
+    describe('Tour Media Integration (US 8.16)', () => {
+      // Helper to create a tour for media tests
+      const createTourForMedia = async () => {
+        const createResponse = await request(app)
+          .post('/api/admin/tours')
+          .set('Authorization', `Bearer ${accessToken}`)
+          .send({
+            ...sampleTourInput,
+            name: {
+              pl: 'Tour for Media Tests ' + Date.now(),
+              en: 'Tour for Media Tests ' + Date.now(),
+              de: 'Tour for Media Tests ' + Date.now(),
+              fr: 'Tour for Media Tests ' + Date.now(),
+              uk: 'Tour for Media Tests ' + Date.now(),
+            },
+          });
+
+        // Response is wrapped in { tour: {...} }
+        const tourId = createResponse.body.tour?.id;
+        if (!tourId) {
+          console.log(
+            'CREATE TOUR FAILED:',
+            createResponse.status,
+            createResponse.body
+          );
+          throw new Error(`Failed to create tour: ${createResponse.status}`);
+        }
+
+        return tourId as string;
+      };
+
+      it('GET /api/admin/tours/:id/media should return empty media for new tour', async () => {
+        const tourId = await createTourForMedia();
+        const response = await request(app)
+          .get(`/api/admin/tours/${tourId}/media`)
+          .set('Authorization', `Bearer ${accessToken}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('mediaIds');
+        expect(response.body).toHaveProperty('primaryMediaId');
+        expect(response.body.mediaIds).toEqual([]);
+        expect(response.body.primaryMediaId).toBeNull();
+      });
+
+      it('PUT /api/admin/tours/:id/media should update mediaIds', async () => {
+        const tourId = await createTourForMedia();
+        const response = await request(app)
+          .put(`/api/admin/tours/${tourId}/media`)
+          .set('Authorization', `Bearer ${accessToken}`)
+          .send({
+            mediaIds: ['media-1', 'media-2', 'media-3'],
+            primaryMediaId: 'media-1',
+          });
+
+        expect(response.status).toBe(200);
+        expect(response.body.mediaIds).toEqual([
+          'media-1',
+          'media-2',
+          'media-3',
+        ]);
+        expect(response.body.primaryMediaId).toBe('media-1');
+      });
+
+      it('GET /api/admin/tours/:id/media should return updated media after PUT', async () => {
+        const tourId = await createTourForMedia();
+
+        // First update media
+        await request(app)
+          .put(`/api/admin/tours/${tourId}/media`)
+          .set('Authorization', `Bearer ${accessToken}`)
+          .send({
+            mediaIds: ['media-1', 'media-2', 'media-3'],
+            primaryMediaId: 'media-1',
+          });
+
+        // Then fetch it back
+        const response = await request(app)
+          .get(`/api/admin/tours/${tourId}/media`)
+          .set('Authorization', `Bearer ${accessToken}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body.mediaIds).toEqual([
+          'media-1',
+          'media-2',
+          'media-3',
+        ]);
+        expect(response.body.primaryMediaId).toBe('media-1');
+      });
+
+      it('PUT /api/admin/tours/:id/media should reject invalid primaryMediaId', async () => {
+        const tourId = await createTourForMedia();
+        const response = await request(app)
+          .put(`/api/admin/tours/${tourId}/media`)
+          .set('Authorization', `Bearer ${accessToken}`)
+          .send({
+            mediaIds: ['media-1', 'media-2'],
+            primaryMediaId: 'not-in-list', // not in mediaIds
+          });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toHaveProperty('error');
+      });
+
+      it('PUT /api/admin/tours/:id/media should allow clearing primaryMediaId', async () => {
+        const tourId = await createTourForMedia();
+        const response = await request(app)
+          .put(`/api/admin/tours/${tourId}/media`)
+          .set('Authorization', `Bearer ${accessToken}`)
+          .send({
+            mediaIds: ['media-1', 'media-2'],
+            primaryMediaId: null,
+          });
+
+        expect(response.status).toBe(200);
+        expect(response.body.mediaIds).toEqual(['media-1', 'media-2']);
+        expect(response.body.primaryMediaId).toBeNull();
+      });
+
+      it('GET /api/admin/tours/:id/media should return 401 without auth', async () => {
+        const tourId = await createTourForMedia();
+        const response = await request(app).get(
+          `/api/admin/tours/${tourId}/media`
+        );
+
+        expect(response.status).toBe(401);
+      });
+
+      it('PUT /api/admin/tours/:id/media should return 401 without auth', async () => {
+        const tourId = await createTourForMedia();
+        const response = await request(app)
+          .put(`/api/admin/tours/${tourId}/media`)
+          .send({ mediaIds: [] });
+
+        expect(response.status).toBe(401);
+      });
+    });
   });
 });

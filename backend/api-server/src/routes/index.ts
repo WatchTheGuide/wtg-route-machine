@@ -7,3 +7,4 @@ export { default as toursRouter } from './tours.routes.js';
 export { default as adminAuthRouter } from './admin.auth.routes.js';
 export { default as adminToursRouter } from './admin.tours.routes.js';
 export { default as adminPoiRouter } from './admin.poi.routes.js';
+export { default as adminMediaRouter } from './admin.media.routes.js';

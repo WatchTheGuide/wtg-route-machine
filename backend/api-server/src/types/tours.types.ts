@@ -44,6 +44,8 @@ export interface Tour {
   duration: number; // seconds
   imageUrl: string;
   pois: TourPOI[];
+  mediaIds: string[]; // Array of media IDs
+  primaryMediaId?: string; // Primary media ID for hero image
 }
 
 export interface TourSummary {
@@ -57,6 +59,8 @@ export interface TourSummary {
   duration: number;
   imageUrl: string;
   poisCount: number;
+  mediaIds: string[]; // Array of media IDs
+  primaryMediaId?: string; // Primary media ID for hero image
 }
 
 export interface TourCity {
@@ -109,6 +113,8 @@ export interface TourInput {
   pois: TourPOI[];
   status?: TourStatus;
   featured?: boolean;
+  mediaIds?: string[]; // Array of media IDs
+  primaryMediaId?: string; // Primary media ID for hero image
 }
 
 // Admin tour summary with extra fields

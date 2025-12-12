@@ -11,6 +11,8 @@
  * POST   /api/admin/tours/:id/publish   - Publish tour
  * POST   /api/admin/tours/:id/archive   - Archive tour
  * POST   /api/admin/tours/bulk-delete   - Bulk delete
+ * GET    /api/admin/tours/:id/media     - Get tour media
+ * PUT    /api/admin/tours/:id/media     - Update tour media
  */
 
 import { Router, Request, Response } from 'express';
@@ -80,6 +82,21 @@ const tourUpdateSchema = tourInputSchema.partial();
 const bulkDeleteSchema = z.object({
   ids: z.array(z.string()).min(1),
 });
+
+const tourMediaUpdateSchema = z
+  .object({
+    mediaIds: z.array(z.string()).optional(),
+    primaryMediaId: z.string().nullable().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.primaryMediaId && data.mediaIds) {
+        return data.mediaIds.includes(data.primaryMediaId);
+      }
+      return true;
+    },
+    { message: 'primaryMediaId must be in mediaIds array' }
+  );
 
 /**
  * GET /api/admin/tours
@@ -433,6 +450,83 @@ router.post(
         error: 'Internal Server Error',
         message: 'Failed to archive tour',
       });
+    }
+  }
+);
+
+/**
+ * GET /api/admin/tours/:id/media
+ * Get media associated with a tour
+ */
+router.get(
+  '/:id/media',
+  editorOrAdmin,
+  async (
+    req: Request<{ id: string }>,
+    res: Response<
+      { mediaIds: string[]; primaryMediaId: string | null } | ErrorResponse
+    >
+  ): Promise<void> => {
+    try {
+      const tour = await adminToursService.getTourById(req.params.id);
+
+      if (!tour) {
+        res.status(404).json({ error: 'Tour not found' });
+        return;
+      }
+
+      res.json({
+        mediaIds: tour.mediaIds || [],
+        primaryMediaId: tour.primaryMediaId || null,
+      });
+    } catch (error) {
+      console.error('Error fetching tour media:', error);
+      res.status(500).json({ error: 'Failed to fetch tour media' });
+    }
+  }
+);
+
+/**
+ * PUT /api/admin/tours/:id/media
+ * Update media associated with a tour
+ */
+router.put(
+  '/:id/media',
+  editorOrAdmin,
+  async (
+    req: Request<{ id: string }>,
+    res: Response<
+      { mediaIds: string[]; primaryMediaId: string | null } | ErrorResponse
+    >
+  ): Promise<void> => {
+    try {
+      const validation = tourMediaUpdateSchema.safeParse(req.body);
+      if (!validation.success) {
+        res.status(400).json({
+          error: 'Validation Error',
+          message: validation.error.errors[0]?.message || 'Invalid input',
+        });
+        return;
+      }
+      const { mediaIds, primaryMediaId } = validation.data;
+
+      const tour = await adminToursService.updateTour(req.params.id, {
+        mediaIds,
+        primaryMediaId: primaryMediaId ?? undefined,
+      });
+
+      if (!tour) {
+        res.status(404).json({ error: 'Tour not found' });
+        return;
+      }
+
+      res.json({
+        mediaIds: tour.mediaIds || [],
+        primaryMediaId: tour.primaryMediaId || null,
+      });
+    } catch (error) {
+      console.error('Error updating tour media:', error);
+      res.status(500).json({ error: 'Failed to update tour media' });
     }
   }
 );

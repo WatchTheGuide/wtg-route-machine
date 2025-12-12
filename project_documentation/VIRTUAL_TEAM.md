@@ -4,18 +4,18 @@
 
 ## 📋 Skład Zespołu
 
-### 1. 🔧 Backend Developer / DevOps Engineer
+### 1. 🔧 Backend Developer
 
-**Specjalizacja:** Node.js, Express, TypeScript, Docker, OSRM, PostgreSQL, Drizzle ORM
+**Specjalizacja:** Node.js, Express, TypeScript, PostgreSQL, Drizzle ORM, OSRM
 
 **Odpowiedzialność:**
 
 - API Backend (REST API, autentykacja JWT, rate limiting)
 - Integracja z OSRM (routing, multi-city support)
 - Baza danych (PostgreSQL, migracje Drizzle)
-- Docker i konteneryzacja
-- Skrypty shell (extract-city, prepare-osrm, run-server)
-- CI/CD i deployment AWS
+- Business logic i services layer
+- API documentation (OpenAPI/Swagger)
+- Unit i integration tests (Vitest, Supertest)
 
 **Aktywne Epic/US:**
 
@@ -28,7 +28,118 @@
 
 ---
 
-### 2. 📱 Mobile Developer
+### 2. ⚙️ DevOps Engineer / Infrastructure Specialist
+
+**Specjalizacja:** Docker, Kubernetes, AWS (EC2/ECS/ECR), Bash/Shell, Nginx, CI/CD, Terraform/IaC
+
+**Odpowiedzialność:**
+
+- **Konteneryzacja i Orkiestracja:**
+  - Docker images (OSRM backend, API server, Nginx)
+  - Docker Compose dla multi-city setup
+  - Optymalizacja rozmiaru obrazów i czasów build
+  - Health checks i restart policies
+- **AWS Infrastructure:**
+  - EC2/ECS deployment i konfiguracja
+  - ECR (Elastic Container Registry) management
+  - VPC, Security Groups, IAM roles
+  - Load Balancer + Auto Scaling
+  - CloudWatch monitoring i logging
+  - Cost optimization (t3.small target)
+- **CI/CD Pipelines:**
+  - GitHub Actions workflows
+  - Automated testing przed deployment
+  - Blue-green / rolling deployments
+  - Rollback strategies
+- **Skrypty automatyzacji:**
+  - Backend management scripts (extract-city.sh, prepare-city-osrm.sh, run-city-server.sh)
+  - Deployment scripts i provisioning
+  - Backup i disaster recovery procedures
+- **Monitoring i Observability:**
+  - Application Performance Monitoring (APM)
+  - Log aggregation (CloudWatch Logs, ELK stack)
+  - Alerting i incident response
+  - Resource usage tracking (CPU, RAM, disk I/O)
+- **Security & Compliance:**
+  - SSL/TLS certificates (Let's Encrypt, ACM)
+  - Secrets management (AWS Secrets Manager)
+  - Network security (firewalls, VPN)
+  - Security audits i vulnerability scanning
+  - Backup strategies i disaster recovery
+
+**Aktywne Epic/US:**
+
+- Epic 9: Production Infrastructure
+- Epic 11: Production Data Pipeline
+- Epic 12: Client Integration & Monitoring
+- Backend Deployment (continuous)
+
+**Narzędzia i technologie:**
+
+- **Containers:** Docker, Docker Compose, Podman
+- **Orchestration:** Docker Swarm, Kubernetes (future)
+- **Cloud:** AWS (EC2, ECS, ECR, S3, CloudWatch)
+- **CI/CD:** GitHub Actions, GitLab CI
+- **IaC:** Terraform, AWS CloudFormation
+- **Monitoring:** CloudWatch, Prometheus, Grafana
+- **Proxy/LB:** Nginx, AWS ALB/NLB
+- **Scripting:** Bash, Python (automation)
+- **Version Control:** Git, GitHub
+
+**Typowe zadania:**
+
+1. **Setup produkcyjnego środowiska na AWS:**
+
+   - Provisioning EC2/ECS infrastruktury
+   - Konfiguracja VPC, subnets, security groups
+   - Setup Nginx jako reverse proxy
+   - SSL certificates (Let's Encrypt)
+
+2. **CI/CD Pipeline dla Backend API:**
+
+   - GitHub Actions workflow: build → test → deploy
+   - Automated testing (unit + integration)
+   - Deploy do staging/production environments
+   - Rollback w przypadku błędów
+
+3. **Multi-city OSRM deployment:**
+
+   - Docker images dla każdego miasta (Kraków, Warszawa, Wrocław, Trójmiasto)
+   - Port management i routing
+   - Health checks i auto-restart
+   - Resource limits (2GB RAM target per city)
+
+4. **Monitoring setup:**
+
+   - CloudWatch dashboards dla API i OSRM
+   - Alerty dla high CPU/RAM/disk usage
+   - Log aggregation i analysis
+   - Performance metrics tracking
+
+5. **Backup i Disaster Recovery:**
+
+   - Automated PostgreSQL backups
+   - OSRM data backup strategy
+   - Infrastructure-as-Code dla szybkiego odtworzenia
+   - Dokumentacja recovery procedures
+
+6. **Performance optimization:**
+
+   - Docker image size reduction
+   - OSRM data optimization (bbox tuning)
+   - Nginx caching strategies
+   - Database query optimization (współpraca z Backend Dev)
+
+7. **Security hardening:**
+   - Security groups configuration
+   - Firewall rules (tylko niezbędne porty)
+   - Secrets rotation (API keys, DB credentials)
+   - SSL/TLS best practices
+   - Vulnerability scanning (Snyk, Trivy)
+
+---
+
+### 3. 📱 Mobile Developer
 
 **Specjalizacja:** Ionic React 8, Capacitor 6, TypeScript, Zustand, OpenLayers
 
@@ -51,7 +162,7 @@
 
 ---
 
-### 3. 🌐 Web Application Specialist (Frontend)
+### 4. 🌐 Web Application Specialist (Frontend)
 
 **Specjalizacja:** React, TypeScript, Vite, Tailwind CSS, shadcn/ui, i18n
 
@@ -74,7 +185,7 @@
 
 ---
 
-### 4. 🧪 QA Engineer / Test Specialist
+### 5. 🧪 QA Engineer / Test Specialist
 
 **Specjalizacja:** Vitest, Cypress, Playwright, Testing Library, TDD/BDD
 
@@ -104,7 +215,7 @@
 
 ---
 
-### 5. 📚 Technical Writer / Documentation Specialist
+### 6. 📚 Technical Writer / Documentation Specialist
 
 **Specjalizacja:** Markdown, Mermaid diagrams, API documentation, User guides
 
@@ -135,7 +246,7 @@
 
 ---
 
-### 6. 🏗️ Software Architect / Tech Lead
+### 7. 🏗️ Software Architect / Tech Lead
 
 **Specjalizacja:** System Design, Code Review, Design Patterns, Performance Optimization, Security
 
@@ -178,6 +289,68 @@
 
 ---
 
+### 8. 🎨 UI/UX Designer
+
+**Specjalizacja:** User Experience, User Interface Design, Usability, Accessibility, Design Systems
+
+**Odpowiedzialność:**
+
+- **User Experience (UX):**
+  - Analiza user flows i journey mapping
+  - Identyfikacja problemów z użytecznością (usability issues)
+  - Prototypowanie interakcji i animacji
+  - Testy użyteczności (cognitive walkthrough, heuristic evaluation)
+  - Rekomendacje poprawy UX na podstawie bugów
+- **User Interface (UI):**
+  - Spójność wizualna między modułami (mobile, admin, web)
+  - Design system i component library guidelines
+  - Responsive design patterns
+  - Color schemes, typography, spacing
+  - Dark/light mode consistency
+- **Accessibility (a11y):**
+  - WCAG 2.1 compliance review
+  - Screen reader compatibility
+  - Keyboard navigation
+  - Color contrast requirements
+- **Design Review:**
+  - Review nowych komponentów pod kątem UX
+  - Feedback na mockupy i prototypy
+  - Walidacja implementacji vs design specs
+  - Identyfikacja nieintuicyjnych wzorców UI
+
+**Aktywne Epic/US:**
+
+- Epic 8: Admin Panel and Website (UX review)
+- Epic 7: Mobile App (UI consistency)
+- Cross-Epic: Design system maintenance
+- Bug triage: Analiza UX-related issues
+
+**Narzędzia:**
+
+- Figma / Sketch (design)
+- Storybook (component preview)
+- axe DevTools (accessibility)
+- Hotjar / FullStory (user behavior analysis)
+
+**Checklisty UX Review:**
+
+1. **Intuicyjność:** Czy użytkownik wie co robić bez instrukcji?
+2. **Feedback:** Czy system informuje o akcjach (loading, success, error)?
+3. **Konsystencja:** Czy podobne akcje wyglądają i działają podobnie?
+4. **Odwracalność:** Czy użytkownik może cofnąć akcję?
+5. **Dostępność:** Czy działa z klawiaturą i screen readerem?
+6. **Responsywność:** Czy działa na różnych rozmiarach ekranu?
+
+**Typowe zadania:**
+
+1. **Analiza bugów UX** - np. "przycisk X nie działa intuicyjnie"
+2. **Propozycja redesignu** - wireframes/mockupy alternatywnych rozwiązań
+3. **Design review** - ocena nowych komponentów przed implementacją
+4. **Accessibility audit** - sprawdzenie zgodności z WCAG
+5. **User flow optimization** - uproszczenie skomplikowanych procesów
+
+---
+
 ## 🔄 Workflow Współpracy (Swarm Mode)
 
 ### ⚠️ ZASADA DOMYŚLNA: ZAWSZE SWARM MODE
@@ -203,11 +376,12 @@ runSubagent({
 **Typowy podział dla User Story:**
 
 1. 🏗️ **Architect** → Analiza wymagań, design review
-2. 🔧 **Backend Dev** → API routes, services, database
-3. 🌐 **Web Specialist** → UI components, i18n, hooks
-4. 🧪 **QA Engineer** → Unit tests, integration tests
-5. 🏗️ **Architect** → Code review, security check
-6. 📚 **Doc Specialist** → Epic update, changelog
+2. 🎨 **UI/UX Designer** → UX review, wireframes, design specs
+3. 🔧 **Backend Dev** → API routes, services, database
+4. 🌐 **Web Specialist** → UI components, i18n, hooks
+5. 🧪 **QA Engineer** → Unit tests, integration tests
+6. 🏗️ **Architect** → Code review, security check
+7. 📚 **Doc Specialist** → Epic update, changelog
 
 ### Model Roju Agentów
 
@@ -226,30 +400,30 @@ Zespół pracuje w trybie **Swarm Mode** - każdy specjalista może być aktywow
 │  → Podział na podzadania                                    │
 └─────────────────────┬───────────────────────────────────────┘
                       │
-    ┌─────────────────┼─────────────────┬─────────────────┐
-    ▼                 ▼                 ▼                 ▼
-┌─────────┐     ┌─────────┐       ┌─────────┐       ┌─────────┐
-│ Backend │     │ Mobile  │       │   Web   │       │   QA    │
-│   Dev   │     │   Dev   │       │  Spec.  │       │  Spec.  │
-└────┬────┘     └────┬────┘       └────┬────┘       └────┬────┘
-     │               │                 │                 │
-     └───────────────┴────────┬────────┴─────────────────┘
-                              │
-                              ▼
-               ┌──────────────────────────┐
-               │   🏗️ SOFTWARE ARCHITECT  │
-               │      (Code Review)       │
-               └────────────┬─────────────┘
-                            │
-                            ▼
-               ┌──────────────────────────┐
-               │  📚 Documentation Spec.  │
-               └────────────┬─────────────┘
-                            │
-                            ▼
-               ┌──────────────────────────┐
-               │      ✅ DELIVERABLE      │
-               └──────────────────────────┘
+    ┌─────────┬─────────┼────────────┬────────────┬──────────────┐
+    ▼         ▼         ▼            ▼            ▼              ▼
+┌─────────┐ ┌─────────┐ ┌─────────┐  ┌─────────┐  ┌─────────┐   ┌─────────┐
+│ UI/UX   │ │ Backend │ │ DevOps  │  │ Mobile  │  │   Web   │   │   QA    │
+│Designer │ │   Dev   │ │   Eng   │  │   Dev   │  │  Spec.  │   │  Spec.  │
+└────┬────┘ └────┬────┘ └────┬────┘  └────┬────┘  └────┬────┘   └────┬────┘
+     │           │           │            │            │              │
+     └───────────┴───────────┴────────────┴────────────┴──────────────┘
+                                  │
+                                  ▼
+                   ┌──────────────────────────┐
+                   │   🏗️ SOFTWARE ARCHITECT  │
+                   │      (Code Review)       │
+                   └────────────┬─────────────┘
+                                │
+                                ▼
+                   ┌──────────────────────────┐
+                   │  📚 Documentation Spec.  │
+                   └────────────┬─────────────┘
+                                │
+                                ▼
+                   ┌──────────────────────────┐
+                   │      ✅ DELIVERABLE      │
+                   └──────────────────────────┘
 ```
 
 ### Przekazywanie zadań między specjalistami
@@ -257,12 +431,14 @@ Zespół pracuje w trybie **Swarm Mode** - każdy specjalista może być aktywow
 | Etap               | Odpowiedzialny     | Output                  |
 | ------------------ | ------------------ | ----------------------- |
 | 1. Analiza wymagań | Architect          | Design doc, ADR         |
-| 2. Planowanie      | Doc Specialist     | User Story z kryteriami |
-| 3. Implementacja   | Backend/Mobile/Web | Kod + unit tests        |
-| 4. Code Review     | Architect          | Feedback, suggestions   |
-| 5. Testy E2E       | QA Engineer        | Test report             |
-| 6. Dokumentacja    | Doc Specialist     | Aktualizacja docs       |
-| 7. Final Review    | Architect          | Approval, merge         |
+| 2. UX Design       | UI/UX Designer     | Wireframes, user flows  |
+| 3. Planowanie      | Doc Specialist     | User Story z kryteriami |
+| 4. Implementacja   | Backend/Mobile/Web | Kod + unit tests        |
+| 5. UX Review       | UI/UX Designer     | Usability feedback      |
+| 6. Code Review     | Architect          | Feedback, suggestions   |
+| 7. Testy E2E       | QA Engineer        | Test report             |
+| 8. Dokumentacja    | Doc Specialist     | Aktualizacja docs       |
+| 9. Final Review    | Architect          | Approval, merge         |
 
 ### Wspólne standardy:
 
@@ -279,8 +455,10 @@ Zespół pracuje w trybie **Swarm Mode** - każdy specjalista może być aktywow
 | Obszar       | Specjalista    | Aktualny Epic   | Status         |
 | ------------ | -------------- | --------------- | -------------- |
 | Backend      | Backend Dev    | Epic 15 (POI)   | 🔄 In Progress |
+| DevOps       | DevOps Eng     | Epic 9, 11      | 🔄 In Progress |
 | Mobile       | Mobile Dev     | Epic 7          | ✅ Complete    |
 | Admin/Web    | Web Specialist | Epic 8 (US 8.9) | ✅ Complete    |
+| UI/UX        | UI/UX Designer | Epic 8 (UX)     | 🔄 In Progress |
 | QA           | QA Engineer    | Cross-Epic      | 🔄 Continuous  |
 | Docs         | Doc Specialist | Cross-Epic      | 🔄 Continuous  |
 | Architecture | Architect      | Cross-Epic      | 🔄 Continuous  |
@@ -289,10 +467,13 @@ Zespół pracuje w trybie **Swarm Mode** - każdy specjalista może być aktywow
 
 ## 📅 Historia zmian
 
-| Data       | Zmiana                                        |
-| ---------- | --------------------------------------------- |
-| 2025-12-11 | Dodano Software Architect / Tech Lead         |
-| 2025-12-11 | Dodano QA Engineer i Documentation Specialist |
-| 2025-12-11 | Wprowadzono Swarm Mode workflow               |
-| 2025-12-11 | Dodano Web Application Specialist do zespołu  |
-| 2025-12-11 | Utworzono dokumentację zespołu wirtualnego    |
+| Data       | Zmiana                                                          |
+| ---------- | --------------------------------------------------------------- |
+| 2025-12-12 | Dodano UI/UX Designera - odpowiedzialnego za UX review i design |
+| 2025-12-12 | Dodano dedykowanego DevOps Engineer / Infrastructure Specialist |
+| 2025-12-12 | Rozdzielono rolę Backend Dev i DevOps                           |
+| 2025-12-11 | Dodano Software Architect / Tech Lead                           |
+| 2025-12-11 | Dodano QA Engineer i Documentation Specialist                   |
+| 2025-12-11 | Wprowadzono Swarm Mode workflow                                 |
+| 2025-12-11 | Dodano Web Application Specialist do zespołu                    |
+| 2025-12-11 | Utworzono dokumentację zespołu wirtualnego                      |
