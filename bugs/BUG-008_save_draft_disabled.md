@@ -7,7 +7,8 @@
 | **ID**              | BUG-008                   |
 | **Data zgłoszenia** | 12 grudnia 2025           |
 | **Priorytet**       | 🔴 High                   |
-| **Status**          | 🔵 Open                   |
+| **Status**          | 🟢 Fixed                  |
+| **Data naprawy**    | 12 grudnia 2025           |
 | **Komponent**       | Admin Panel > Tour Editor |
 | **Powiązane US**    | US 8.3: Tour Editor       |
 
@@ -114,6 +115,7 @@ category: ''                        // ❌ Puste = invalid
 
 ## Historia zmian
 
-| Data       | Zmiana               |
-| ---------- | -------------------- |
-| 12.12.2025 | Utworzono bug report |
+| Data       | Zmiana                                                          |
+| ---------- | --------------------------------------------------------------- |
+| 12.12.2025 | Utworzono bug report                                            |
+| 12.12.2025 | ✅ Naprawiono - zmieniono logikę przycisku w liniach 590-603    |

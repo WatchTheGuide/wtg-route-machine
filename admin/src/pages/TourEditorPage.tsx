@@ -589,8 +589,11 @@ export function TourEditorPage() {
           )}
           <Button
             variant="outline"
-            onClick={() => form.handleSubmit((v) => onSubmit(v, false))()}
-            disabled={!form.formState.isValid || isSaving}>
+            onClick={async () => {
+              const values = form.getValues(); // Pobierz wartości BEZ walidacji
+              await onSubmit(values, false); // Zapisz jako szkic
+            }}
+            disabled={isSaving}>
             {isSaving ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
             ) : (
