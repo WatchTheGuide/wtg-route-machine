@@ -1661,6 +1661,232 @@ backend/api-server/
 
 ---
 
+## US 8.19: Unified Route Editor - Połączenie Waypoints i POI
+
+**Jako** administrator wycieczki  
+**Chcę** zarządzać trasą i punktami POI w jednym miejscu  
+**Aby** jasno widzieć relację między waypointami trasy a punktami zainteresowania
+
+### Priorytet: 🟠 High
+
+### Estymacja: 3-4 dni
+
+### Kontekst i motywacja
+
+Aktualny interfejs posiada dwie oddzielne zakładki:
+
+- **Tab "Trasa"** - zarządzanie waypointami (Start → Waypoint → Koniec)
+- **Tab "POI"** - wybór punktów zainteresowania
+
+**Problem UX:**
+
+1. Niejasna relacja między waypoints a POI - użytkownik nie wie, jak POI wpływa na trasę
+2. POI wybrane w jednej zakładce nie są widoczne jako część trasy
+3. Konieczność przełączania się między zakładkami
+4. Brak możliwości dodania POI jako części trasy
+
+**Rozwiązanie:** Zunifikowany edytor z opcją "Dodaj punkt" (dropdown: Własny waypoint / Z listy POI)
+
+### Zależności:
+
+- US 8.6: Edytor wycieczek - interaktywna mapa ✅
+- US 8.7: Zarządzanie POI ✅
+- BUG-010: POI infinite loop fix ✅
+
+### Kryteria akceptacji:
+
+#### Faza 1: Refaktoring struktury edytora
+
+- [ ] Usunięcie `Tabs` i zakładek "Trasa" / "POI"
+- [ ] Jeden zunifikowany widok z trzema sekcjami:
+  1. **Punkty trasy** (Route Waypoints) - główna lista waypoints
+  2. **Dodatkowe POI** - POI które nie są częścią trasy ale są na mapie
+  3. **Działania** - przyciski dodawania
+- [ ] Zachowanie funkcjonalności wyświetlania trasy na mapie
+
+#### Faza 2: Dropdown "Dodaj punkt"
+
+- [ ] Button "Dodaj punkt" z dropdown menu:
+  - Opcja 1: "Własny waypoint" → kliknij na mapę
+  - Opcja 2: "Z listy POI" → otwiera modal z wyszukiwaniem
+  - Opcja 3: "Pobliskie POI" → sugeruje POI w pobliżu istniejącej trasy
+- [ ] Modal wyboru POI:
+  - Wyszukiwarka z filtrowaniem po nazwie
+  - Filtr kategorii (muzeum, restauracja, park, etc.)
+  - Grid/lista z miniaturkami i nazwami
+  - Multi-select (można wybrać wiele POI naraz)
+- [ ] Po wybraniu POI → automatycznie dodaje jako waypoint
+
+#### Faza 3: Sekcja "Dodatkowe POI" (opcjonalna)
+
+- [ ] Lista POI które są powiązane z wycieczką ale nie są częścią trasy
+- [ ] Przypadek użycia: "W pobliżu trasy zobaczysz też..." (informacja, nie waypoint)
+- [ ] Rozróżnienie wizualne: inne ikony/kolory na mapie
+- [ ] Checkbox: "Pokaż na mapie" dla każdego dodatkowego POI
+
+#### Faza 4: Rozróżnienie wizualne Waypoint vs POI-as-Waypoint
+
+- [ ] Waypoints zwykłe: zielone markery z numerem (1, 2, 3...)
+- [ ] Waypoints z POI: fioletowe markery z ikoną kategorii
+- [ ] Tooltip na hover: nazwa POI, kategoria, zdjęcie
+- [ ] Na liście waypoints: badge "POI" przy waypoints utworzonych z POI
+- [ ] Click na waypoint-POI → rozszerza szczegóły (opis, zdjęcia)
+
+#### Faza 5: Drag & Drop z zachowaniem typu
+
+- [ ] Możliwość przeciągania waypoints (zmiana kolejności)
+- [ ] Waypoints-POI zachowują powiązanie z POI po przeciągnięciu
+- [ ] Możliwość "odpięcia" POI → zamiana na zwykły waypoint
+- [ ] Możliwość "przypięcia" POI do istniejącego waypoint
+
+#### Faza 6: UX Polish
+
+- [ ] Animacja dodawania punktu (slide-in)
+- [ ] Confirmation dialog przy usuwaniu waypoint-POI
+- [ ] Undo/Redo dla operacji na trasie
+- [ ] Keyboard shortcuts: Enter (dodaj), Delete (usuń), Ctrl+Z (undo)
+- [ ] Empty state: "Dodaj pierwszy punkt trasy aby rozpocząć"
+
+### Mockup UI (ASCII):
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│ Edytor Wycieczki: "Spacer po Krakowie"                              │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  PUNKTY TRASY (5)                                    [+ Dodaj punkt]│
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │ ≡  1. 📍 Start: Rynek Główny                           [✕]    │ │
+│  │ ≡  2. 🏛️ Sukiennice [POI]                              [✕]    │ │
+│  │ ≡  3. ⛪ Kościół Mariacki [POI]                         [✕]    │ │
+│  │ ≡  4. 📍 Floriańska 15                                  [✕]    │ │
+│  │ ≡  5. 🏰 Barbakan [POI]                                 [✕]    │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+│  DODATKOWE POI (2)                            [+ Dodaj dodatkowe]   │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │ ☐ 🍕 Pizzeria Da Grasso - vis-à-vis trasy                      │ │
+│  │ ☑ 🏪 Sklep z pamiątkami - 50m od Sukiennic                     │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+│  ─────────────────────────────────────────────────────────────────  │
+│  Trasa: 2.3 km • ~28 min • Pieszo                                   │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Mockup Dropdown "Dodaj punkt":
+
+```
+┌─────────────────────────────┐
+│ + Dodaj punkt               │
+├─────────────────────────────┤
+│ 📍 Własny waypoint          │  ← kliknij na mapę
+│ 🔍 Z listy POI...           │  ← otwiera modal
+│ 📌 Pobliskie POI            │  ← sugestie
+└─────────────────────────────┘
+```
+
+### Mockup mapy:
+
+```
+  ┌──────────────────────────────────────┐
+  │                                      │
+  │    [1]────────[🏛️2]                  │
+  │                  │                   │
+  │              [⛪3]                    │
+  │                  │                   │
+  │              [4]────────[🏰5]        │
+  │                                      │
+  │          (🍕)  ← szary marker        │
+  │                  (dodatkowy POI)     │
+  │                                      │
+  └──────────────────────────────────────┘
+
+  Legenda:
+  [1] [4] = zwykłe waypoints (zielone)
+  [🏛️2] [⛪3] [🏰5] = waypoints z POI (fioletowe)
+  (🍕) = dodatkowe POI (szare, nie na trasie)
+```
+
+### Typy TypeScript:
+
+```typescript
+// Nowy typ waypoint z opcjonalnym powiązaniem POI
+interface RouteWaypoint {
+  id: string;
+  order: number;
+  coordinate: [number, number]; // [lon, lat]
+  name: string;
+
+  // Opcjonalne powiązanie z POI
+  poiId?: string; // ID powiązanego POI (jeśli z POI)
+  poiData?: {
+    category: string;
+    icon: string;
+    description?: Record<string, string>;
+    images?: string[];
+  };
+
+  // Typ waypoint
+  type: 'custom' | 'poi'; // custom = kliknięty na mapie, poi = z listy POI
+}
+
+// Dodatkowe POI (nie na trasie)
+interface AdditionalPOI {
+  poiId: string;
+  showOnMap: boolean; // czy wyświetlać na mapie
+  note?: string; // opcjonalna notatka ("vis-à-vis trasy")
+}
+
+// Stan edytora
+interface RouteEditorState {
+  waypoints: RouteWaypoint[];
+  additionalPOIs: AdditionalPOI[];
+  routeGeometry: GeoJSON.LineString | null;
+  distance: number;
+  duration: number;
+}
+```
+
+### Komponenty do modyfikacji:
+
+1. **TourEditor.tsx** - usunięcie Tabs, nowy layout
+2. **MapEditor.tsx** - obsługa dwóch typów markerów
+3. **WaypointList.tsx** - badge POI, rozszerzone szczegóły
+4. **POIPickerModal.tsx** (nowy) - modal wyboru POI
+5. **AdditionalPOIList.tsx** (nowy) - lista dodatkowych POI
+
+### Backend (opcjonalne rozszerzenie):
+
+- Rozszerzenie schematu Tour o `additionalPOIs[]`
+- Endpoint sugestii POI w pobliżu trasy: `GET /api/tours/:id/nearby-poi`
+
+### Migration notes:
+
+- Istniejące wycieczki z POI → automatyczna konwersja do nowego formatu
+- Backward compatibility: jeśli brak `waypoints[].type` → domyślnie 'custom'
+
+### Testy:
+
+- [ ] Unit: Konwersja POI → RouteWaypoint
+- [ ] Unit: Drag & drop zachowuje poiId
+- [ ] Integration: Dodawanie POI przez dropdown
+- [ ] E2E: Pełny flow tworzenia wycieczki z mieszanymi waypoints
+
+### Fazy implementacji:
+
+1. **Faza 1 (0.5 dnia)**: Refaktoring - usunięcie Tabs, nowy layout
+2. **Faza 2 (1 dzień)**: POIPickerModal + dropdown "Dodaj punkt"
+3. **Faza 3 (0.5 dnia)**: Sekcja "Dodatkowe POI"
+4. **Faza 4 (0.5 dnia)**: Rozróżnienie wizualne na mapie i liście
+5. **Faza 5 (0.5 dnia)**: Drag & drop z zachowaniem typu
+6. **Faza 6 (0.5 dnia)**: UX polish, testy, dokumentacja
+
+### Status: 📋 PLANNED
+
+---
+
 ## Estymacje Podsumowanie
 
 | User Story | Estymacja | Status             |
@@ -1680,11 +1906,12 @@ backend/api-server/
 | US 8.13    | 1 dzień   |                    |
 | US 8.14    | 2 dni     |                    |
 | US 8.15    | 1.5 dnia  |                    |
-| US 8.16    | 1 dzień   |                    |
+| US 8.16    | 1 dzień   | ✅ COMPLETED       |
 | US 8.17    | 4.5 dnia  | ✅ COMPLETED       |
 | US 8.18    | 2.5 dnia  | ✅ DONE (95%)      |
+| US 8.19    | 3.5 dnia  | 📋 PLANNED         |
 
-**Łączna estymacja:** ~37 dni roboczych (~7.5 tygodnia)
+**Łączna estymacja:** ~40.5 dni roboczych (~8 tygodni)
 
 **MVP (bez US 8.14):** ~35 dni roboczych
 
