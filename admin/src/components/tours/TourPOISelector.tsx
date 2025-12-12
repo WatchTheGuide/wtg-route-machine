@@ -16,7 +16,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -748,10 +747,28 @@ export function TourPOISelector({
                         onClick={() => togglePOISelection(poi)}
                         onMouseEnter={() => setHoveredPOIId(poi.id)}
                         onMouseLeave={() => setHoveredPOIId(null)}>
-                        <Checkbox
-                          checked={isSelected}
-                          className="mt-0.5 pointer-events-none"
-                        />
+                        {/* Visual checkbox indicator - no Radix Checkbox to avoid React 19 compatibility issues */}
+                        <div
+                          className={`h-4 w-4 shrink-0 rounded-sm border mt-0.5 flex items-center justify-center ${
+                            isSelected
+                              ? 'bg-primary border-primary text-primary-foreground'
+                              : 'border-muted-foreground'
+                          }`}>
+                          {isSelected && (
+                            <svg
+                              className="h-3 w-3"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={3}>
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          )}
+                        </div>
                         <span className="text-lg flex-shrink-0">
                           {categoryStyles[poi.category]?.icon || '📍'}
                         </span>
