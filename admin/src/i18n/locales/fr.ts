@@ -169,6 +169,16 @@ const fr = {
         description:
           'Cette action est irréversible. Le circuit "{{name}}" sera définitivement supprimé.',
       },
+      // Toast messages
+      deleteSuccess: 'Circuit "{{name}}" supprimé',
+      deleteError: 'Échec de la suppression du circuit',
+      bulkDeleteSuccess: '{{count}} circuits supprimés',
+      bulkDeleteError: 'Échec de la suppression des circuits',
+      bulkPublishSuccess: '{{count}} circuits publiés',
+      bulkPublishError: 'Échec de la publication des circuits',
+      duplicateSuccess: 'Circuit dupliqué',
+      duplicateError: 'Échec de la duplication du circuit',
+      loadError: 'Échec du chargement des circuits',
     },
 
     // Tour Editor
@@ -181,6 +191,8 @@ const fr = {
       saved: 'Circuit enregistré',
       published: 'Circuit publié',
       deleted: 'Circuit supprimé',
+      saveError: "Échec de l'enregistrement du circuit",
+      deleteError: 'Échec de la suppression du circuit',
       saveDraft: 'Enregistrer brouillon',
       publish: 'Publier',
       previewButton: 'Aperçu',
@@ -635,6 +647,35 @@ const fr = {
       sortByTitle: 'Trier par Titre',
       sortBySize: 'Trier par Taille',
     },
+
+    // Media Picker (Tour Media)
+    mediaPicker: {
+      selectedTitle: 'Images sélectionnées',
+      selectedCount: '({{count}}/{{max}})',
+      clearAll: 'Tout effacer',
+      emptySelected: 'Aucune image sélectionnée',
+      emptySelectedHint:
+        "Cliquez sur une image dans la bibliothèque ci-dessous pour l'ajouter",
+      libraryTitle: 'Bibliothèque de médias',
+      searchPlaceholder: 'Rechercher par nom...',
+      filterAll: 'Tous',
+      filterUnused: 'Non attribués',
+      addToTour: 'Ajouter à la visite',
+      removeFromTour: 'Retirer de la visite',
+      setAsPrimary: 'Définir comme principale',
+      isPrimary: 'Image principale',
+      alreadySelected: 'Sélectionné',
+      maxLimitReached: 'Limite de {{max}} images atteinte',
+      dndHint: 'Faites glisser les cartes pour réorganiser',
+      toasts: {
+        added: '"{{name}}" ajouté à la visite',
+        removed: '"{{name}}" retiré de la visite',
+        clearedAll: 'Toutes les images supprimées',
+        setPrimary: '"{{name}}" défini comme image principale',
+        reordered: 'Images réorganisées',
+      },
+    },
+
     // Language Tabs
     languageTabs: {
       languages: {
