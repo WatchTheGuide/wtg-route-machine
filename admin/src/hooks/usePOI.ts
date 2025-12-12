@@ -8,7 +8,6 @@ import poiService, {
   type CityInfo,
   type CategoryInfo,
   type POICategory,
-  type AdminPOI,
   type AdminPOIListResponse,
   type AdminPOIStatsResponse,
   type AdminPOIFilters,

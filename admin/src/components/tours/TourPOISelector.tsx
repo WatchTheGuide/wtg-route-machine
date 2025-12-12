@@ -51,7 +51,7 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useCityPOIs, usePOICategories } from '@/hooks/usePOI';
 import type { CityPOI, POICategory } from '@/services/poi.service';
-import type { Waypoint, Coordinate } from '@/types';
+import type { Waypoint, Coordinate, LocalizedString } from '@/types';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -98,7 +98,17 @@ export function TourPOISelector({
   waypoints,
   onSelectedPOIsChange,
 }: TourPOISelectorProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  // Helper to get localized value
+  const getLocalizedValue = useCallback(
+    (localized: LocalizedString | undefined): string => {
+      if (!localized) return '';
+      const lang = i18n.language as keyof LocalizedString;
+      return localized[lang] || localized.en || localized.pl || '';
+    },
+    [i18n.language]
+  );
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
@@ -133,8 +143,8 @@ export function TourPOISelector({
       const query = searchQuery.toLowerCase();
       result = result.filter(
         (poi) =>
-          poi.name.toLowerCase().includes(query) ||
-          poi.description?.toLowerCase().includes(query) ||
+          getLocalizedValue(poi.name).toLowerCase().includes(query) ||
+          getLocalizedValue(poi.description).toLowerCase().includes(query) ||
           poi.address?.toLowerCase().includes(query) ||
           poi.tags?.some((tag) => tag.toLowerCase().includes(query))
       );
@@ -148,7 +158,7 @@ export function TourPOISelector({
     }
 
     return result;
-  }, [allPOIs, searchQuery, selectedCategories]);
+  }, [allPOIs, searchQuery, selectedCategories, getLocalizedValue]);
 
   // Check if POI is selected
   const isPOISelected = useCallback(
@@ -510,11 +520,11 @@ export function TourPOISelector({
                       {categoryStyles[mapSelectedPOI.category]?.icon || '📍'}
                     </span>
                     <h4 className="font-medium truncate">
-                      {mapSelectedPOI.name}
+                      {getLocalizedValue(mapSelectedPOI.name)}
                     </h4>
                   </div>
                   <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                    {mapSelectedPOI.description}
+                    {getLocalizedValue(mapSelectedPOI.description)}
                   </p>
                   {mapSelectedPOI.address && (
                     <p className="text-xs text-muted-foreground mt-1">
@@ -586,7 +596,7 @@ export function TourPOISelector({
                       </span>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">
-                          {poi.name}
+                          {getLocalizedValue(poi.name)}
                         </p>
                       </div>
                       <div className="flex items-center gap-1">
@@ -742,9 +752,11 @@ export function TourPOISelector({
                           {categoryStyles[poi.category]?.icon || '📍'}
                         </span>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium">{poi.name}</p>
+                          <p className="text-sm font-medium">
+                            {getLocalizedValue(poi.name)}
+                          </p>
                           <p className="text-xs text-muted-foreground line-clamp-1">
-                            {poi.description}
+                            {getLocalizedValue(poi.description)}
                           </p>
                           <div className="flex items-center gap-2 mt-1 flex-wrap">
                             <Badge variant="outline" className="text-xs">

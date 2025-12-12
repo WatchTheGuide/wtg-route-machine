@@ -216,6 +216,33 @@ export const toursService = {
     );
     return response.cities;
   },
+
+  /**
+   * Get tour media
+   */
+  async getTourMedia(
+    tourId: string
+  ): Promise<{ mediaIds: string[]; primaryMediaId: string | null }> {
+    const response = await apiClient.get<{
+      mediaIds: string[];
+      primaryMediaId: string | null;
+    }>(`/api/admin/tours/${tourId}/media`);
+    return response;
+  },
+
+  /**
+   * Update tour media
+   */
+  async updateTourMedia(
+    tourId: string,
+    data: { mediaIds: string[]; primaryMediaId?: string }
+  ): Promise<{ mediaIds: string[]; primaryMediaId: string | null }> {
+    const response = await apiClient.put<{
+      mediaIds: string[];
+      primaryMediaId: string | null;
+    }>(`/api/admin/tours/${tourId}/media`, data);
+    return response;
+  },
 };
 
 export default toursService;

@@ -31,6 +31,7 @@ const createSampleTourInput = (overrides?: Partial<TourInput>): TourInput => ({
   pois: [],
   status: 'draft',
   featured: false,
+  mediaIds: [],
   ...overrides,
 });
 
@@ -533,6 +534,87 @@ describe('Admin Tours Service', () => {
       expect(stats.totalTours).toBe(initialTotal + 2);
       expect(stats.publishedTours).toBeGreaterThanOrEqual(1);
       expect(stats.draftTours).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  describe('Tour Media Integration (US 8.16)', () => {
+    it('should create tour with mediaIds', async () => {
+      const input = createSampleTourInput({
+        mediaIds: ['media-1', 'media-2', 'media-3'],
+        primaryMediaId: 'media-1',
+      });
+      const tour = await adminToursService.createTour(input);
+
+      expect(tour.mediaIds).toEqual(['media-1', 'media-2', 'media-3']);
+      expect(tour.primaryMediaId).toBe('media-1');
+    });
+
+    it('should create tour with empty mediaIds by default', async () => {
+      const input = createSampleTourInput();
+      const tour = await adminToursService.createTour(input);
+
+      expect(tour.mediaIds).toEqual([]);
+      expect(tour.primaryMediaId).toBeUndefined();
+    });
+
+    it('should update tour mediaIds', async () => {
+      const input = createSampleTourInput();
+      const tour = await adminToursService.createTour(input);
+
+      const updated = await adminToursService.updateTour(tour.id, {
+        mediaIds: ['new-media-1', 'new-media-2'],
+        primaryMediaId: 'new-media-1',
+      });
+
+      expect(updated).toBeDefined();
+      expect(updated!.mediaIds).toEqual(['new-media-1', 'new-media-2']);
+      expect(updated!.primaryMediaId).toBe('new-media-1');
+    });
+
+    it('should preserve mediaIds when updating other fields', async () => {
+      const input = createSampleTourInput({
+        mediaIds: ['media-1'],
+        primaryMediaId: 'media-1',
+      });
+      const tour = await adminToursService.createTour(input);
+
+      const updated = await adminToursService.updateTour(tour.id, {
+        name: { ...tour.name, pl: 'Nowa nazwa' },
+      });
+
+      expect(updated!.mediaIds).toEqual(['media-1']);
+      expect(updated!.primaryMediaId).toBe('media-1');
+    });
+
+    it('should clear primaryMediaId when set to null', async () => {
+      const input = createSampleTourInput({
+        mediaIds: ['media-1'],
+        primaryMediaId: 'media-1',
+      });
+      const tour = await adminToursService.createTour(input);
+
+      // Note: In Drizzle, undefined means "don't update", null means "set to null"
+      const updated = await adminToursService.updateTour(tour.id, {
+        primaryMediaId: null as unknown as undefined, // Workaround for TypeScript
+      });
+
+      // After clearing, it should be undefined (null in DB mapped to undefined)
+      expect(updated!.primaryMediaId).toBeFalsy();
+    });
+
+    it('should duplicate tour with mediaIds', async () => {
+      const input = createSampleTourInput({
+        mediaIds: ['media-1', 'media-2'],
+        primaryMediaId: 'media-1',
+      });
+      const original = await adminToursService.createTour(input);
+
+      const duplicate = await adminToursService.duplicateTour(original.id);
+
+      expect(duplicate).toBeDefined();
+      expect(duplicate!.id).not.toBe(original.id);
+      expect(duplicate!.mediaIds).toEqual(['media-1', 'media-2']);
+      expect(duplicate!.primaryMediaId).toBe('media-1');
     });
   });
 });

@@ -11,6 +11,7 @@ import {
   useDeleteTour,
   usePublishTour,
 } from '@/hooks/useTours';
+import { toursService } from '@/services/tours.service';
 import type { TourInput, POI } from '@/services/tours.service';
 import {
   Card,
@@ -53,6 +54,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/sonner';
 import { MapEditor, WaypointsList, TourPOISelector } from '@/components/tours';
+import { TourMediaPicker } from '@/components/media';
 import type { CityPOI } from '@/services/poi.service';
 import {
   ArrowLeft,
@@ -112,6 +114,7 @@ const tourFormSchema = z.object({
   tags: z.array(z.string()),
   status: z.enum(['draft', 'published', 'archived']),
   featured: z.boolean(),
+  mediaIds: z.array(z.string()).optional(),
 });
 
 type TourFormValues = z.infer<typeof tourFormSchema>;
@@ -212,6 +215,11 @@ export function TourEditorPage() {
   // POI selection state
   const [selectedPOIs, setSelectedPOIs] = useState<CityPOI[]>([]);
 
+  // Primary image state for media picker
+  const [primaryImageId, setPrimaryImageId] = useState<string | undefined>(
+    undefined
+  );
+
   // Initialize form
   const form = useForm<TourFormValues>({
     resolver: zodResolver(tourFormSchema),
@@ -225,6 +233,7 @@ export function TourEditorPage() {
       tags: [],
       status: 'draft',
       featured: false,
+      mediaIds: [], // TODO Phase 2: Load from backend
     },
   });
 
@@ -259,12 +268,26 @@ export function TourEditorPage() {
         tags: [], // Tags not in API yet
         status: tourData.status,
         featured: tourData.featured,
+        mediaIds: [], // Will be loaded separately
       });
       // Load waypoints from POIs
       setTourWaypoints(poisToWaypoints(tourData.pois));
       setLastSaved(new Date(tourData.updatedAt));
+
+      // Load media from backend
+      if (id) {
+        toursService
+          .getTourMedia(id)
+          .then((mediaData) => {
+            form.setValue('mediaIds', mediaData.mediaIds);
+            setPrimaryImageId(mediaData.primaryMediaId || undefined);
+          })
+          .catch((err) => {
+            console.error('Failed to load tour media:', err);
+          });
+      }
     }
-  }, [isEditMode, tourData, form]);
+  }, [isEditMode, tourData, form, id]);
 
   // Handle waypoints change
   const handleWaypointsChange = useCallback((newWaypoints: Waypoint[]) => {
@@ -371,6 +394,8 @@ export function TourEditorPage() {
     };
 
     try {
+      let tourId = id;
+
       if (isEditMode && id) {
         await updateTourMutation.mutateAsync({ id, input: tourInput });
         if (publish) {
@@ -378,9 +403,18 @@ export function TourEditorPage() {
         }
       } else {
         const newTour = await createTourMutation.mutateAsync(tourInput);
+        tourId = newTour.id;
         if (publish) {
           await publishTourMutation.mutateAsync(newTour.id);
         }
+      }
+
+      // Save media to backend
+      if (tourId && values.mediaIds && values.mediaIds.length > 0) {
+        await toursService.updateTourMedia(tourId, {
+          mediaIds: values.mediaIds,
+          primaryMediaId: primaryImageId,
+        });
       }
 
       setIsDirty(false);
@@ -804,16 +838,32 @@ export function TourEditorPage() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="border-2 border-dashed rounded-lg p-8 text-center">
-                        <Image className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                        <p className="text-muted-foreground">
-                          {t('tourEditor.media.dropzone')}
-                        </p>
-                        <Button variant="outline" className="mt-4">
-                          <Plus className="h-4 w-4 mr-2" />
-                          {t('tourEditor.media.browse')}
-                        </Button>
-                      </div>
+                      <FormField
+                        control={form.control}
+                        name="mediaIds"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              {t('tourEditor.media.images')}
+                            </FormLabel>
+                            <FormControl>
+                              <TourMediaPicker
+                                selectedIds={field.value || []}
+                                primaryId={primaryImageId}
+                                onSelectionChange={field.onChange}
+                                onPrimaryChange={setPrimaryImageId}
+                                maxItems={10}
+                                contextType="tour"
+                                contextId={id}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              {t('tourEditor.media.hint')}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </CardContent>
                   </Card>
                 </TabsContent>

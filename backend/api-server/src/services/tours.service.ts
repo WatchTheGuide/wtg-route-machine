@@ -145,6 +145,8 @@ class ToursService {
       duration: tour.duration,
       imageUrl: tour.imageUrl,
       poisCount: tour.pois.length,
+      mediaIds: tour.mediaIds || [],
+      primaryMediaId: tour.primaryMediaId,
     };
   }
 

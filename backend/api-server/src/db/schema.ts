@@ -4,12 +4,14 @@
  * (Drizzle-kit doesn't handle ESM .js extensions well)
  */
 
+import crypto from 'crypto';
 import {
   sqliteTable,
   text,
   integer,
   real,
   primaryKey,
+  index,
 } from 'drizzle-orm/sqlite-core';
 
 // ============================================
@@ -73,6 +75,10 @@ export const tours = sqliteTable('tours', {
 
   // POIs as JSON array (embedded data)
   poisJson: text('pois_json').default('[]'),
+
+  // Media IDs as JSON array (US 8.16 - Tour Media Integration)
+  mediaIds: text('media_ids').default('[]'),
+  primaryMediaId: text('primary_media_id'),
 
   // Status and flags
   status: text('status', {
@@ -158,5 +164,66 @@ export const tourPois = sqliteTable(
   },
   (table) => ({
     pk: primaryKey({ columns: [table.tourId, table.poiId] }),
+  })
+);
+
+// ============================================
+// MEDIA TABLE (Epic 8.10 - Media Manager)
+// ============================================
+export const media = sqliteTable(
+  'media',
+  {
+    // Primary key
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+
+    // File information
+    filename: text('filename').notNull(), // UUID-based: abc123.jpg
+    originalName: text('original_name').notNull(), // User's filename
+    mimeType: text('mime_type').notNull(), // image/jpeg
+    sizeBytes: integer('size_bytes').notNull(),
+
+    // Image dimensions
+    width: integer('width').notNull(),
+    height: integer('height').notNull(),
+
+    // URLs (relative paths)
+    url: text('url').notNull(), // /uploads/abc123.jpg
+    thumbnailUrl: text('thumbnail_url').notNull(), // /uploads/thumbnails/abc123-thumb.jpg
+
+    // Metadata
+    title: text('title'),
+    altText: text('alt_text'),
+    tags: text('tags').notNull().default('[]'), // JSON array
+
+    // Context (where was it uploaded from?)
+    contextType: text('context_type', {
+      enum: ['tour', 'poi', 'standalone'],
+    }),
+    contextId: text('context_id'),
+
+    // User tracking
+    uploadedBy: text('uploaded_by')
+      .notNull()
+      .references(() => users.id),
+
+    // Timestamps
+    createdAt: text('created_at')
+      .notNull()
+      .$defaultFn(() => new Date().toISOString()),
+    updatedAt: text('updated_at')
+      .notNull()
+      .$defaultFn(() => new Date().toISOString()),
+  },
+  (table) => ({
+    // Indexes for performance (CRITICAL: Added per code review)
+    uploadedByIdx: index('media_uploaded_by_idx').on(table.uploadedBy),
+    contextTypeIdx: index('media_context_type_idx').on(table.contextType),
+    contextIdx: index('media_context_idx').on(
+      table.contextType,
+      table.contextId
+    ),
+    createdAtIdx: index('media_created_at_idx').on(table.createdAt),
   })
 );

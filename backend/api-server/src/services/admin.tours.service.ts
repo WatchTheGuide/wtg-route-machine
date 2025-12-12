@@ -42,6 +42,18 @@ function parsePois(poisJson: string | null | undefined): TourPOI[] {
 }
 
 /**
+ * Parse mediaIds from JSON string
+ */
+function parseMediaIds(mediaIdsJson: string | null | undefined): string[] {
+  if (!mediaIdsJson) return [];
+  try {
+    return JSON.parse(mediaIdsJson);
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Convert DB tour to AdminTour type
  */
 function dbTourToAdminTour(dbTour: DbTour): AdminTour {
@@ -68,6 +80,8 @@ function dbTourToAdminTour(dbTour: DbTour): AdminTour {
     duration: dbTour.duration,
     imageUrl: dbTour.imageUrl || '',
     pois: parsePois(dbTour.poisJson),
+    mediaIds: parseMediaIds(dbTour.mediaIds),
+    primaryMediaId: dbTour.primaryMediaId || undefined,
     status: dbTour.status as TourStatus,
     featured: dbTour.featured,
     views: dbTour.views,
@@ -182,6 +196,8 @@ class AdminToursService {
       duration: input.duration,
       imageUrl: input.imageUrl,
       poisJson: JSON.stringify(input.pois || []),
+      mediaIds: JSON.stringify(input.mediaIds || []),
+      primaryMediaId: input.primaryMediaId || null,
       status: input.status || 'draft',
       featured: input.featured || false,
       views: 0,
@@ -231,6 +247,10 @@ class AdminToursService {
     if (input.duration !== undefined) updates.duration = input.duration;
     if (input.imageUrl !== undefined) updates.imageUrl = input.imageUrl;
     if (input.pois !== undefined) updates.poisJson = JSON.stringify(input.pois);
+    if (input.mediaIds !== undefined)
+      updates.mediaIds = JSON.stringify(input.mediaIds);
+    if (input.primaryMediaId !== undefined)
+      updates.primaryMediaId = input.primaryMediaId;
     if (input.status !== undefined) updates.status = input.status;
     if (input.featured !== undefined) updates.featured = input.featured;
 
@@ -292,6 +312,8 @@ class AdminToursService {
       duration: original.duration,
       imageUrl: original.imageUrl,
       poisJson: original.poisJson,
+      mediaIds: original.mediaIds,
+      primaryMediaId: original.primaryMediaId,
       status: 'draft',
       featured: false,
       views: 0,
@@ -480,6 +502,8 @@ class AdminToursService {
       duration: dbTour.duration,
       imageUrl: dbTour.imageUrl || '',
       poisCount: pois.length,
+      mediaIds: parseMediaIds(dbTour.mediaIds),
+      primaryMediaId: dbTour.primaryMediaId || undefined,
       status: dbTour.status as TourStatus,
       featured: dbTour.featured,
       views: dbTour.views,

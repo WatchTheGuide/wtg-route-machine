@@ -6,6 +6,7 @@ import { DashboardPage } from '@/pages/DashboardPage';
 import { ToursPage } from '@/pages/ToursPage';
 import { TourEditorPage } from '@/pages/TourEditorPage';
 import { PoisPage } from '@/pages/PoisPage';
+import { MediaPage } from '@/pages/MediaPage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { Toaster } from '@/components/ui/sonner';
@@ -31,6 +32,7 @@ function App() {
           <Route path="tours/new" element={<TourEditorPage />} />
           <Route path="tours/:id/edit" element={<TourEditorPage />} />
           <Route path="pois" element={<PoisPage />} />
+          <Route path="media" element={<MediaPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Routes>

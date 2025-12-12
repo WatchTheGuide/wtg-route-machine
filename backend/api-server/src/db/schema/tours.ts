@@ -37,6 +37,10 @@ export const tours = sqliteTable('tours', {
   // POIs as JSON array (embedded data)
   poisJson: text('pois_json').default('[]'),
 
+  // Media fields
+  mediaIds: text('media_ids').default('[]'), // JSON array of media IDs
+  primaryMediaId: text('primary_media_id'), // Primary media ID for hero image
+
   // Status and flags
   status: text('status', {
     enum: ['draft', 'published', 'archived'],

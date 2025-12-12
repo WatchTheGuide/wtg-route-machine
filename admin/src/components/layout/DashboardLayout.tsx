@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   Map,
   MapPin,
+  Image,
   Settings,
   LogOut,
   Menu,
@@ -23,6 +24,7 @@ const navItems = [
   },
   { path: '/admin/tours', icon: Map, labelKey: 'dashboard.nav.tours' },
   { path: '/admin/pois', icon: MapPin, labelKey: 'dashboard.nav.pois' },
+  { path: '/admin/media', icon: Image, labelKey: 'dashboard.nav.media' },
   {
     path: '/admin/settings',
     icon: Settings,

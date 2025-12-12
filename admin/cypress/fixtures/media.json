@@ -1,0 +1,44 @@
+{
+  "media": [
+    {
+      "id": 1,
+      "title": "Wawel Castle",
+      "description": "Beautiful view of Wawel Castle in Krakow",
+      "url": "https://via.placeholder.com/800x600/4A90E2/FFFFFF?text=Wawel+Castle",
+      "thumbnailUrl": "https://via.placeholder.com/200x150/4A90E2/FFFFFF?text=Wawel",
+      "fileType": "image/jpeg",
+      "fileSize": 245760,
+      "tags": ["tour", "landmark", "architecture"],
+      "uploadedAt": "2024-12-01T10:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "title": "Main Market Square",
+      "description": "The heart of Krakow's Old Town",
+      "url": "https://via.placeholder.com/800x600/50C878/FFFFFF?text=Market+Square",
+      "thumbnailUrl": "https://via.placeholder.com/200x150/50C878/FFFFFF?text=Market",
+      "fileType": "image/png",
+      "fileSize": 180224,
+      "tags": ["poi", "architecture", "historic"],
+      "uploadedAt": "2024-12-02T14:30:00.000Z"
+    },
+    {
+      "id": 3,
+      "title": "Vistula River",
+      "description": "Scenic view of the Vistula River",
+      "url": "https://via.placeholder.com/800x600/87CEEB/FFFFFF?text=Vistula+River",
+      "thumbnailUrl": "https://via.placeholder.com/200x150/87CEEB/FFFFFF?text=River",
+      "fileType": "image/jpeg",
+      "fileSize": 312320,
+      "tags": ["landscape", "nature"],
+      "uploadedAt": "2024-12-03T09:15:00.000Z"
+    }
+  ],
+  "tours": [
+    {
+      "id": 1,
+      "title": "Old Town Walking Tour",
+      "mediaIds": [1, 2]
+    }
+  ]
+}
