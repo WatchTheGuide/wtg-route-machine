@@ -172,6 +172,11 @@ const pl = {
         description:
           'Ta operacja jest nieodwracalna. Wycieczka "{{name}}" zostanie trwale usunięta.',
       },
+      bulkDeleteDialog: {
+        title: 'Czy na pewno chcesz usunąć wybrane wycieczki?',
+        description:
+          'Ta operacja jest nieodwracalna. {{count}} wycieczek zostanie trwale usuniętych.',
+      },
       // Toast messages
       deleteSuccess: 'Wycieczka "{{name}}" została usunięta',
       deleteError: 'Nie udało się usunąć wycieczki',

@@ -172,6 +172,11 @@ const en = {
         description:
           'This action cannot be undone. The tour "{{name}}" will be permanently deleted.',
       },
+      bulkDeleteDialog: {
+        title: 'Are you sure you want to delete selected tours?',
+        description:
+          'This action cannot be undone. {{count}} tours will be permanently deleted.',
+      },
       // Toast messages
       deleteSuccess: 'Tour "{{name}}" has been deleted',
       deleteError: 'Failed to delete tour',

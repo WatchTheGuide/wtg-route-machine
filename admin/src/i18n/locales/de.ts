@@ -169,6 +169,11 @@ const de = {
         description:
           'Diese Aktion kann nicht rückgängig gemacht werden. Die Tour "{{name}}" wird dauerhaft gelöscht.',
       },
+      bulkDeleteDialog: {
+        title: 'Möchten Sie die ausgewählten Touren wirklich löschen?',
+        description:
+          'Diese Aktion kann nicht rückgängig gemacht werden. {{count}} Touren werden dauerhaft gelöscht.',
+      },
       // Toast messages
       deleteSuccess: 'Tour "{{name}}" wurde gelöscht',
       deleteError: 'Tour konnte nicht gelöscht werden',

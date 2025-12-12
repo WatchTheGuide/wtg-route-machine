@@ -169,6 +169,11 @@ const fr = {
         description:
           'Cette action est irréversible. Le circuit "{{name}}" sera définitivement supprimé.',
       },
+      bulkDeleteDialog: {
+        title: 'Êtes-vous sûr de vouloir supprimer les circuits sélectionnés?',
+        description:
+          'Cette action est irréversible. {{count}} circuits seront définitivement supprimés.',
+      },
       // Toast messages
       deleteSuccess: 'Circuit "{{name}}" supprimé',
       deleteError: 'Échec de la suppression du circuit',
